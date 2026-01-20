@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição & Controle (LITE)</title>
+    <title>Expedição & Controle (PRO)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -84,35 +84,35 @@
             <p class="text-gray-400 mb-8 italic text-sm">"Não se gerencia o que não se mede."</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Card 24h -->
+                <!-- Card 24h (Pedidos) -->
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-emerald-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Volume P/ 24 Horas</p>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (24h)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-24h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">unidades a expedir</p>
+                            <p class="text-sm text-gray-500 mt-1">pedidos pendentes</p>
                         </div>
                         <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><i class="fa-solid fa-stopwatch fa-xl"></i></div>
                     </div>
                 </div>
-                <!-- Card 48h -->
+                <!-- Card 48h (Pedidos) -->
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-blue-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Volume P/ 48 Horas</p>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (48h)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-48h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">unidades a expedir</p>
+                            <p class="text-sm text-gray-500 mt-1">pedidos pendentes</p>
                         </div>
                         <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400"><i class="fa-solid fa-calendar-day fa-xl"></i></div>
                     </div>
                 </div>
-                <!-- Card Ruptura -->
-                <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-red-500 border-dark-700">
+                <!-- Card Ruptura (Interativo) -->
+                <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-red-500 border-dark-700 cursor-pointer hover:bg-dark-700 transition-all transform hover:scale-[1.02]" onclick="openShortageModal()" title="Clique para ver detalhes">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Produtos em Falta</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-shortage">0</h3>
-                            <p class="text-sm text-red-400 mt-1">Estoque < Demanda</p>
+                            <p class="text-sm text-red-400 mt-1 flex items-center gap-1"><i class="fa-solid fa-hand-pointer text-xs"></i> Ver detalhes</p>
                         </div>
                         <div class="p-3 bg-red-500/10 rounded-xl text-red-400"><i class="fa-solid fa-triangle-exclamation fa-xl"></i></div>
                     </div>
@@ -333,6 +333,84 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal Ruptura Completa -->
+    <div id="modal-shortage" class="modal">
+        <div class="bg-dark-800 rounded-2xl shadow-2xl border border-red-600/50 p-6 max-w-4xl w-full m-4 h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Relatório de Ruptura (Faltas)
+                </h2>
+                <button onclick="closeModal('modal-shortage')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="overflow-y-auto flex-1 bg-dark-900 rounded-xl border border-dark-700">
+                <table class="w-full text-sm text-left text-gray-300">
+                    <thead class="bg-dark-800 text-xs text-gray-500 uppercase sticky top-0">
+                        <tr>
+                            <th class="px-6 py-4">Produto</th>
+                            <th class="px-6 py-4">Setor</th>
+                            <th class="px-6 py-4 text-right">Saldo Devedor</th>
+                            <th class="px-6 py-4 text-right text-orange-400">Prazo Limite</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-shortage-list" class="divide-y divide-dark-700"></tbody>
+                </table>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeModal('modal-shortage')" class="bg-dark-700 hover:bg-dark-600 text-white px-6 py-2 rounded-xl transition">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Produto Completo -->
+    <div id="modal-edit-product" class="modal">
+        <div class="bg-dark-800 rounded-2xl shadow-2xl border border-indigo-500/30 p-6 max-w-lg w-full m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Editar Produto</h2>
+                <button onclick="closeModal('modal-edit-product')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <input type="hidden" id="edit-prod-id">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-400 text-sm mb-1">Nome do Produto</label>
+                    <input type="text" id="edit-prod-name" class="w-full form-input rounded-xl p-3">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-1">Código (SKU)</label>
+                        <input type="text" id="edit-prod-code" class="w-full form-input rounded-xl p-3">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-1">Setor</label>
+                        <select id="edit-prod-sector" class="w-full form-input rounded-xl p-3"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-1">Estoque Físico</label>
+                        <input type="number" id="edit-prod-qty" step="0.01" class="w-full form-input rounded-xl p-3 font-bold text-emerald-400">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-1">Unidade</label>
+                        <select id="edit-prod-uom" class="w-full form-input rounded-xl p-3">
+                            <option value="UND">UND</option>
+                            <option value="KG">KG</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-400 text-sm mb-1">Última Entrada</label>
+                    <input type="date" id="edit-prod-date" class="w-full form-input rounded-xl p-3">
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="closeModal('modal-edit-product')" class="bg-dark-700 hover:bg-dark-600 text-white px-5 py-2.5 rounded-xl transition">Cancelar</button>
+                <button onclick="saveProductEdit()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Novo Pedido -->
     <div id="modal-new-order" class="modal">
@@ -784,7 +862,7 @@
                     <td class="px-6 py-4 text-right text-blue-400 font-bold">${totalDemand > 0 ? totalDemand.toFixed(2) : '-'}</td>
                     <td class="px-6 py-4 text-right font-bold ${isShortage ? 'text-red-500' : 'text-emerald-500'}">${balance.toFixed(2)}</td>
                     <td class="px-6 py-4 text-center">
-                        <button onclick="editProduct(${p.id})" class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="editProduct(${p.id})" class="text-gray-400 hover:text-white p-2" title="Editar Detalhes"><i class="fa-solid fa-pen"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -794,14 +872,40 @@
         document.getElementById('inv-search').addEventListener('input', updateInventoryTable);
         document.getElementById('inv-check-shortage').addEventListener('change', updateInventoryTable);
 
+        // --- NEW EDIT FEATURE (Menu Completo) ---
         window.editProduct = async (id) => {
-             const p = products.find(x => x.id === id);
-             const newQty = prompt(`Ajuste Manual de Estoque para ${p.name}:`, p.qty);
-             if(newQty !== null) {
-                 p.qty = parseFloat(newQty);
-                 await dbAction('products', 'readwrite', s => s.put(p));
-                 loadData();
-             }
+            const p = products.find(x => x.id === id);
+            if(!p) return;
+
+            document.getElementById('edit-prod-id').value = p.id;
+            document.getElementById('edit-prod-name').value = p.name;
+            document.getElementById('edit-prod-code').value = p.code;
+            document.getElementById('edit-prod-qty').value = p.qty;
+            document.getElementById('edit-prod-date').value = p.lastEntryDate || '';
+            document.getElementById('edit-prod-uom').value = p.uom || 'UND';
+            
+            // Populate Sectors
+            const secSelect = document.getElementById('edit-prod-sector');
+            secSelect.innerHTML = '<option value="">Selecione...</option>' + sectors.map(s => `<option value="${s.name}" ${s.name===p.sector?'selected':''}>${s.name}</option>`).join('');
+
+            document.getElementById('modal-edit-product').style.display = 'flex';
+        }
+
+        window.saveProductEdit = async () => {
+            const id = parseInt(document.getElementById('edit-prod-id').value);
+            const p = products.find(x => x.id === id);
+            
+            p.name = document.getElementById('edit-prod-name').value;
+            p.code = document.getElementById('edit-prod-code').value;
+            p.sector = document.getElementById('edit-prod-sector').value;
+            p.qty = parseFloat(document.getElementById('edit-prod-qty').value);
+            p.uom = document.getElementById('edit-prod-uom').value;
+            p.lastEntryDate = document.getElementById('edit-prod-date').value;
+
+            await dbAction('products', 'readwrite', s => s.put(p));
+            closeModal('modal-edit-product');
+            loadData();
+            showNotification('Produto Atualizado!');
         }
 
         function getRelativeTime(deadline) {
@@ -815,18 +919,49 @@
             return `<span class="text-gray-400">${diffHrs}h restantes</span>`;
         }
 
+        // --- NEW SHORTAGE MODAL ---
+        window.openShortageModal = () => {
+            const shortageItems = [];
+            products.forEach(p => {
+                const { totalDemand, earliestDeadline } = getDemandInfo(p.id);
+                const balance = (p.qty || 0) - totalDemand;
+                if(balance < 0) {
+                    shortageItems.push({ 
+                        name: p.name, 
+                        sector: p.sector || '-',
+                        balance, 
+                        deadlineText: getRelativeTime(earliestDeadline),
+                        deadlineRaw: earliestDeadline
+                    });
+                }
+            });
+            
+            // Sort by urgency
+            shortageItems.sort((a,b) => (a.deadlineRaw || new Date(9999,11,31)) - (b.deadlineRaw || new Date(9999,11,31)));
+
+            const tb = document.getElementById('modal-shortage-list');
+            tb.innerHTML = shortageItems.length 
+                ? shortageItems.map(i => `
+                    <tr class="border-b border-dark-700 hover:bg-dark-700/50">
+                        <td class="px-6 py-4 text-white font-medium">${i.name}</td>
+                        <td class="px-6 py-4 text-gray-400 text-xs">${i.sector}</td>
+                        <td class="px-6 py-4 text-right text-red-500 font-bold">${i.balance.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right text-xs">${i.deadlineText}</td>
+                    </tr>`).join('')
+                : '<tr><td colspan="4" class="p-6 text-center text-gray-500">Nenhum produto em falta!</td></tr>';
+
+            document.getElementById('modal-shortage').style.display = 'flex';
+        };
+
         function updateDashboard() {
             const pendingOrders = orders.filter(o => o.status === 'pending');
             
-            // Volumes
-            let v24 = 0, v48 = 0;
-            pendingOrders.forEach(o => {
-                const total = o.items.reduce((a,b)=>a+b.qty, 0);
-                if(o.type === '24h') v24 += total; else v48 += total;
-            });
+            // Pedidos Counts (Updated logic)
+            const count24 = pendingOrders.filter(o => o.type === '24h').length;
+            const count48 = pendingOrders.filter(o => o.type === '48h').length;
             
-            document.getElementById('dash-vol-24h').innerText = v24.toFixed(0);
-            document.getElementById('dash-vol-48h').innerText = v48.toFixed(0);
+            document.getElementById('dash-vol-24h').innerText = count24;
+            document.getElementById('dash-vol-48h').innerText = count48;
 
             // Shortage Calc
             let shortageCount = 0;
@@ -883,6 +1018,7 @@
         function updateSectorSelects(){ 
             const opts = '<option value="">Selecione...</option>' + sectors.map(s => `<option value="${s.name}">${s.name}</option>`).join(''); 
             document.getElementById('entry-sector').innerHTML = opts; 
+            document.getElementById('edit-prod-sector').innerHTML = opts;
         }
 
         function renderSectorList() {
@@ -937,12 +1073,10 @@
                         return;
                     }
 
-                    // Clear existing data
                     await Promise.all(['products', 'stores', 'orders', 'sectors'].map(name => 
                         dbAction(name, 'readwrite', s => s.clear())
                     ));
 
-                    // Add new data
                     if (data.products) for (let i of data.products) await dbAction('products', 'readwrite', s => s.add(i));
                     if (data.stores) for (let i of data.stores) await dbAction('stores', 'readwrite', s => s.add(i));
                     if (data.orders) for (let i of data.orders) await dbAction('orders', 'readwrite', s => s.add(i));
@@ -952,9 +1086,9 @@
                     loadData();
                 } catch (error) {
                     console.error(error);
-                    showNotification('Erro ao restaurar arquivo: Formato inválido.', true);
+                    showNotification('Erro ao restaurar arquivo.', true);
                 }
-                input.value = ''; // Reset input so same file can be selected again if needed
+                input.value = ''; 
             };
             reader.readAsText(file);
         };
