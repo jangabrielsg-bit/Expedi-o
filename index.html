@@ -275,7 +275,16 @@
 
         <!-- Lojas -->
         <div id="screen-stores" class="screen hidden animate-fade-in">
-            <h1 class="text-3xl font-bold text-white mb-6">Cadastro de Lojas</h1>
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-white">Cadastro de Lojas</h1>
+                <div class="relative">
+                    <input type="file" id="import-store-file" class="hidden" accept=".csv, .xlsx, .xls" onchange="handleStoreFile(this)">
+                    <button onclick="document.getElementById('import-store-file').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-file-import"></i> Importar Planilha
+                    </button>
+                </div>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-dark-700 h-fit">
                     <h3 class="text-xl font-bold text-white mb-4">Nova Loja</h3>
@@ -312,6 +321,16 @@
                 <div class="bg-dark-800 p-8 rounded-2xl shadow-lg border border-dark-700">
                     <h3 class="text-xl font-bold text-white mb-4">Gerenciar Dados</h3>
                     <div class="space-y-4">
+                        <!-- Import Inventory Button -->
+                        <div class="relative">
+                            <input type="file" id="import-inventory-file" class="hidden" accept=".csv, .xlsx, .xls, .pdf, .png, .jpg, .jpeg" onchange="handleInventoryFile(this)">
+                            <button onclick="document.getElementById('import-inventory-file').click()" class="w-full bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 font-bold py-3 px-4 rounded-xl border border-emerald-500/30 flex items-center justify-center transition">
+                                <i class="fa-solid fa-file-import mr-2"></i> Importar Inventário (CSV/Excel/Img)
+                            </button>
+                        </div>
+
+                        <hr class="border-dark-700 my-4">
+
                         <button onclick="backupData()" class="w-full bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 font-bold py-3 px-4 rounded-xl border border-blue-500/30 flex items-center justify-center transition">
                             <i class="fa-solid fa-download mr-2"></i> Baixar Backup (JSON)
                         </button>
@@ -333,6 +352,88 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal Importação Inventário -->
+    <div id="modal-import-preview" class="modal">
+        <div class="bg-dark-800 rounded-2xl shadow-2xl border border-emerald-500/30 p-6 max-w-2xl w-full m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-emerald-500"></i> Confirmar Importação
+                </h2>
+                <button onclick="closeModal('modal-import-preview')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <p class="text-gray-400 mb-4 text-sm">
+                Arquivo: <span id="import-filename" class="text-white font-bold"></span><br>
+                Setor Detectado: <span id="import-sector" class="text-emerald-400 font-bold uppercase"></span>
+            </p>
+
+            <div class="mb-6">
+                <label class="block text-gray-400 text-sm mb-2 font-bold">Ação Desejada:</label>
+                <div class="space-y-2">
+                    <label class="flex items-center p-3 rounded-xl border border-dark-600 bg-dark-900 cursor-pointer hover:bg-dark-700">
+                        <input type="radio" name="import-action" value="full" class="text-emerald-500 focus:ring-emerald-500 h-4 w-4" checked>
+                        <div class="ml-3">
+                            <span class="block text-white font-medium">Atualizar Estoque e Cadastro</span>
+                            <span class="block text-xs text-gray-500">Cadastra novos produtos, setores e atualiza a quantidade em estoque com base na planilha.</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center p-3 rounded-xl border border-dark-600 bg-dark-900 cursor-pointer hover:bg-dark-700">
+                        <input type="radio" name="import-action" value="register_only" class="text-blue-500 focus:ring-blue-500 h-4 w-4">
+                        <div class="ml-3">
+                            <span class="block text-white font-medium">Apenas Cadastrar Produtos</span>
+                            <span class="block text-xs text-gray-500">Adiciona produtos novos e setores ao sistema, mas mantém o estoque zerado ou inalterado.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-dark-900 rounded-xl p-4 border border-dark-700 mb-6">
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <span class="block text-2xl font-bold text-white" id="import-count-new">0</span>
+                        <span class="text-xs text-gray-500 uppercase">Novos Produtos</span>
+                    </div>
+                    <div>
+                        <span class="block text-2xl font-bold text-white" id="import-count-update">0</span>
+                        <span class="text-xs text-gray-500 uppercase">Itens na Planilha</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModal('modal-import-preview')" class="bg-dark-700 hover:bg-dark-600 text-white px-5 py-2.5 rounded-xl transition">Cancelar</button>
+                <button onclick="confirmInventoryImport()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Importação Lojas -->
+    <div id="modal-import-stores" class="modal">
+        <div class="bg-dark-800 rounded-2xl shadow-2xl border border-emerald-500/30 p-6 max-w-lg w-full m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-store text-emerald-500"></i> Importar Lojas
+                </h2>
+                <button onclick="closeModal('modal-import-stores')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="bg-dark-900 rounded-xl p-4 border border-dark-700 mb-6 text-center">
+                <i class="fa-solid fa-file-csv text-4xl text-gray-600 mb-2"></i>
+                <p class="text-gray-400 text-sm">Lojas encontradas na planilha:</p>
+                <span class="block text-4xl font-bold text-white mt-2" id="import-stores-count">0</span>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModal('modal-import-stores')" class="bg-dark-700 hover:bg-dark-600 text-white px-5 py-2.5 rounded-xl transition">Cancelar</button>
+                <button onclick="confirmStoreImport()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> Importar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Ruptura Completa -->
     <div id="modal-shortage" class="modal">
@@ -493,6 +594,8 @@
         let db;
         let products = [], stores = [], orders = [], sectors = [];
         let orderCart = [];
+        let importPreviewData = { newItems: [], updatedItems: [], sector: '', batchesFound: [] };
+        let importStoreData = [];
 
         const initDB = () => new Promise((resolve, reject) => {
             const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -502,6 +605,7 @@
                 if(!db.objectStoreNames.contains('stores')) db.createObjectStore('stores', { keyPath: 'id', autoIncrement: true });
                 if(!db.objectStoreNames.contains('orders')) db.createObjectStore('orders', { keyPath: 'id', autoIncrement: true }); 
                 if(!db.objectStoreNames.contains('sectors')) db.createObjectStore('sectors', { keyPath: 'id', autoIncrement: true });
+                if(!db.objectStoreNames.contains('batches')) db.createObjectStore('batches', { keyPath: 'id', autoIncrement: true });
             };
             req.onsuccess = (e) => { db = e.target.result; resolve(db); };
             req.onerror = () => reject('Erro DB');
@@ -543,6 +647,287 @@
             if(s === 'inventory') updateInventoryTable();
             if(s === 'entry') document.getElementById('entry-date').valueAsDate = new Date();
         };
+
+        // --- IMPORT LOGIC (INVENTORY) ---
+        window.handleInventoryFile = (input) => {
+            const file = input.files[0];
+            if(!file) return;
+
+            // Check file type
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (['png', 'jpg', 'jpeg', 'pdf'].includes(ext)) {
+                alert("AVISO: A leitura automática de imagens/PDF requer serviços de OCR em nuvem (não disponíveis nesta versão offline).\n\nPara importação automática, por favor converta sua tabela para Excel (.xlsx) ou CSV.");
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const rows = XLSX.utils.sheet_to_json(sheet, {header: 1}); // Array of Arrays
+
+                processInventoryData(rows, file.name);
+                input.value = ''; // Reset
+            };
+            reader.readAsArrayBuffer(file);
+        };
+
+        function processInventoryData(rows, filename) {
+            let sectorName = "Geral";
+            const knownSectors = ["CONFEITARIA", "PÃES CONGELADOS", "PÃES ESPECIAIS", "SALGADOS", "PÃO DE QUEIJO", "PÃES PRE ASSADOS"];
+
+            for (const s of knownSectors) {
+                if (filename.toUpperCase().includes(s)) { sectorName = s; break; }
+            }
+
+            if (sectorName === "Geral") {
+                for(let i=0; i < Math.min(rows.length, 10); i++) {
+                    const rowStr = rows[i] ? rows[i].join(' ').toUpperCase() : '';
+                    for (const s of knownSectors) {
+                        if (rowStr.includes(s + " INVENTARIO") || rowStr.includes(s)) { sectorName = s; break; }
+                    }
+                    if (sectorName !== "Geral") break;
+                }
+            }
+
+            let headerIndex = -1;
+            for(let i=0; i<rows.length; i++) {
+                if(rows[i] && rows[i].some(cell => cell && typeof cell === 'string' && cell.trim().toUpperCase() === 'CÓD')) {
+                    headerIndex = i; break;
+                }
+            }
+
+            if(headerIndex === -1) {
+                showNotification("Cabeçalho 'CÓD' não encontrado.", true);
+                return;
+            }
+
+            const header = rows[headerIndex].map(h => String(h).trim().toUpperCase());
+            const colCod = header.findIndex(h => h === 'CÓD');
+            const colProd = header.findIndex(h => h === 'PRODUTO');
+            const colTotal = header.findIndex(h => h.includes('TOTAL'));
+
+            const batchColumns = [];
+            header.forEach((h, idx) => {
+                if ((h.includes('LOTE') || h.includes('VAL')) && !h.includes('TOTAL')) {
+                    if (header[idx+1] && header[idx+1].includes('QTD')) {
+                        batchColumns.push({ colLote: idx, colQtd: idx+1 });
+                    }
+                }
+            });
+
+            const aggregatedItems = {}; 
+
+            for(let i = headerIndex + 1; i < rows.length; i++) {
+                const row = rows[i];
+                if(!row || !row[colCod] || !row[colProd]) continue;
+
+                const rawCode = row[colCod];
+                const code = String(rawCode).trim();
+                const name = String(row[colProd]).trim();
+                
+                if(!code || code === 'undefined' || name === '') continue; 
+
+                let totalQty = 0;
+                const productBatches = [];
+
+                batchColumns.forEach(pair => {
+                    const loteVal = row[pair.colLote];
+                    const qtdVal = parseFloat(row[pair.colQtd]);
+
+                    if (loteVal && qtdVal > 0) {
+                        const strVal = String(loteVal).trim();
+                        let batchCode = 'S/L';
+                        let batchDate = '';
+
+                        const dateRegex = /(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})/;
+                        const dateMatch = strVal.match(dateRegex);
+
+                        if (dateMatch) {
+                            batchDate = dateMatch[0];
+                            const remainder = strVal.replace(batchDate, '').replace(/[\-\/]/g, '').trim();
+                            if (remainder.length > 0) batchCode = remainder;
+                        } else {
+                            batchCode = strVal;
+                        }
+
+                        productBatches.push({ code: batchCode, date: batchDate, qty: qtdVal });
+                        totalQty += qtdVal;
+                    }
+                });
+
+                if (totalQty === 0 && colTotal !== -1 && row[colTotal]) {
+                    totalQty = parseFloat(row[colTotal]) || 0;
+                }
+
+                if (aggregatedItems[code]) {
+                    aggregatedItems[code].qty += totalQty;
+                    aggregatedItems[code]._batches.push(...productBatches);
+                } else {
+                    aggregatedItems[code] = {
+                        name: name,
+                        code: code,
+                        qty: totalQty,
+                        sector: sectorName,
+                        uom: 'UND', 
+                        lastEntryDate: new Date().toISOString(),
+                        _batches: productBatches
+                    };
+                }
+            }
+
+            const newItems = [];
+            const updatedItems = [];
+
+            Object.values(aggregatedItems).forEach(itemData => {
+                const exists = products.find(p => p.code == itemData.code || p.name === itemData.name);
+                if(exists) {
+                    updatedItems.push({ ...exists, ...itemData, id: exists.id }); 
+                } else {
+                    newItems.push(itemData);
+                }
+            });
+
+            importPreviewData = { newItems, updatedItems, sector: sectorName };
+            
+            document.getElementById('import-filename').innerText = filename;
+            document.getElementById('import-sector').innerText = sectorName;
+            document.getElementById('import-count-new').innerText = newItems.length;
+            document.getElementById('import-count-update').innerText = updatedItems.length;
+            document.getElementById('modal-import-preview').style.display = 'flex';
+        }
+
+        window.confirmInventoryImport = async () => {
+            try {
+                const action = document.querySelector('input[name="import-action"]:checked').value;
+                const isFullImport = action === 'full';
+
+                if(!sectors.find(s => s.name === importPreviewData.sector)) {
+                    await dbAction('sectors', 'readwrite', s => s.add({ name: importPreviewData.sector }));
+                }
+
+                const processItem = async (item, isNew) => {
+                    const itemToSave = { ...item };
+                    
+                    if (!isFullImport) {
+                        if (isNew) {
+                            itemToSave.qty = 0;
+                        } else {
+                            const original = products.find(p => p.id === item.id);
+                            if (original) itemToSave.qty = original.qty; 
+                        }
+                    } 
+                    
+                    const batchList = item._batches || [];
+                    delete itemToSave._batches;
+
+                    if (isNew) {
+                        const newId = await dbAction('products', 'readwrite', s => s.add(itemToSave));
+                        if (isFullImport && batchList.length > 0) {
+                            for (let b of batchList) {
+                                await dbAction('batches', 'readwrite', s => s.add({ 
+                                    productId: newId, 
+                                    code: b.code, 
+                                    qty: b.qty, 
+                                    expDate: b.date 
+                                }));
+                            }
+                        }
+                    } else {
+                        await dbAction('products', 'readwrite', s => s.put(itemToSave));
+                    }
+                };
+
+                for(let item of importPreviewData.newItems) await processItem(item, true);
+                for(let item of importPreviewData.updatedItems) await processItem(item, false);
+
+                closeModal('modal-import-preview');
+                showNotification(isFullImport ? 'Inventário e Estoque Atualizados!' : 'Cadastro Atualizado!');
+                loadData();
+            } catch (e) {
+                console.error(e);
+                showNotification('Erro ao importar dados.', true);
+            }
+        };
+
+        // --- IMPORT LOGIC (STORES) ---
+        window.handleStoreFile = (input) => {
+            const file = input.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const rows = XLSX.utils.sheet_to_json(sheet, {header: 1}); 
+                processStoreData(rows);
+                input.value = '';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processStoreData(rows) {
+            let headerIndex = -1;
+            // Search for header row
+            for(let i=0; i<rows.length; i++) {
+                const rowStr = rows[i].join(' ').toUpperCase();
+                if(rowStr.includes('LOJA') || rowStr.includes('NOME') || rowStr.includes('CLIENTE')) {
+                    headerIndex = i;
+                    break;
+                }
+            }
+
+            if(headerIndex === -1) {
+                showNotification("Não foi possível identificar o cabeçalho (procure por 'Loja' ou 'Nome').", true);
+                return;
+            }
+
+            const header = rows[headerIndex].map(h => String(h).toUpperCase());
+            const colName = header.findIndex(h => h.includes('NOME') || h.includes('LOJA') || h.includes('CLIENTE'));
+            const colCode = header.findIndex(h => h.includes('COD') || h.includes('CNPJ') || h.includes('ID'));
+            const colCity = header.findIndex(h => h.includes('CIDADE') || h.includes('MUNIC') || h.includes('ENDERE'));
+
+            importStoreData = [];
+
+            for(let i = headerIndex + 1; i < rows.length; i++) {
+                const row = rows[i];
+                if(!row || !row[colName]) continue;
+
+                const name = String(row[colName]).trim();
+                const code = colCode !== -1 && row[colCode] ? String(row[colCode]).trim() : '';
+                const city = colCity !== -1 && row[colCity] ? String(row[colCity]).trim() : '';
+
+                if(name) {
+                    importStoreData.push({ name, code, city });
+                }
+            }
+
+            document.getElementById('import-stores-count').innerText = importStoreData.length;
+            document.getElementById('modal-import-stores').style.display = 'flex';
+        }
+
+        window.confirmStoreImport = async () => {
+            try {
+                for(let store of importStoreData) {
+                    // Check duplicate by name or code
+                    const exists = stores.find(s => s.name === store.name || (store.code && s.code === store.code));
+                    if(!exists) {
+                        await dbAction('stores', 'readwrite', s => s.add(store));
+                    }
+                }
+                closeModal('modal-import-stores');
+                showNotification('Lojas importadas com sucesso!');
+                loadData();
+            } catch(e) {
+                console.error(e);
+                showNotification('Erro ao importar lojas', true);
+            }
+        }
 
         // --- CORE LOGIC ---
 
@@ -789,18 +1174,27 @@
         window.shipOrder = async (orderId) => {
             if(!confirm('Confirmar expedição? O estoque será baixado.')) return;
             try {
+                // Fetch fresh order
                 const order = await dbAction('orders', 'readonly', s => s.get(orderId));
                 if(!order) throw new Error('Pedido não encontrado');
                 if(order.status === 'shipped') throw new Error('Já expedido');
 
                 for(let item of order.items) {
+                    // Fetch fresh product
                     const product = await dbAction('products', 'readonly', s => s.get(item.id));
                     if(product) {
-                        product.qty -= item.qty;
+                        // Ensure numerical operation
+                        const currentQty = Number(product.qty) || 0;
+                        const qtyToDeduct = Number(item.qty) || 0;
+                        
+                        product.qty = currentQty - qtyToDeduct;
+                        
+                        // Update product
                         await dbAction('products', 'readwrite', s => s.put(product));
                     }
                 }
                 
+                // Update Order Status
                 order.status = 'shipped';
                 order.shippedDate = new Date().toISOString();
                 await dbAction('orders', 'readwrite', s => s.put(order));
