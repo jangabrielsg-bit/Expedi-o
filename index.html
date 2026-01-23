@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expedição & Controle (PRO)</title>
+    <title>Controle de Saídas & Estoque (PRO)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -54,7 +54,7 @@
             </a>
             <a href="#" onclick="navigateTo('orders')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-clipboard-list w-6 text-center text-lg"></i>
-                <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Pedidos</span>
+                <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Saídas</span>
             </a>
             <a href="#" onclick="navigateTo('entry')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-box-open w-6 text-center text-lg"></i>
@@ -66,7 +66,7 @@
             </a>
              <a href="#" onclick="navigateTo('stores')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-store w-6 text-center text-lg"></i>
-                <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Lojas</span>
+                <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Destinos</span>
             </a>
             <a href="#" onclick="navigateTo('settings')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-gear w-6 text-center text-lg"></i>
@@ -88,9 +88,9 @@
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-emerald-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (24h)</p>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Saídas Previstas (24h)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-24h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">entrega hoje/amanhã</p>
+                            <p class="text-sm text-gray-500 mt-1">pedidos/requisições</p>
                         </div>
                         <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><i class="fa-solid fa-stopwatch fa-xl"></i></div>
                     </div>
@@ -99,9 +99,9 @@
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-blue-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (48h+)</p>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Saídas Previstas (48h+)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-48h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">entrega futura</p>
+                            <p class="text-sm text-gray-500 mt-1">pedidos/requisições</p>
                         </div>
                         <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400"><i class="fa-solid fa-calendar-day fa-xl"></i></div>
                     </div>
@@ -122,14 +122,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-dark-700">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-indigo-500"></i> Pedidos Pendentes</h2>
-                        <button onclick="navigateTo('orders')" class="text-xs text-indigo-400 hover:text-indigo-300">Ver Todos</button>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-indigo-500"></i> Saídas Pendentes</h2>
+                        <button onclick="navigateTo('orders')" class="text-xs text-indigo-400 hover:text-indigo-300">Ver Todas</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-400">
                             <thead class="text-xs text-gray-500 uppercase bg-dark-900/50">
                                 <tr>
-                                    <th class="px-4 py-3">Loja</th>
+                                    <th class="px-4 py-3">Destino</th>
                                     <th class="px-4 py-3 text-center">Data Entrega</th>
                                     <th class="px-4 py-3 text-right">Volume</th>
                                 </tr>
@@ -160,10 +160,10 @@
         <!-- Pedidos (Order Management) -->
         <div id="screen-orders" class="screen hidden animate-fade-in">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-white">Gestão de Pedidos</h1>
+                <h1 class="text-3xl font-bold text-white">Gestão de Saídas</h1>
                 <div class="flex gap-2">
                     <button onclick="showNewOrderModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all">
-                        <i class="fa-solid fa-plus"></i> Novo Pedido
+                        <i class="fa-solid fa-plus"></i> Nova Saída
                     </button>
                     <button onclick="exportOrders()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all">
                         <i class="fa-solid fa-file-excel"></i> Exportar
@@ -276,7 +276,7 @@
         <!-- Lojas -->
         <div id="screen-stores" class="screen hidden animate-fade-in">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-white">Cadastro de Lojas</h1>
+                <h1 class="text-3xl font-bold text-white">Cadastro de Destinos</h1>
                 <div class="relative">
                     <input type="file" id="import-store-file" class="hidden" accept=".csv, .xlsx, .xls" onchange="handleStoreFile(this)">
                     <button onclick="document.getElementById('import-store-file').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all">
@@ -287,15 +287,15 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-dark-700 h-fit">
-                    <h3 class="text-xl font-bold text-white mb-4">Nova Loja</h3>
+                    <h3 class="text-xl font-bold text-white mb-4">Novo Destino (Loja/Setor)</h3>
                     <form id="form-store">
-                        <label class="block text-gray-400 text-sm mb-1">Nome da Loja</label>
+                        <label class="block text-gray-400 text-sm mb-1">Nome / Fantasia</label>
                         <input type="text" id="store-name" class="w-full form-input rounded-xl p-2 mb-3" required>
                         <label class="block text-gray-400 text-sm mb-1">Cód/CNPJ (Opcional)</label>
                         <input type="text" id="store-code" class="w-full form-input rounded-xl p-2 mb-3">
                         <label class="block text-gray-400 text-sm mb-1">Endereço/Cidade</label>
                         <input type="text" id="store-city" class="w-full form-input rounded-xl p-2 mb-4">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl">Salvar Loja</button>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl">Salvar Destino</button>
                     </form>
                 </div>
                 <div class="md:col-span-2 space-y-4" id="stores-list"></div>
@@ -415,14 +415,14 @@
         <div class="bg-dark-800 rounded-2xl shadow-2xl border border-emerald-500/30 p-6 max-w-lg w-full m-4">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-store text-emerald-500"></i> Importar Lojas
+                    <i class="fa-solid fa-store text-emerald-500"></i> Importar Destinos
                 </h2>
                 <button onclick="closeModal('modal-import-stores')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
             
             <div class="bg-dark-900 rounded-xl p-4 border border-dark-700 mb-6 text-center">
                 <i class="fa-solid fa-file-csv text-4xl text-gray-600 mb-2"></i>
-                <p class="text-gray-400 text-sm">Lojas encontradas na planilha:</p>
+                <p class="text-gray-400 text-sm">Destinos encontrados na planilha:</p>
                 <span class="block text-4xl font-bold text-white mt-2" id="import-stores-count">0</span>
             </div>
 
@@ -517,22 +517,22 @@
     <div id="modal-new-order" class="modal">
         <div class="bg-dark-800 rounded-2xl shadow-2xl border border-dark-600 p-6 max-w-4xl w-full m-4 h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-white">Novo Pedido de Expedição</h2>
+                <h2 class="text-2xl font-bold text-white">Nova Saída / Pedido</h2>
                 <button onclick="closeModal('modal-new-order')" class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
-                    <label class="block text-gray-400 text-sm mb-1">Loja Destino</label>
+                    <label class="block text-gray-400 text-sm mb-1">Destino (Loja/Setor)</label>
                     <select id="order-store-select" class="w-full form-input rounded-xl p-3"></select>
                 </div>
                 <div>
-                    <label class="block text-gray-400 text-sm mb-1">Data de Entrega</label>
+                    <label class="block text-gray-400 text-sm mb-1">Prazo / Urgência</label>
                     <input type="date" id="order-delivery-date" class="w-full form-input rounded-xl p-3">
                 </div>
                 <div>
                     <label class="block text-gray-400 text-sm mb-1">Ação</label>
-                    <button onclick="finalizeOrderCreation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg">Salvar Pedido</button>
+                    <button onclick="finalizeOrderCreation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg">Salvar Saída</button>
                 </div>
             </div>
 
@@ -559,7 +559,7 @@
                 <!-- Cart -->
                 <div class="md:w-2/3 bg-dark-900 rounded-xl border border-dark-700 flex flex-col">
                     <div class="p-3 border-b border-dark-700 bg-dark-800 rounded-t-xl flex justify-between">
-                        <span class="font-bold text-gray-300">Itens do Pedido</span>
+                        <span class="font-bold text-gray-300">Itens da Saída</span>
                         <span class="text-sm text-gray-500" id="order-cart-count">0 itens</span>
                     </div>
                     <div class="flex-1 overflow-y-auto p-2">
@@ -1144,7 +1144,7 @@
 
             await dbAction('orders', 'readwrite', s => s.add(order));
             closeModal('modal-new-order');
-            showNotification('Pedido Criado!');
+            showNotification('Saída Registrada!');
             loadData();
         };
 
@@ -1172,7 +1172,7 @@
             const pending = orders.filter(o => o.status === 'pending').sort((a,b) => new Date(a.deliveryDate || a.date) - new Date(b.deliveryDate || b.date));
             
             if(pending.length === 0) {
-                div.innerHTML = '<div class="text-center text-gray-500 py-10">Nenhum pedido pendente.</div>';
+                div.innerHTML = '<div class="text-center text-gray-500 py-10">Nenhuma saída pendente.</div>';
                 return;
             }
 
@@ -1197,7 +1197,7 @@
                     <div class="flex gap-3">
                          <button onclick="deleteOrder(${o.id})" class="px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-xl transition">Cancelar</button>
                         <button onclick="shipOrder(${o.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl shadow-lg font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-truck-ramp-box"></i> Expedir
+                            <i class="fa-solid fa-dolly"></i> Dar Saída
                         </button>
                     </div>
                 </div>`;
@@ -1209,7 +1209,7 @@
         }
 
         window.shipOrder = async (orderId) => {
-            if(!confirm('Confirmar expedição? O estoque será baixado.')) return;
+            if(!confirm('Confirmar saída? O estoque será baixado.')) return;
             try {
                 // Fetch fresh order
                 const order = await dbAction('orders', 'readonly', s => s.get(orderId));
@@ -1236,7 +1236,7 @@
                 order.shippedDate = new Date().toISOString();
                 await dbAction('orders', 'readwrite', s => s.put(order));
                 
-                showNotification('Expedido com sucesso!');
+                showNotification('Saída registrada com sucesso!');
                 loadData();
             } catch(e) {
                 console.error(e);
