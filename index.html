@@ -90,7 +90,7 @@
                         <div>
                             <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (24h)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-24h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">pedidos pendentes</p>
+                            <p class="text-sm text-gray-500 mt-1">entrega hoje/amanhã</p>
                         </div>
                         <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><i class="fa-solid fa-stopwatch fa-xl"></i></div>
                     </div>
@@ -99,9 +99,9 @@
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-blue-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (48h)</p>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Pedidos (48h+)</p>
                             <h3 class="text-4xl font-bold text-white mt-2" id="dash-vol-48h">0</h3>
-                            <p class="text-sm text-gray-500 mt-1">pedidos pendentes</p>
+                            <p class="text-sm text-gray-500 mt-1">entrega futura</p>
                         </div>
                         <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400"><i class="fa-solid fa-calendar-day fa-xl"></i></div>
                     </div>
@@ -130,7 +130,7 @@
                             <thead class="text-xs text-gray-500 uppercase bg-dark-900/50">
                                 <tr>
                                     <th class="px-4 py-3">Loja</th>
-                                    <th class="px-4 py-3 text-center">Prazo</th>
+                                    <th class="px-4 py-3 text-center">Data Entrega</th>
                                     <th class="px-4 py-3 text-right">Volume</th>
                                 </tr>
                             </thead>
@@ -527,17 +527,8 @@
                     <select id="order-store-select" class="w-full form-input rounded-xl p-3"></select>
                 </div>
                 <div>
-                    <label class="block text-gray-400 text-sm mb-1">Prazo de Expedição</label>
-                    <div class="flex bg-dark-900 rounded-xl p-1 border border-dark-700">
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="order-type" value="24h" class="peer hidden" checked>
-                            <span class="block py-2 rounded-lg text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white transition-all">24 Horas</span>
-                        </label>
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="order-type" value="48h" class="peer hidden">
-                            <span class="block py-2 rounded-lg text-gray-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all">48 Horas</span>
-                        </label>
-                    </div>
+                    <label class="block text-gray-400 text-sm mb-1">Data de Entrega</label>
+                    <input type="date" id="order-delivery-date" class="w-full form-input rounded-xl p-3">
                 </div>
                 <div>
                     <label class="block text-gray-400 text-sm mb-1">Ação</label>
@@ -876,6 +867,12 @@
             // Search for header row
             for(let i=0; i<rows.length; i++) {
                 const rowStr = rows[i].join(' ').toUpperCase();
+                // Check for keywords from the user's specific file format (Prioritize FANTASIA/CODIGO)
+                if(rowStr.includes('FANTASIA') || rowStr.includes('RAZÃO') || rowStr.includes('RAZAO') || rowStr.includes('CODIGO')) {
+                    headerIndex = i;
+                    break;
+                }
+                // Fallback for generic files
                 if(rowStr.includes('LOJA') || rowStr.includes('NOME') || rowStr.includes('CLIENTE')) {
                     headerIndex = i;
                     break;
@@ -883,12 +880,17 @@
             }
 
             if(headerIndex === -1) {
-                showNotification("Não foi possível identificar o cabeçalho (procure por 'Loja' ou 'Nome').", true);
+                showNotification("Cabeçalho não encontrado. Procure por colunas 'Fantasia', 'Código' ou 'Nome'.", true);
                 return;
             }
 
             const header = rows[headerIndex].map(h => String(h).toUpperCase());
-            const colName = header.findIndex(h => h.includes('NOME') || h.includes('LOJA') || h.includes('CLIENTE'));
+            
+            // Column Mapping Priorities
+            const colFantasia = header.findIndex(h => h.includes('FANTASIA'));
+            const colRazao = header.findIndex(h => h.includes('RAZÃO') || h.includes('RAZAO') || h.includes('SOCIAL'));
+            const colNameGeneric = header.findIndex(h => h.includes('NOME') || h.includes('LOJA') || h.includes('CLIENTE'));
+            
             const colCode = header.findIndex(h => h.includes('COD') || h.includes('CNPJ') || h.includes('ID'));
             const colCity = header.findIndex(h => h.includes('CIDADE') || h.includes('MUNIC') || h.includes('ENDERE'));
 
@@ -896,9 +898,22 @@
 
             for(let i = headerIndex + 1; i < rows.length; i++) {
                 const row = rows[i];
-                if(!row || !row[colName]) continue;
+                if(!row) continue;
 
-                const name = String(row[colName]).trim();
+                // Name Resolution: Fantasia > Generic Name > Razão Social
+                let name = '';
+                if (colFantasia !== -1 && row[colFantasia]) {
+                    name = String(row[colFantasia]).trim();
+                }
+                
+                // Fallbacks if Fantasia is missing
+                if (!name && colNameGeneric !== -1 && row[colNameGeneric]) {
+                    name = String(row[colNameGeneric]).trim();
+                }
+                if (!name && colRazao !== -1 && row[colRazao]) {
+                    name = String(row[colRazao]).trim();
+                }
+
                 const code = colCode !== -1 && row[colCode] ? String(row[colCode]).trim() : '';
                 const city = colCity !== -1 && row[colCity] ? String(row[colCity]).trim() : '';
 
@@ -1046,6 +1061,7 @@
         window.showNewOrderModal = () => {
             orderCart = [];
             renderOrderCart();
+            document.getElementById('order-delivery-date').valueAsDate = new Date(new Date().setDate(new Date().getDate() + 1)); // Default tomorrow
             document.getElementById('modal-new-order').style.display = 'flex';
         };
 
@@ -1109,9 +1125,10 @@
 
         window.finalizeOrderCreation = async () => {
             const storeId = document.getElementById('order-store-select').value;
-            const type = document.querySelector('input[name="order-type"]:checked').value;
+            const deliveryDate = document.getElementById('order-delivery-date').value;
             
             if(!storeId) return showNotification('Selecione a Loja', true);
+            if(!deliveryDate) return showNotification('Selecione Data Entrega', true);
             if(orderCart.length === 0) return showNotification('Carrinho vazio', true);
 
             const store = stores.find(s => s.id == storeId);
@@ -1119,9 +1136,9 @@
             const order = {
                 storeId: parseInt(storeId),
                 storeName: store.name,
-                type: type, // '24h' or '48h'
+                deliveryDate: deliveryDate,
                 status: 'pending',
-                date: new Date().toISOString(),
+                date: new Date().toISOString(), // Created At
                 items: orderCart
             };
 
@@ -1131,10 +1148,28 @@
             loadData();
         };
 
+        // --- DYNAMIC ORDER TYPE LOGIC ---
+        function getOrderType(order) {
+            if (!order.deliveryDate) return order.type || '24h'; // Fallback
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            // Parse delivery date (YYYY-MM-DD)
+            const parts = order.deliveryDate.split('-');
+            const delivery = new Date(parts[0], parts[1]-1, parts[2]); // Local Year, Month, Day
+            
+            const diffMs = delivery - today;
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= 1) return '24h'; // Today or Tomorrow
+            return '48h'; // 2+ Days
+        }
+
         // Manage Orders
         function updateOrdersList() {
             const div = document.getElementById('orders-container');
-            const pending = orders.filter(o => o.status === 'pending').sort((a,b) => new Date(a.date) - new Date(b.date));
+            const pending = orders.filter(o => o.status === 'pending').sort((a,b) => new Date(a.deliveryDate || a.date) - new Date(b.deliveryDate || b.date));
             
             if(pending.length === 0) {
                 div.innerHTML = '<div class="text-center text-gray-500 py-10">Nenhum pedido pendente.</div>';
@@ -1143,15 +1178,17 @@
 
             div.innerHTML = pending.map(o => {
                 const totalItems = o.items.reduce((a,b)=>a+b.qty,0);
-                const is24h = o.type === '24h';
-                const badgeColor = is24h ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                const type = getOrderType(o);
+                const badgeColor = type === '24h' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30';
                 
+                const displayDate = o.deliveryDate ? new Date(o.deliveryDate + 'T00:00:00').toLocaleDateString() : 'Sem Data';
+
                 return `
                 <div class="bg-dark-800 rounded-2xl shadow-lg border border-dark-700 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-2">
-                            <span class="border ${badgeColor} px-3 py-1 rounded-lg text-xs font-bold uppercase">${o.type}</span>
-                            <span class="text-gray-500 text-xs"><i class="fa-regular fa-clock"></i> ${new Date(o.date).toLocaleDateString()}</span>
+                            <span class="border ${badgeColor} px-3 py-1 rounded-lg text-xs font-bold uppercase">${type}</span>
+                            <span class="text-gray-500 text-xs"><i class="fa-regular fa-clock"></i> Entrega: ${displayDate}</span>
                         </div>
                         <h3 class="text-xl font-bold text-white">${o.storeName}</h3>
                         <p class="text-gray-400 text-sm mt-1">${totalItems} unidades em ${o.items.length} produtos</p>
@@ -1216,9 +1253,16 @@
                 const item = order.items.find(i => i.id === prodId);
                 if (item) {
                     totalDemand += item.qty;
-                    const orderDate = new Date(order.date);
-                    const hoursToAdd = order.type === '24h' ? 24 : 48;
-                    const deadline = new Date(orderDate.getTime() + hoursToAdd * 60 * 60 * 1000);
+                    let deadline;
+                    if (order.deliveryDate) {
+                        deadline = new Date(order.deliveryDate + 'T23:59:59');
+                    } else {
+                        // Fallback legacy
+                        const orderDate = new Date(order.date);
+                        const hoursToAdd = order.type === '24h' ? 24 : 48;
+                        deadline = new Date(orderDate.getTime() + hoursToAdd * 60 * 60 * 1000);
+                    }
+                    
                     if (!earliestDeadline || deadline < earliestDeadline) {
                         earliestDeadline = deadline;
                     }
@@ -1350,9 +1394,15 @@
         function updateDashboard() {
             const pendingOrders = orders.filter(o => o.status === 'pending');
             
-            // Pedidos Counts (Updated logic)
-            const count24 = pendingOrders.filter(o => o.type === '24h').length;
-            const count48 = pendingOrders.filter(o => o.type === '48h').length;
+            // Pedidos Counts (Dynamic)
+            let count24 = 0;
+            let count48 = 0;
+
+            pendingOrders.forEach(o => {
+                const type = getOrderType(o);
+                if (type === '24h') count24++;
+                else count48++;
+            });
             
             document.getElementById('dash-vol-24h').innerText = count24;
             document.getElementById('dash-vol-48h').innerText = count48;
@@ -1382,7 +1432,7 @@
             tOrders.innerHTML = pendingOrders.slice(0, 5).map(o => `
                 <tr class="border-b border-dark-700">
                     <td class="px-4 py-2 text-white">${o.storeName}</td>
-                    <td class="px-4 py-2 text-center"><span class="text-xs px-2 py-0.5 rounded ${o.type=='24h'?'bg-emerald-900 text-emerald-400':'bg-blue-900 text-blue-400'}">${o.type}</span></td>
+                    <td class="px-4 py-2 text-center"><span class="text-xs px-2 py-0.5 rounded ${getOrderType(o)=='24h'?'bg-emerald-900 text-emerald-400':'bg-blue-900 text-blue-400'}">${o.deliveryDate ? o.deliveryDate.split('-').reverse().join('/') : '-'}</span></td>
                     <td class="px-4 py-2 text-right text-gray-300 font-bold">${o.items.reduce((a,b)=>a+b.qty,0)}</td>
                 </tr>
             `).join('');
