@@ -36,6 +36,13 @@
         .searchable-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; max-height: 200px; overflow-y: auto; border: 1px solid #334155; background-color: #1e293b; border-radius: 0 0 0.375rem 0.375rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
         .searchable-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #334155; }
         .searchable-item:hover { background-color: #334155; }
+        /* Schedule Grid Styles */
+        .schedule-cell { min-width: 40px; height: 40px; text-align: center; border: 1px solid #334155; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 0.75rem; font-weight: bold; }
+        .schedule-cell:hover { filter: brightness(1.2); }
+        .status-f { background-color: #059669; color: white; } /* Folga - Verde */
+        .status-fe { background-color: #d97706; color: white; } /* Férias - Laranja */
+        .status-a { background-color: #dc2626; color: white; } /* Atestado - Vermelho */
+        .col-today { background-color: rgba(99, 102, 241, 0.1); border-left: 2px solid #6366f1; border-right: 2px solid #6366f1; }
     </style>
 </head>
 <body class="antialiased h-screen flex overflow-hidden">
@@ -55,6 +62,10 @@
             <a href="#" onclick="navigateTo('orders')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-clipboard-list w-6 text-center text-lg"></i>
                 <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Saídas</span>
+            </a>
+            <a href="#" onclick="navigateTo('schedules')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
+                <i class="fa-solid fa-calendar-days w-6 text-center text-lg"></i>
+                <span class="ml-4 whitespace-nowrap opacity-0 group-hover:opacity-100 sidebar-text font-medium">Escalas</span>
             </a>
             <a href="#" onclick="navigateTo('entry')" class="flex items-center p-3 rounded-xl hover:bg-slate-800 transition-all text-gray-400 hover:text-white group-hover:justify-start justify-center">
                 <i class="fa-solid fa-box-open w-6 text-center text-lg"></i>
@@ -84,7 +95,7 @@
             <p class="text-gray-400 mb-8 italic text-sm">"Não se gerencia o que não se mede."</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Card 24h (Pedidos) -->
+                <!-- Card 24h -->
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-emerald-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
@@ -95,7 +106,7 @@
                         <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><i class="fa-solid fa-stopwatch fa-xl"></i></div>
                     </div>
                 </div>
-                <!-- Card 48h (Pedidos) -->
+                <!-- Card 48h -->
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-blue-500 border-dark-700">
                     <div class="flex justify-between items-start">
                         <div>
@@ -106,7 +117,7 @@
                         <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400"><i class="fa-solid fa-calendar-day fa-xl"></i></div>
                     </div>
                 </div>
-                <!-- Card Ruptura (Interativo) -->
+                <!-- Card Ruptura -->
                 <div class="bg-dark-800 p-6 rounded-2xl shadow-lg border border-l-4 border-l-red-500 border-dark-700 cursor-pointer hover:bg-dark-700 transition-all transform hover:scale-[1.02]" onclick="openShortageModal()" title="Clique para ver detalhes">
                     <div class="flex justify-between items-start">
                         <div>
@@ -153,6 +164,42 @@
                             <tbody id="dash-table-shortage" class="divide-y divide-dark-700"></tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Escalas (New Screen) -->
+        <div id="screen-schedules" class="screen hidden animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h1 class="text-3xl font-bold text-white">Escalas de Trabalho</h1>
+                <div class="flex items-center gap-4 bg-dark-800 p-2 rounded-xl border border-dark-700">
+                    <button onclick="changeScheduleMonth(-1)" class="text-gray-400 hover:text-white px-3"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span id="schedule-month-label" class="text-lg font-bold text-white w-40 text-center uppercase">Janeiro 2026</span>
+                    <button onclick="changeScheduleMonth(1)" class="text-gray-400 hover:text-white px-3"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addEmployee()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> Add Colaborador
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl shadow-lg border border-dark-700 overflow-hidden flex flex-col">
+                <div class="flex p-4 gap-4 border-b border-dark-700 text-sm">
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 bg-emerald-600 rounded"></div> <span class="text-gray-300">Folga (F)</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 bg-amber-600 rounded"></div> <span class="text-gray-300">Férias (FE)</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-600 rounded"></div> <span class="text-gray-300">Atestado (A)</span></div>
+                    <div class="flex items-center gap-2"><div class="w-4 h-4 bg-dark-900 border border-dark-600 rounded"></div> <span class="text-gray-300">Trabalho</span></div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-300" style="min-width: max-content;">
+                        <thead class="text-xs text-gray-500 uppercase bg-dark-900" id="schedule-thead">
+                            <!-- Generated by JS -->
+                        </thead>
+                        <tbody id="schedule-tbody" class="divide-y divide-dark-700">
+                            <!-- Generated by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -581,12 +628,14 @@
     <script>
         // --- DB & STATE ---
         const DB_NAME = 'ExpedicaoLiteDB_3'; // Bumped version to ensure clean slate for new fields if needed
-        const DB_VERSION = 1;
+        const DB_VERSION = 2; // Bumped for new stores
         let db;
         let products = [], stores = [], orders = [], sectors = [];
+        let employees = [], schedules = [];
         let orderCart = [];
         let importPreviewData = { newItems: [], updatedItems: [], sector: '', batchesFound: [] };
         let importStoreData = [];
+        let currentScheduleDate = new Date();
 
         const initDB = () => new Promise((resolve, reject) => {
             const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -597,6 +646,9 @@
                 if(!db.objectStoreNames.contains('orders')) db.createObjectStore('orders', { keyPath: 'id', autoIncrement: true }); 
                 if(!db.objectStoreNames.contains('sectors')) db.createObjectStore('sectors', { keyPath: 'id', autoIncrement: true });
                 if(!db.objectStoreNames.contains('batches')) db.createObjectStore('batches', { keyPath: 'id', autoIncrement: true });
+                // New Stores for Schedules
+                if(!db.objectStoreNames.contains('employees')) db.createObjectStore('employees', { keyPath: 'id', autoIncrement: true });
+                if(!db.objectStoreNames.contains('schedules')) db.createObjectStore('schedules', { keyPath: 'id', autoIncrement: true });
             };
             req.onsuccess = (e) => { db = e.target.result; resolve(db); };
             req.onerror = () => reject('Erro DB');
@@ -614,13 +666,16 @@
             stores = await dbAction('stores', 'readonly', s => s.getAll());
             orders = await dbAction('orders', 'readonly', s => s.getAll());
             sectors = await dbAction('sectors', 'readonly', s => s.getAll());
+            employees = await dbAction('employees', 'readonly', s => s.getAll());
+            schedules = await dbAction('schedules', 'readonly', s => s.getAll());
             
             updateDashboard();
             updateOrdersList();
             updateInventoryTable();
             updateStoreList();
             updateSectorSelects();
-            renderSectorList(); // Now explicitly calling this
+            renderSectorList(); 
+            renderScheduleTable();
         }
 
         // --- UTILS ---
@@ -636,7 +691,118 @@
             document.querySelectorAll('.screen').forEach(e=>e.classList.add('hidden')); 
             document.getElementById('screen-'+s).classList.remove('hidden'); 
             if(s === 'inventory') updateInventoryTable();
+            if(s === 'schedules') renderScheduleTable();
             if(s === 'entry') document.getElementById('entry-date').valueAsDate = new Date();
+        };
+
+        // --- SCHEDULE LOGIC ---
+        function changeScheduleMonth(delta) {
+            currentScheduleDate.setMonth(currentScheduleDate.getMonth() + delta);
+            renderScheduleTable();
+        }
+
+        function getMonthName(date) {
+            return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+
+        function renderScheduleTable() {
+            document.getElementById('schedule-month-label').textContent = getMonthName(currentScheduleDate);
+            
+            const year = currentScheduleDate.getFullYear();
+            const month = currentScheduleDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            // Render Header
+            let theadHtml = `<tr><th class="p-3 text-left sticky left-0 bg-dark-900 border-r border-dark-700 z-10 w-40">Colaborador</th>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, month, d);
+                const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+                const dayName = date.toLocaleDateString('pt-BR', { weekday: 'narrow' }).toUpperCase();
+                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                const bgClass = isToday ? 'bg-indigo-900 text-white' : (isWeekend ? 'bg-dark-700 text-gray-400' : '');
+                
+                theadHtml += `<th class="schedule-cell ${bgClass} border-b border-dark-700" style="height:auto; padding: 4px;">
+                    <div class="text-[10px] opacity-70">${dayName}</div>
+                    <div>${d}</div>
+                </th>`;
+            }
+            theadHtml += '</tr>';
+            document.getElementById('schedule-thead').innerHTML = theadHtml;
+
+            // Render Body
+            let tbodyHtml = '';
+            employees.forEach(emp => {
+                tbodyHtml += `<tr><td class="p-3 font-medium text-white sticky left-0 bg-dark-800 border-r border-dark-700 z-10 truncate max-w-[150px]" title="${emp.name}">
+                    ${emp.name} 
+                    <button onclick="removeEmployee(${emp.id})" class="text-xs text-red-900 hover:text-red-500 ml-1"><i class="fa-solid fa-times"></i></button>
+                </td>`;
+                
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const schedule = schedules.find(s => s.empId === emp.id && s.date === dateStr);
+                    const status = schedule ? schedule.status : '';
+                    
+                    let cellClass = '';
+                    let cellText = '';
+                    
+                    if (status === 'F') { cellClass = 'status-f'; cellText = 'F'; }
+                    else if (status === 'FE') { cellClass = 'status-fe'; cellText = 'FE'; }
+                    else if (status === 'A') { cellClass = 'status-a'; cellText = 'A'; }
+                    
+                    const dateObj = new Date(year, month, d);
+                    const isToday = dateObj.getDate() === today.getDate() && dateObj.getMonth() === today.getMonth() && dateObj.getFullYear() === today.getFullYear();
+                    const extraClass = isToday ? 'col-today' : '';
+
+                    tbodyHtml += `<td class="schedule-cell ${cellClass} ${extraClass}" onclick="toggleScheduleStatus(${emp.id}, '${dateStr}')">${cellText}</td>`;
+                }
+                tbodyHtml += '</tr>';
+            });
+            document.getElementById('schedule-tbody').innerHTML = tbodyHtml;
+        }
+
+        window.addEmployee = async () => {
+            const name = prompt("Nome do Colaborador:");
+            if (name) {
+                await dbAction('employees', 'readwrite', s => s.add({ name }));
+                loadData();
+            }
+        };
+
+        window.removeEmployee = async (id) => {
+            if(confirm("Remover colaborador? Isso não apaga o histórico de escalas.")) {
+                await dbAction('employees', 'readwrite', s => s.delete(id));
+                loadData();
+            }
+        };
+
+        window.toggleScheduleStatus = async (empId, dateStr) => {
+            // Cycle: Empty -> F -> FE -> A -> Empty
+            const existing = schedules.find(s => s.empId === empId && s.date === dateStr);
+            let nextStatus = 'F';
+            
+            if (existing) {
+                if (existing.status === 'F') nextStatus = 'FE';
+                else if (existing.status === 'FE') nextStatus = 'A';
+                else if (existing.status === 'A') nextStatus = null; // Clear
+            }
+
+            if (nextStatus) {
+                if (existing) {
+                    existing.status = nextStatus;
+                    await dbAction('schedules', 'readwrite', s => s.put(existing));
+                } else {
+                    await dbAction('schedules', 'readwrite', s => s.add({ empId, date: dateStr, status: nextStatus }));
+                }
+            } else {
+                if (existing) await dbAction('schedules', 'readwrite', s => s.delete(existing.id));
+            }
+            
+            // Optimistic update or reload
+            // Reload for simplicity to sync arrays
+            const freshSchedules = await dbAction('schedules', 'readonly', s => s.getAll());
+            schedules = freshSchedules;
+            renderScheduleTable();
         };
 
         // --- IMPORT LOGIC (INVENTORY) ---
