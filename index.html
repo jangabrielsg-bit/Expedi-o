@@ -178,6 +178,9 @@
                     <button onclick="changeScheduleMonth(1)" class="text-gray-400 hover:text-white px-3"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
                 <div class="flex gap-2">
+                    <button onclick="exportSchedule()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-file-excel"></i> Exportar Escala
+                    </button>
                     <button onclick="addEmployee()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> Add Colaborador
                     </button>
@@ -774,6 +777,43 @@
                 await dbAction('employees', 'readwrite', s => s.delete(id));
                 loadData();
             }
+        };
+
+        window.exportSchedule = () => {
+            const year = currentScheduleDate.getFullYear();
+            const month = currentScheduleDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const monthName = getMonthName(currentScheduleDate);
+
+            // Build Header
+            const header = ["Colaborador"];
+            for (let d = 1; d <= daysInMonth; d++) {
+                header.push(`${d}`);
+            }
+
+            // Build Rows
+            const data = [header];
+            employees.forEach(emp => {
+                const row = [emp.name];
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const schedule = schedules.find(s => s.empId === emp.id && s.date === dateStr);
+                    row.push(schedule ? schedule.status : ''); // 'F', 'FE', 'A' or empty
+                }
+                data.push(row);
+            });
+
+            // Export to Excel
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, `Escala ${monthName}`);
+            
+            // Adjust column widths slightly for better view
+            const wscols = [{wch: 20}]; // First column width
+            for(let i=1; i<=daysInMonth; i++) wscols.push({wch: 4});
+            ws['!cols'] = wscols;
+
+            XLSX.writeFile(wb, `Escala_${monthName}_${year}.xlsx`);
         };
 
         window.toggleScheduleStatus = async (empId, dateStr) => {
