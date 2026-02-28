@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR" class="dark" style="color-scheme: dark;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,12 +98,12 @@
 </head>
 <body class="bg-ios-bg text-ios-text font-sans antialiased flex h-screen overflow-hidden w-full relative">
 
-    <div id="loading-overlay" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-black bg-opacity-80 backdrop-blur-md transition-opacity">
+    <div id="loading-overlay" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-black bg-opacity-80 backdrop-blur-md transition-opacity">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-ios-cardHover border-t-ios-blue mb-4"></div>
         <p class="text-ios-textMuted font-medium" id="loading-text">Processando...</p>
     </div>
 
-    <div id="notification-modal" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[2000] hidden py-3 px-6 rounded-full shadow-2xl font-semibold text-white transition-all text-sm backdrop-blur-md text-center max-w-sm"></div>
+    <div id="notification-modal" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[999999] hidden py-3 px-6 rounded-full shadow-2xl font-semibold text-white transition-all text-sm backdrop-blur-md text-center max-w-sm"></div>
 
     <!-- Tela de Login -->
     <div id="login-wrapper" class="absolute inset-0 z-[999] flex flex-col items-center justify-center bg-ios-bg text-center px-4 hidden">
@@ -413,7 +413,7 @@
                             <option value="semi_acabado">Semi-acabados</option>
                         </select>
                         <select id="supplier-filter" class="form-input w-auto"><option value="">Fornecedores</option></select>
-                        <button type="button" id="btn-export-excel" class="btn-secondary ml-auto"><i class="fa-solid fa-arrow-up-from-bracket mr-2"></i>Exportar</button>
+                        <button type="button" id="btn-export-excel" class="btn-secondary ml-auto"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar Excel</button>
                     </div>
                     <div class="table-container">
                         <table class="base-table">
@@ -438,7 +438,7 @@
                     <h1 class="title-lg mb-0">Fichas Técnicas / Receitas</h1>
                     <div class="flex gap-3">
                         <input type="text" id="search-recipe" placeholder="Buscar receita..." class="form-input w-64">
-                        <button type="button" id="btn-export-recipe-book" class="btn-secondary"><i class="fa-solid fa-file-pdf mr-2"></i>Livro PDF</button>
+                        <button type="button" id="btn-export-recipe-book" class="btn-secondary"><i class="fa-solid fa-file-pdf mr-2 text-ios-red"></i>Livro PDF</button>
                         <button type="button" id="btn-new-recipe" class="btn-primary"><i class="fa-solid fa-plus mr-2"></i>Criar Receita</button>
                     </div>
                 </div>
@@ -978,7 +978,7 @@
         const el = id('notification-modal');
         if(!el) return;
         el.innerHTML = isError ? `<i class="fa-solid fa-triangle-exclamation mr-2"></i> ${msg}` : `<i class="fa-solid fa-check mr-2"></i> ${msg}`;
-        el.className = `fixed top-6 left-1/2 transform -translate-x-1/2 z-[2000] py-3 px-6 rounded-full shadow-2xl font-semibold text-white transition-all text-sm backdrop-blur-md ${isError ? 'bg-ios-red/90' : 'bg-ios-green/90'}`;
+        el.className = `fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999999] py-3 px-6 rounded-full shadow-2xl font-semibold text-white transition-all text-sm backdrop-blur-md ${isError ? 'bg-ios-red/90' : 'bg-ios-green/90'}`;
         show(el);
         setTimeout(() => hide(el), 4000);
     };
@@ -1047,9 +1047,9 @@
             },
             clear: async (coll) => {
                 const qs = await getDocs(collection(db, coll));
-                const batch = writeBatch(db);
-                qs.docs.forEach(d => batch.delete(d.ref));
-                await batch.commit();
+                for (const d of qs.docs) {
+                    await deleteDoc(d.ref); // Sequential fix for Firebase 500 limit rule
+                }
             }
         };
     })();
@@ -1065,13 +1065,13 @@
         show(id('scanner-modal'));
         if(inputFallback) inputFallback.focus();
         
-        // Timeout garante que o modal foi renderizado e tem dimensões antes de instanciar a câmera
         setTimeout(() => {
+            if(id('scanner-modal').classList.contains('hidden')) return; // Safety check
             if(html5QrCode && html5QrCode.isScanning) return;
             
             html5QrCode = new Html5Qrcode("reader");
             html5QrCode.start(
-                { facingMode: "environment" }, // Removida restrição pesada de resolução para compatibilidade
+                { facingMode: "environment" }, 
                 { 
                     fps: 10,
                     qrbox: function(viewfinderWidth, viewfinderHeight) {
@@ -1195,7 +1195,6 @@
         if(target==='consulta') { id('consulta-input').value = ''; id('consulta-results').innerHTML = '<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>'; id('consulta-input').focus(); }
         if(target==='entry') { 
             createSearchableSelect(id('entry-searchable-container'), localInventory, 'Pesquisar insumo...', p => {
-                // Ao escolher, focar na quantidade
                 document.querySelector('#entry-form input[name="quantity"]').focus();
             }); 
             renderBulkEntry(); 
@@ -1521,6 +1520,24 @@
     }
     
     addEvt('inventory-table-body', 'click', e => { const row = e.target.closest('tr'); if(row && row.dataset.id) openDetails(row.dataset.id); });
+
+    // Nova funcionalidade: Exportar Estoque Excel
+    addEvt('btn-export-excel', 'click', () => {
+        if(!localInventory.length) return window.showNotif('Nenhum item no estoque para exportar.', true);
+        const data = localInventory.map(i => ({
+            'Produto': i.name,
+            'Tipo': typeLabels[i.type] || i.type,
+            'Cód Interno': i.code || '-',
+            'Fornecedor': i.supplier || '-',
+            'Saldo Físico Atual': i.totalQuantity || 0,
+            'Estoque Mínimo': i.minStock || 0
+        }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Estoque");
+        XLSX.writeFile(wb, `Estoque_${new Date().toISOString().split('T')[0]}.xlsx`);
+        window.showNotif('Estoque exportado para Excel com sucesso!');
+    });
 
     addEvt('hist-filter-start', 'change', renderItemDetailsHistory); 
     addEvt('hist-filter-end', 'change', renderItemDetailsHistory); 
@@ -2173,6 +2190,47 @@
         if(prefillId) { const ingProd = localInventory.find(p => p.id === prefillId); if(ingProd) { const inp = div.querySelector('.searchable-container input'); if(inp) { inp.value = ingProd.name; inp.dataset.selectedId = ingProd.id; updatePlan(); } } }
     }
     
+    // Funcionalidade do Botão de Adicionar Insumo nas Requisições (Avulsas)
+    addEvt('add-requisition-item-btn', 'click', () => { 
+        const c = id('requisition-items-container'); 
+        if(c) addIngRowReq(c); 
+    });
+
+    // Nova funcionalidade: Exportar Livro de Fichas (PDF)
+    addEvt('btn-export-recipe-book', 'click', () => {
+        if(!localRecipes.length) return window.showNotif('Nenhuma receita cadastrada para exportar.', true);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Livro de Fichas Técnicas', 14, 20);
+        let y = 30;
+        
+        localRecipes.forEach((r, idx) => {
+            if(y > 260) { doc.addPage(); y = 20; }
+            doc.setFontSize(14); doc.setTextColor(10, 132, 255);
+            doc.text(`${idx+1}. ${r.name} (${r.category})`, 14, y); y += 8;
+            doc.setFontSize(10); doc.setTextColor(50, 50, 50);
+            if(r.isSemi) { doc.text(`Rendimento Padrão: ${r.outputYield}`, 14, y); y += 6; }
+            
+            const ings = (r.ingredients||[]).map(i => {
+                const p = localInventory.find(x=>x.id===i.productId);
+                return [p?p.name:'Desconhecido', i.quantity];
+            });
+            
+            doc.autoTable({ 
+                startY: y, 
+                head: [['Insumo', 'Quantidade']], 
+                body: ings, 
+                margin: { left: 14 }, 
+                theme: 'grid',
+                headStyles: { fillColor: [10, 132, 255] }
+            });
+            y = doc.lastAutoTable.finalY + 15;
+        });
+        doc.save(`Livro_Receitas_${new Date().toISOString().split('T')[0]}.pdf`);
+        window.showNotif('Livro PDF exportado com sucesso!');
+    });
+
     addEvt('search-recipe', 'input', renderRecipes);
     function renderRecipes() {
         const grid = id('recipes-grid'); if(!grid) return;
@@ -2764,7 +2822,7 @@
                             }
                         }
                     }
-                    op.status = 'concluído'; await DB.update('productionOrders', op);
+                    op.status = 'concluido'; await DB.update('productionOrders', op);
                 }
                 window.showNotif('Sucesso! Movimentações registradas baseadas nas quantidades reais.'); 
             } catch(e) { window.showNotif(e.message || 'Erro crítico', true); } finally { hide(id('loading-overlay')); await refreshData(); }
