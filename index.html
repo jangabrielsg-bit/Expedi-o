@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Meta tags essenciais para PWA (Progressive Web App) -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Estoque OS">
+    <meta name="application-name" content="Estoque OS">
+    <meta name="mobile-web-app-capable" content="yes">
+    
     <title>Controle de Estoque e Produção</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,6 +93,12 @@
         .toggle-status:checked::after { transform: translateX(20px); }
         
         #reader video { border-radius: 0.75rem; object-fit: cover; }
+        
+        /* Ocultar barra de navegação inferior se a app estiver em modo Standalone (PWA Ativo) e em telemóveis super pequenos, otimização visual */
+        @media all and (display-mode: standalone) {
+            body { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+            #mobile-nav { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+        }
     </style>
 </head>
 <body class="bg-ios-bg text-ios-text font-sans antialiased flex h-screen overflow-hidden w-full relative">
@@ -536,6 +551,24 @@
                         <p class="text-sm text-ios-textMuted mb-6">Atenção! Esta ação apaga irreversivelmente TODOS os produtos, lotes e histórico do Firebase.</p>
                         <button type="button" id="btn-clear-db" class="btn-danger w-full"><i class="fa-solid fa-skull-crossbones mr-2"></i>Formatar Tudo</button>
                     </div>
+                    
+                    <!-- PWA Instalação Mobile/Desktop Chrome -->
+                    <div class="card border-ios-green border hidden md:col-span-2" id="pwa-install-card">
+                        <h2 class="title-md text-ios-green"><i class="fa-solid fa-download mr-2"></i>Instalar Aplicação (Recomendado)</h2>
+                        <p class="text-sm text-ios-textMuted mb-6">Instale o Estoque OS no seu dispositivo para acesso rápido, ecrã inteiro e modo app nativo.</p>
+                        <button type="button" id="btn-install-pwa" class="btn-success w-full md:w-auto md:px-10"><i class="fa-solid fa-mobile-screen mr-2"></i>Instalar Agora</button>
+                    </div>
+
+                    <!-- Instrução PWA para iOS (Safari) -->
+                    <div class="card border-ios-blue border hidden md:col-span-2" id="ios-pwa-hint">
+                        <h2 class="title-md text-ios-blue"><i class="fa-brands fa-apple mr-2"></i>Instalar no iOS (iPhone/iPad)</h2>
+                        <p class="text-sm text-ios-textMuted mb-2">Para transformar este sistema numa app nativa no seu ecrã principal:</p>
+                        <ol class="text-sm text-white list-decimal list-inside space-y-2 mt-4 bg-ios-bg p-4 rounded-xl border border-ios-border">
+                            <li>Toque no ícone de <strong>Partilhar</strong> <i class="fa-solid fa-arrow-up-from-bracket mx-1 text-ios-blue"></i> no fundo do ecrã do Safari.</li>
+                            <li>Deslize para baixo e selecione <strong>"Ecrã Principal"</strong> (Add to Home Screen).</li>
+                            <li>Toque em <strong>Adicionar</strong> no canto superior direito.</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
 
@@ -791,7 +824,7 @@
         </div>
     </div>
 
-    <!-- Modal Picking (Separação Agrupada - Sem Cronômetro) -->
+    <!-- Modal Picking (Separação Agrupada) -->
     <div id="picking-modal" class="modal z-[6000]">
         <div class="modal-content max-w-5xl h-[95vh] w-[95%] sm:w-full overflow-hidden flex flex-col p-0 bg-ios-bg border border-ios-border">
             <div class="flex justify-between items-start shrink-0 p-4 sm:p-6 border-b border-ios-border bg-ios-cardHover">
@@ -983,7 +1016,94 @@
         </div>
     </div>
     
+    <!-- Modal Cadastro Rápido Global -->
+    <div id="quick-register-modal" class="modal z-[8000]">
+        <div class="modal-content max-w-lg w-[95%]">
+            <h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Novo Produto</h2>
+            <p class="text-sm text-ios-textMuted mb-4">O item não foi encontrado. Preencha os dados abaixo para adicioná-lo imediatamente ao sistema.</p>
+            <form id="global-quick-register-form" class="space-y-4">
+                <input type="hidden" id="g-quick-reg-code">
+                <div><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input" placeholder="Ex: Rótulo Impresso"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Classificação</label>
+                        <select id="g-quick-reg-type" required class="form-input">
+                            <option value="insumo">Insumo</option>
+                            <option value="semi_acabado">Semi-acabado</option>
+                        </select>
+                    </div>
+                    <div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" placeholder="Opcional"></div>
+                    <div><label class="form-label">Prazo Entrega (Dias)</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div>
+                    <div><label class="form-label">Estoque Mín. (Alerta)</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div>
+                </div>
+                <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-4 border-t border-ios-border mt-2">
+                    <button type="button" class="btn-secondary close-modal w-full sm:w-auto" data-target="quick-register-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary w-full sm:w-auto"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 <script type="module">
+    // --- PWA SETUP DINÂMICO (Para transformar HTML puro em PWA) ---
+    const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%230a84ff"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+    const manifest = {
+        name: "Estoque OS",
+        short_name: "Estoque",
+        start_url: location.href,
+        display: "standalone",
+        background_color: "#000000",
+        theme_color: "#0a84ff",
+        icons: [{ src: "data:image/svg+xml;charset=utf-8," + iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const manifestUrl = URL.createObjectURL(manifestBlob);
+    document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestUrl}">`);
+
+    const swCode = `
+        self.addEventListener('install', e => self.skipWaiting());
+        self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+        self.addEventListener('fetch', e => {
+            if (e.request.url.startsWith('http')) {
+                e.respondWith(fetch(e.request).catch(() => new Response('Offline - Verifique a conexão')));
+            }
+        });
+    `;
+    const swBlob = new Blob([swCode], {type: 'application/javascript'});
+    const swUrl = URL.createObjectURL(swBlob);
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW em modo Blob pode não ser aceite nalguns navegadores', err));
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installCard = document.getElementById('pwa-install-card');
+        if(installCard) installCard.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') { document.getElementById('pwa-install-card').classList.add('hidden'); }
+            deferredPrompt = null;
+        }
+    });
+
+    // iOS Safari Detection para mostrar dica de instalação
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    };
+    const isInStandaloneMode = () => ('standalone' in window.navigator) && window.navigator.standalone;
+    if (isIos() && !isInStandaloneMode()) {
+        const iosHint = document.getElementById('ios-pwa-hint');
+        if(iosHint) iosHint.classList.remove('hidden');
+    }
+    // --- FIM PWA SETUP ---
+
     const id = n => document.getElementById(n);
     const show = el => { if(el) { el.style.display = 'flex'; el.classList.remove('hidden'); } };
     const hide = el => { if(el) { el.style.display = 'none'; el.classList.add('hidden'); } };
@@ -1170,6 +1290,7 @@
     let activePickingOpIds = [];
     let pickingScanProductId = null;
     let bulkEntryItems = [];
+    let quickRegisterCallback = null;
 
     const typeLabels = { insumo: 'Insumo', semi_acabado: 'Semi-acabado' };
 
@@ -1221,6 +1342,30 @@
         }
     }
 
+    window.openQuickRegisterModal = function(initialTerm, callback) {
+        quickRegisterCallback = callback;
+        const form = id('global-quick-register-form'); if(form) form.reset();
+        const isEAN = /^\d{8,14}$/.test(initialTerm);
+        if(id('g-quick-reg-code')) id('g-quick-reg-code').value = isEAN ? initialTerm : '';
+        if(id('g-quick-reg-name')) id('g-quick-reg-name').value = isEAN ? '' : initialTerm;
+        show(id('quick-register-modal'));
+        setTimeout(() => id('g-quick-reg-name')?.focus(), 100);
+    }
+
+    addEvt('global-quick-register-form', 'submit', async (e) => {
+        e.preventDefault();
+        const code = id('g-quick-reg-code').value; const name = id('g-quick-reg-name').value.trim(); const type = id('g-quick-reg-type').value;
+        const supplier = id('g-quick-reg-supplier').value.trim() || 'Diversos'; const leadTime = parseInt(id('g-quick-reg-lead').value) || 0; const minStock = parseFloat(id('g-quick-reg-min').value) || 0;
+        show(id('loading-overlay'));
+        try {
+            const isEAN = /^\d{8,14}$/.test(code);
+            const newProduct = { name, type, supplier, leadTime, minStock, totalQuantity: 0, code: isEAN ? '' : code, barcodes: isEAN && code ? [code] : [] };
+            const newId = await DB.add('inventory', newProduct); newProduct.id = newId;
+            window.showNotif('Produto cadastrado e selecionado!'); await refreshData(); hide(id('quick-register-modal'));
+            if(quickRegisterCallback) { quickRegisterCallback(newProduct); quickRegisterCallback = null; }
+        } catch(err) { window.showNotif('Erro ao cadastrar.', true); } finally { hide(id('loading-overlay')); }
+    });
+
     function createSearchableSelect(container, items, placeholder, onSelect) {
         if(!container) return;
         container.innerHTML = `<div class="searchable-container"><input type="text" class="form-input bg-ios-input text-white border-ios-border w-full text-sm sm:text-base" placeholder="${placeholder}" autocomplete="off"><div class="searchable-dropdown hidden"></div></div>`;
@@ -1238,10 +1383,22 @@
                 ); 
             }
             if(filtered.length) { dropdown.innerHTML = filtered.map(i => `<div class="searchable-item flex justify-between items-center text-sm" data-id="${i.id}"><span class="font-medium truncate pr-2">${i.searchName || i.name}</span>${i.type ? `<span class="text-[10px] text-ios-textMuted bg-black/30 px-2 py-1 rounded shrink-0">${typeLabels[i.type]||''}</span>` : ''}</div>`).join(''); dropdown.classList.remove('hidden'); } 
-            else { dropdown.innerHTML = `<div class="p-3 text-ios-textMuted text-xs">Sem resultados...</div>`; dropdown.classList.remove('hidden'); }
+            else { dropdown.innerHTML = `<div class="p-3 text-ios-textMuted text-xs flex flex-col gap-2 border-t border-ios-border">Nenhum resultado...<button type="button" class="btn-primary py-2 px-3 text-xs w-full btn-inline-quick-add" data-term="${searchTerm}"><i class="fa-solid fa-plus mr-1"></i>Cadastrar "${searchTerm}"</button></div>`; dropdown.classList.remove('hidden'); }
         };
         input.addEventListener('focus', () => renderList(input.value)); input.addEventListener('input', () => renderList(input.value));
-        dropdown.addEventListener('click', e => { const row = e.target.closest('.searchable-item'); if(row) { const item = items.find(i => i.id == row.dataset.id); input.value = item.searchName || item.name; input.dataset.selectedId = item.id; dropdown.classList.add('hidden'); if(onSelect) onSelect(item); } });
+        dropdown.addEventListener('click', e => { 
+            const row = e.target.closest('.searchable-item'); 
+            if(row) { const item = items.find(i => i.id == row.dataset.id); input.value = item.searchName || item.name; input.dataset.selectedId = item.id; dropdown.classList.add('hidden'); if(onSelect) onSelect(item); } 
+            const quickAddBtn = e.target.closest('.btn-inline-quick-add');
+            if(quickAddBtn) {
+                e.preventDefault(); dropdown.classList.add('hidden');
+                if(window.openQuickRegisterModal) {
+                    window.openQuickRegisterModal(quickAddBtn.dataset.term, (newProd) => {
+                        input.value = newProd.name; input.dataset.selectedId = newProd.id; if(onSelect) onSelect(newProd);
+                    });
+                }
+            }
+        });
         document.addEventListener('click', e => { if(!container.contains(e.target)) dropdown.classList.add('hidden'); });
     }
 
@@ -1459,79 +1616,14 @@
 
         if(!foundAny) {
             resEl.innerHTML = `
-            <div class="card border border-ios-orange/50 bg-ios-orange/5 mb-4 text-center py-6">
-                <i class="fa-solid fa-box-open text-4xl sm:text-5xl text-ios-orange mb-3"></i>
-                <h2 class="title-md text-ios-orange mb-1 text-base sm:text-lg">Código Novo Detectado!</h2>
-                <p class="text-xs sm:text-sm text-ios-textMuted max-w-md mx-auto mb-4">O código <strong>"${q}"</strong> não existe no sistema. Deseja cadastrá-lo como um novo produto agora?</p>
-            </div>
-            <div class="card border-l-4 border-l-ios-orange">
-                <h3 class="title-md text-white mb-4 text-sm sm:text-base"><i class="fa-solid fa-plus-circle mr-2"></i>Cadastro Rápido de Produto</h3>
-                <form id="quick-register-form" class="space-y-4">
-                    <input type="hidden" id="quick-reg-code" value="${q}">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="md:col-span-2">
-                            <label class="form-label">Nome do Produto</label>
-                            <input type="text" id="quick-reg-name" required class="form-input" placeholder="Ex: Farinha de Trigo Especial">
-                        </div>
-                        <div>
-                            <label class="form-label">Classificação</label>
-                            <select id="quick-reg-type" required class="form-input">
-                                <option value="insumo">Insumo (Matéria-prima)</option>
-                                <option value="semi_acabado">Semi-acabado (Produção Interna)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label">Fornecedor</label>
-                            <input type="text" id="quick-reg-supplier" required class="form-input" placeholder="Nome do fornecedor">
-                        </div>
-                        <div>
-                            <label class="form-label">Prazo de Entrega (Dias Úteis)</label>
-                            <input type="number" id="quick-reg-lead" required min="0" class="form-input" value="0">
-                        </div>
-                        <div>
-                            <label class="form-label">Estoque Mínimo (Alerta)</label>
-                            <input type="number" step="0.01" id="quick-reg-min" required min="0" class="form-input" value="0">
-                        </div>
-                    </div>
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="btn-primary w-full sm:w-auto"><i class="fa-solid fa-save mr-2"></i>Salvar no Banco de Dados</button>
-                    </div>
-                </form>
+            <div class="card border border-ios-orange/50 bg-ios-orange/5 mb-4 text-center py-8">
+                <i class="fa-solid fa-box-open text-5xl text-ios-orange mb-4"></i>
+                <h2 class="title-md text-ios-orange mb-2 text-lg">Código Não Identificado</h2>
+                <p class="text-sm text-ios-textMuted max-w-md mx-auto mb-6">O código <strong>"${q}"</strong> não existe no sistema. Deseja cadastrá-lo como um novo produto agora?</p>
+                <button type="button" class="btn-primary mx-auto px-8" onclick="window.openQuickRegisterModal('${q}', () => { document.getElementById('consulta-input').value = '${q}'; document.getElementById('btn-consulta-search').click(); })"><i class="fa-solid fa-plus-circle mr-2"></i>Cadastrar Produto</button>
             </div>`;
         }
     }
-
-    document.addEventListener('submit', async e => {
-        if(e.target.id === 'quick-register-form') {
-            e.preventDefault();
-            const code = id('quick-reg-code').value;
-            const name = id('quick-reg-name').value.trim();
-            const type = id('quick-reg-type').value;
-            const supplier = id('quick-reg-supplier').value.trim();
-            const leadTime = parseInt(id('quick-reg-lead').value) || 0;
-            const minStock = parseFloat(id('quick-reg-min').value) || 0;
-
-            show(id('loading-overlay'));
-            try {
-                // Se for composto apenas por números (8 a 14 digitos), trata como Código de Barras (EAN)
-                const isEAN = /^\d{8,14}$/.test(code);
-                const newProduct = {
-                    name, type, supplier, leadTime, minStock, totalQuantity: 0,
-                    code: isEAN ? '' : code,
-                    barcodes: isEAN ? [code] : []
-                };
-
-                await DB.add('inventory', newProduct);
-                window.showNotif('Produto cadastrado com sucesso!');
-                await refreshData();
-                searchUniversal(code); // Pesquisa de novo para mostrar a tela normal do produto acabado de criar!
-            } catch(err) {
-                window.showNotif('Erro ao cadastrar produto.', true);
-            } finally {
-                hide(id('loading-overlay'));
-            }
-        }
-    });
 
     addEvt('btn-consulta-search', 'click', () => { searchUniversal(id('consulta-input').value); });
     addEvt('btn-consulta-scan', 'click', () => { openScanner(code => { id('consulta-input').value = code; searchUniversal(code); }); });
@@ -1674,7 +1766,23 @@
     addEvt('btn-scan-entry-code', 'click', () => { 
         openScanner(c => { 
             const inp = document.querySelector('#entry-searchable-container input'); 
-            if(inp){ inp.value=c; inp.dispatchEvent(new Event('input')); } 
+            if(inp){ 
+                inp.value=c; 
+                const found = localInventory.find(i => (i.code && i.code.toLowerCase() === c.toLowerCase()) || (i.barcodes && i.barcodes.includes(c)));
+                if(found) {
+                    inp.dataset.selectedId = found.id; inp.value = found.name;
+                    document.querySelector('#entry-form input[name="quantity"]').focus();
+                } else {
+                    showConfirmationModal('Código Desconhecido', `O código ${c} não existe no estoque. Deseja cadastrar agora?`, () => {
+                        if(window.openQuickRegisterModal) {
+                            window.openQuickRegisterModal(c, (newProd) => {
+                                inp.dataset.selectedId = newProd.id; inp.value = newProd.name;
+                                document.querySelector('#entry-form input[name="quantity"]').focus();
+                            });
+                        }
+                    });
+                }
+            } 
         }); 
     });
 
@@ -1682,9 +1790,24 @@
         e.preventDefault();
         const searchInput = document.querySelector('#entry-searchable-container input');
         const pId = searchInput ? searchInput.dataset.selectedId : null;
-        if(!pId) return window.showNotif('Selecione um produto primeiro.', true);
-        
+        const term = searchInput ? searchInput.value.trim() : '';
         const qty = parseFloat(document.querySelector('#entry-form input[name="quantity"]').value);
+        
+        if(!pId) {
+            if(term) {
+                showConfirmationModal('Produto Não Encontrado', `O item "${term}" não está selecionado ou não existe. Deseja cadastrá-lo como um novo produto agora?`, () => {
+                    if(window.openQuickRegisterModal) {
+                        window.openQuickRegisterModal(term, (newProd) => {
+                            bulkEntryItems.push({ productId: newProd.id, qty: qty, batchCode: 'LT-' + new Date().getTime().toString(36).toUpperCase().substring(4) + Math.floor(Math.random()*100), expiryDate: '', locationCode: '' });
+                            e.target.reset(); searchInput.value = ''; delete searchInput.dataset.selectedId; renderBulkEntry();
+                        });
+                    }
+                });
+                return;
+            }
+            return window.showNotif('Selecione um produto primeiro.', true);
+        }
+        
         if(!qty || qty <= 0) return window.showNotif('Quantidade inválida.', true);
 
         const item = localInventory.find(i=>i.id===pId);
