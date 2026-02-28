@@ -1065,35 +1065,38 @@
         show(id('scanner-modal'));
         if(inputFallback) inputFallback.focus();
         
-        html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
-            // Tenta forçar as resoluções da câmera traseira mais altas possíveis
-            { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } },
-            { 
-                fps: 15, // FPS ligeiramente mais alto
-                // Função dinâmica para criar um retângulo perfeito pro celular/desktop
-                qrbox: (viewfinderWidth, viewfinderHeight) => {
-                    return {
-                        width: Math.min(viewfinderWidth * 0.85, 600),
-                        height: Math.min(viewfinderHeight * 0.4, 250) // Proporção mais horizontal
-                    };
+        // Timeout garante que o modal foi renderizado e tem dimensões antes de instanciar a câmera
+        setTimeout(() => {
+            if(html5QrCode && html5QrCode.isScanning) return;
+            
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" }, // Removida restrição pesada de resolução para compatibilidade
+                { 
+                    fps: 10,
+                    qrbox: function(viewfinderWidth, viewfinderHeight) {
+                        return {
+                            width: Math.min(viewfinderWidth * 0.9, 600),
+                            height: Math.min(viewfinderHeight * 0.5, 250)
+                        };
+                    }
                 },
-                aspectRatio: 1.777778 // 16:9 
-            },
-            (decodedText) => {
-                closeScanner();
-                if(scannerCallback) scannerCallback(decodedText);
-            },
-            (err) => { }
-        ).catch(err => {
-            window.showNotif("Câmera indisponível ou permissão negada. Digite o código manualmente.", true);
-        });
+                (decodedText) => {
+                    closeScanner();
+                    if(scannerCallback) scannerCallback(decodedText);
+                },
+                (err) => { }
+            ).catch(err => {
+                console.error("Erro câmera:", err);
+                window.showNotif("Câmera indisponível. Verifique as permissões ou se está usando HTTPS.", true);
+            });
+        }, 150);
     }
 
     function closeScanner() {
         hide(id('scanner-modal'));
         if (html5QrCode && html5QrCode.isScanning) {
-            try { html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(()=>{}); } catch(e){}
+            html5QrCode.stop().then(() => { html5QrCode.clear(); html5QrCode = null; }).catch(()=>{});
         }
         scannerCallback = null;
     }
@@ -2270,64 +2273,89 @@
         const pendingOps = localProductionOrders.filter(po => po.status === 'pendente');
         if(!pendingOps.length) { container.innerHTML = `<div class="card text-center py-10"><i class="fa-solid fa-clipboard-check text-5xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Não há Ordens de Produção pendentes.</p></div>`; return; }
 
-        const opsByLine = {};
-        pendingOps.forEach(op => { const line = op.recipeCategory || 'Diversos'; if(!opsByLine[line]) opsByLine[line] = []; opsByLine[line].push(op); });
-
-        container.innerHTML = Object.keys(opsByLine).sort().map(line => {
-            const ops = opsByLine[line];
-            const concluidas = ops.filter(o => o.picking?.status === 'concluido').length;
-            const emAndamento = ops.filter(o => o.picking?.status === 'em_andamento').length;
-            const extrasPendentes = ops.filter(o => o.isExtra === true && o.picking?.status !== 'concluido');
-            const pct = ops.length > 0 ? (concluidas / ops.length) * 100 : 0;
+        // Agora agrupamos primeiramente por Data, depois por Linha de Produção
+        const opsByDate = {};
+        pendingOps.forEach(op => {
+            const date = op.date || 'Sem Data';
+            if(!opsByDate[date]) opsByDate[date] = {};
             
-            let lineStatusHTML = ''; let isLineActive = emAndamento > 0; let allConcluido = concluidas === ops.length;
+            const line = op.recipeCategory || 'Diversos';
+            if(!opsByDate[date][line]) opsByDate[date][line] = [];
             
-            if(allConcluido) lineStatusHTML = `<span class="badge bg-ios-green/20 text-ios-green"><i class="fa-solid fa-check-double mr-1"></i>Linha Separada</span>`;
-            else if(isLineActive) lineStatusHTML = `<span class="badge bg-ios-blue/20 text-ios-blue animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Em Separação</span>`;
-            else lineStatusHTML = `<span class="badge bg-ios-orange/20 text-ios-orange"><i class="fa-solid fa-clock mr-1"></i>A Separar</span>`;
+            opsByDate[date][line].push(op);
+        });
 
-            const opIdsStr = JSON.stringify(ops.map(o=>o.id));
+        let finalHTML = '';
 
-            return `
-            <div class="card p-0 overflow-hidden border ${isLineActive ? 'border-ios-blue' : 'border-ios-border'} transition-all">
-                <div class="bg-ios-cardHover px-5 py-4 flex flex-col gap-2 ${isLineActive ? 'bg-ios-blue/10' : ''}">
-                    <div class="flex flex-wrap justify-between items-center gap-3">
-                        <div>
-                            <h3 class="font-bold text-white text-xl flex items-center">
-                                <i class="fa-solid fa-layer-group text-ios-blue mr-2"></i>Setor: ${line.toUpperCase()}
-                                ${extrasPendentes.length > 0 ? `<span class="ml-2 badge bg-ios-red text-white shadow shadow-ios-red">🚨 ${extrasPendentes.length} EXTRA(s)</span>` : ''}
-                            </h3>
-                            <p class="text-xs text-ios-textMuted mt-1">${ops.length} OP(s) programada(s) | ${concluidas} Separada(s)</p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-4">
-                            ${lineStatusHTML}
-                            ${extrasPendentes.length > 0 ? `<button type="button" class="btn-secondary py-2 px-4 text-xs text-ios-red border-ios-red/50 hover:bg-ios-red/10 btn-print-extras" data-line="${line}"><i class="fa-solid fa-print mr-2"></i>Imprimir Extras</button>` : ''}
-                            ${!allConcluido ? `<button type="button" class="btn-primary py-2 px-4 shadow-lg shadow-ios-blue/20 btn-open-line-picking" data-line="${line}" data-opids='${opIdsStr}'><i class="fa-solid fa-dolly mr-2"></i>Separar Linha Completa</button>` : ''}
-                        </div>
-                    </div>
-                    <!-- Barra de Progresso da Linha -->
-                    <div class="w-full h-2 bg-ios-bg rounded-full mt-2 overflow-hidden border border-ios-border">
-                        <div class="h-full bg-ios-green transition-all" style="width: ${pct}%"></div>
-                    </div>
-                </div>
-                <div class="p-4 bg-ios-bg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 border-t border-ios-border/50">
-                    ${ops.map(op => {
-                        let statusIcon = op.picking?.status === 'concluido' ? '<span class="text-xs text-ios-green font-bold"><i class="fa-solid fa-check mr-1"></i>Concluído</span>' : '<span class="text-xs text-ios-textMuted"><i class="fa-solid fa-clock mr-1"></i>Pendente</span>';
-                        if(op.picking?.status === 'em_andamento') {
-                            statusIcon = `<span class="text-xs text-ios-blue font-bold animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Andamento</span>`;
-                        }
-                        return `
-                        <div class="bg-ios-card p-3 rounded-lg border border-ios-border text-sm flex justify-between items-center relative overflow-hidden">
-                            ${op.isExtra ? '<div class="absolute left-0 top-0 bottom-0 w-1 bg-ios-red"></div>' : ''}
-                            <div class="${op.isExtra ? 'pl-2' : ''}">
-                                <span class="font-bold text-white">${op.recipeName}</span> <span class="text-ios-blue">(${op.multiplier}x)</span>
+        Object.keys(opsByDate).sort().forEach(date => {
+            const dateObj = new Date(date + 'T00:00:00');
+            const dateFormatted = isNaN(dateObj.getTime()) ? date : dateObj.toLocaleDateString('pt-BR');
+            
+            finalHTML += `<div class="mb-10">
+                <h2 class="text-2xl font-bold text-white mb-5 flex items-center border-b border-ios-border pb-3"><i class="fa-regular fa-calendar-check text-ios-blue mr-3"></i>Programação para: ${dateFormatted}</h2>
+                <div class="space-y-6">`;
+
+            const opsByLine = opsByDate[date];
+            finalHTML += Object.keys(opsByLine).sort().map(line => {
+                const ops = opsByLine[line];
+                const concluidas = ops.filter(o => o.picking?.status === 'concluido').length;
+                const emAndamento = ops.filter(o => o.picking?.status === 'em_andamento').length;
+                const extrasPendentes = ops.filter(o => o.isExtra === true && o.picking?.status !== 'concluido');
+                const pct = ops.length > 0 ? (concluidas / ops.length) * 100 : 0;
+                
+                let lineStatusHTML = ''; let isLineActive = emAndamento > 0; let allConcluido = concluidas === ops.length;
+                
+                if(allConcluido) lineStatusHTML = `<span class="badge bg-ios-green/20 text-ios-green"><i class="fa-solid fa-check-double mr-1"></i>Linha Separada</span>`;
+                else if(isLineActive) lineStatusHTML = `<span class="badge bg-ios-blue/20 text-ios-blue animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Em Separação</span>`;
+                else lineStatusHTML = `<span class="badge bg-ios-orange/20 text-ios-orange"><i class="fa-solid fa-clock mr-1"></i>A Separar</span>`;
+
+                const opIdsStr = JSON.stringify(ops.map(o=>o.id));
+
+                return `
+                <div class="card p-0 overflow-hidden border ${isLineActive ? 'border-ios-blue' : 'border-ios-border'} transition-all ml-4">
+                    <div class="bg-ios-cardHover px-5 py-4 flex flex-col gap-2 ${isLineActive ? 'bg-ios-blue/10' : ''}">
+                        <div class="flex flex-wrap justify-between items-center gap-3">
+                            <div>
+                                <h3 class="font-bold text-white text-xl flex items-center">
+                                    <i class="fa-solid fa-layer-group text-ios-blue mr-2"></i>Setor: ${line.toUpperCase()}
+                                    ${extrasPendentes.length > 0 ? `<span class="ml-2 badge bg-ios-red text-white shadow shadow-ios-red">🚨 ${extrasPendentes.length} EXTRA(s)</span>` : ''}
+                                </h3>
+                                <p class="text-xs text-ios-textMuted mt-1">${ops.length} OP(s) nesta linha | ${concluidas} Separada(s)</p>
                             </div>
-                            <div class="ml-2">${statusIcon}</div>
-                        </div>`;
-                    }).join('')}
-                </div>
-            </div>`;
-        }).join('');
+                            <div class="flex flex-wrap items-center gap-4">
+                                ${lineStatusHTML}
+                                ${extrasPendentes.length > 0 ? `<button type="button" class="btn-secondary py-2 px-4 text-xs text-ios-red border-ios-red/50 hover:bg-ios-red/10 btn-print-extras" data-line="${line}"><i class="fa-solid fa-print mr-2"></i>Imprimir Extras</button>` : ''}
+                                ${!allConcluido ? `<button type="button" class="btn-primary py-2 px-4 shadow-lg shadow-ios-blue/20 btn-open-line-picking" data-line="${line}" data-opids='${opIdsStr}'><i class="fa-solid fa-dolly mr-2"></i>Separar Insumos</button>` : ''}
+                            </div>
+                        </div>
+                        <!-- Barra de Progresso da Linha -->
+                        <div class="w-full h-2 bg-ios-bg rounded-full mt-2 overflow-hidden border border-ios-border">
+                            <div class="h-full bg-ios-green transition-all" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-ios-bg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 border-t border-ios-border/50">
+                        ${ops.map(op => {
+                            let statusIcon = op.picking?.status === 'concluido' ? '<span class="text-xs text-ios-green font-bold"><i class="fa-solid fa-check mr-1"></i>Concluído</span>' : '<span class="text-xs text-ios-textMuted"><i class="fa-solid fa-clock mr-1"></i>Pendente</span>';
+                            if(op.picking?.status === 'em_andamento') {
+                                statusIcon = `<span class="text-xs text-ios-blue font-bold animate-pulse"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Andamento</span>`;
+                            }
+                            return `
+                            <div class="bg-ios-card p-3 rounded-lg border border-ios-border text-sm flex justify-between items-center relative overflow-hidden">
+                                ${op.isExtra ? '<div class="absolute left-0 top-0 bottom-0 w-1 bg-ios-red"></div>' : ''}
+                                <div class="${op.isExtra ? 'pl-2' : ''}">
+                                    <span class="font-bold text-white">${op.recipeName}</span> <span class="text-ios-blue">(${op.multiplier}x)</span>
+                                </div>
+                                <div class="ml-2">${statusIcon}</div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+            
+            finalHTML += `</div></div>`;
+        });
+
+        container.innerHTML = finalHTML;
     }
 
     addEvt('picking-lines-container', 'click', e => {
