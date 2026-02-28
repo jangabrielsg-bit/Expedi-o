@@ -1458,9 +1458,80 @@
         }
 
         if(!foundAny) {
-            resEl.innerHTML = `<div class="card border border-ios-red/50 text-center py-10 bg-ios-red/5"><i class="fa-solid fa-circle-xmark text-4xl sm:text-5xl text-ios-red mb-3"></i><h2 class="title-md text-ios-red mb-1 text-base sm:text-lg">Não identificado!</h2><p class="text-xs sm:text-sm text-ios-textMuted max-w-md mx-auto">O código <strong>"${q}"</strong> não corresponde a nenhum produto ou endereço.</p></div>`;
+            resEl.innerHTML = `
+            <div class="card border border-ios-orange/50 bg-ios-orange/5 mb-4 text-center py-6">
+                <i class="fa-solid fa-box-open text-4xl sm:text-5xl text-ios-orange mb-3"></i>
+                <h2 class="title-md text-ios-orange mb-1 text-base sm:text-lg">Código Novo Detectado!</h2>
+                <p class="text-xs sm:text-sm text-ios-textMuted max-w-md mx-auto mb-4">O código <strong>"${q}"</strong> não existe no sistema. Deseja cadastrá-lo como um novo produto agora?</p>
+            </div>
+            <div class="card border-l-4 border-l-ios-orange">
+                <h3 class="title-md text-white mb-4 text-sm sm:text-base"><i class="fa-solid fa-plus-circle mr-2"></i>Cadastro Rápido de Produto</h3>
+                <form id="quick-register-form" class="space-y-4">
+                    <input type="hidden" id="quick-reg-code" value="${q}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="form-label">Nome do Produto</label>
+                            <input type="text" id="quick-reg-name" required class="form-input" placeholder="Ex: Farinha de Trigo Especial">
+                        </div>
+                        <div>
+                            <label class="form-label">Classificação</label>
+                            <select id="quick-reg-type" required class="form-input">
+                                <option value="insumo">Insumo (Matéria-prima)</option>
+                                <option value="semi_acabado">Semi-acabado (Produção Interna)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Fornecedor</label>
+                            <input type="text" id="quick-reg-supplier" required class="form-input" placeholder="Nome do fornecedor">
+                        </div>
+                        <div>
+                            <label class="form-label">Prazo de Entrega (Dias Úteis)</label>
+                            <input type="number" id="quick-reg-lead" required min="0" class="form-input" value="0">
+                        </div>
+                        <div>
+                            <label class="form-label">Estoque Mínimo (Alerta)</label>
+                            <input type="number" step="0.01" id="quick-reg-min" required min="0" class="form-input" value="0">
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="btn-primary w-full sm:w-auto"><i class="fa-solid fa-save mr-2"></i>Salvar no Banco de Dados</button>
+                    </div>
+                </form>
+            </div>`;
         }
     }
+
+    document.addEventListener('submit', async e => {
+        if(e.target.id === 'quick-register-form') {
+            e.preventDefault();
+            const code = id('quick-reg-code').value;
+            const name = id('quick-reg-name').value.trim();
+            const type = id('quick-reg-type').value;
+            const supplier = id('quick-reg-supplier').value.trim();
+            const leadTime = parseInt(id('quick-reg-lead').value) || 0;
+            const minStock = parseFloat(id('quick-reg-min').value) || 0;
+
+            show(id('loading-overlay'));
+            try {
+                // Se for composto apenas por números (8 a 14 digitos), trata como Código de Barras (EAN)
+                const isEAN = /^\d{8,14}$/.test(code);
+                const newProduct = {
+                    name, type, supplier, leadTime, minStock, totalQuantity: 0,
+                    code: isEAN ? '' : code,
+                    barcodes: isEAN ? [code] : []
+                };
+
+                await DB.add('inventory', newProduct);
+                window.showNotif('Produto cadastrado com sucesso!');
+                await refreshData();
+                searchUniversal(code); // Pesquisa de novo para mostrar a tela normal do produto acabado de criar!
+            } catch(err) {
+                window.showNotif('Erro ao cadastrar produto.', true);
+            } finally {
+                hide(id('loading-overlay'));
+            }
+        }
+    });
 
     addEvt('btn-consulta-search', 'click', () => { searchUniversal(id('consulta-input').value); });
     addEvt('btn-consulta-scan', 'click', () => { openScanner(code => { id('consulta-input').value = code; searchUniversal(code); }); });
