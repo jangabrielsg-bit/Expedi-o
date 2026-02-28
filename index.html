@@ -78,15 +78,12 @@
         .toggle-status:checked { background: #30d158; }
         .toggle-status:checked::after { transform: translateX(20px); }
 
-        .timer-active { color: #ff9f0a; animation: pulse-text 1.5s infinite; }
-        @keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        
         .check-nativo { appearance: auto !important; width: 1.5rem !important; height: 1.5rem !important; cursor: pointer; accent-color: #30d158; margin: 0; padding: 0; }
         .form-input { transition: all 0.2s ease; }
 
-        /* Ajustes Estruturais Câmera - Resolve a distorção e melhora a área de scan */
+        /* Ajustes Estruturais Câmera */
         #reader { width: 100%; border-radius: 0.75rem; overflow: hidden; background: #000; position: relative; min-height: 250px;}
-        #reader video { width: 100% !important; height: 350px !important; object-fit: cover !important; }
+        #reader video { max-width: 100% !important; max-height: 50vh !important; object-fit: contain !important; border-radius: 0.75rem; }
         #reader canvas { position: absolute; top: 0; left: 0; }
     </style>
 </head>
@@ -111,6 +108,7 @@
     </div>
 
     <div id="app-wrapper" class="flex h-screen overflow-hidden w-full hidden">
+        <!-- BARRA LATERAL -->
         <aside class="w-20 lg:w-64 bg-[#000000] border-r border-ios-border flex flex-col py-6 transition-all duration-300 z-40">
             <div class="px-4 mb-8 flex items-center justify-center lg:justify-start cursor-pointer" onclick="navTo('home')">
                 <div class="w-10 h-10 rounded-xl bg-ios-blue flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-ios-blue/30"><i class="fa-solid fa-layer-group"></i></div>
@@ -166,6 +164,7 @@
             </div>
         </aside>
 
+        <!-- ÁREA PRINCIPAL -->
         <main class="flex-1 p-6 lg:p-10 overflow-y-auto bg-ios-bg relative z-0 h-full">
             
             <!-- HOME -->
@@ -186,11 +185,6 @@
                     <button type="button" class="menu-window nav-btn" data-target="traceability"><i class="fa-solid fa-route" style="color:#5e5ce6;"></i><span>Rastreabilidade</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="adjustments"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="settings"><i class="fa-solid fa-database" style="color:#98989d;"></i><span>Banco de Dados</span></button>
-                </div>
-                
-                <div class="max-w-6xl mx-auto border-t border-ios-border pt-8">
-                    <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas / Atrasadas</h2>
-                    <div id="home-incoming-orders" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
             </div>
 
@@ -262,9 +256,7 @@
                 <p class="text-ios-textMuted text-sm mb-6 mt-1">Acompanhe a duração do stock visualmente e gira as encomendas de fornecedores no calendário.</p>
                 <div class="mb-6 flex gap-4"><input type="text" id="search-purchasing" class="form-input w-full md:w-1/2" placeholder="Buscar fornecedor ou item..." autocomplete="off"></div>
                 
-                <!-- Calendário Compras -->
                 <div id="purchasing-calendar-container" class="mb-8 max-w-4xl mx-auto"></div>
-
                 <div id="purchasing-container" class="space-y-8"></div>
             </div>
 
@@ -420,7 +412,7 @@
                 </div>
             </div>
 
-            <!-- SEPARAÇÃO (PICKING) -->
+            <!-- SEPARAÇÃO (PICKING) SIMPLIFICADO -->
             <div id="screen-picking" class="screen-panel hidden">
                 <div class="flex justify-between items-center mb-6">
                     <div><h1 class="title-lg mb-0 text-ios-orange"><i class="fa-solid fa-dolly mr-3"></i>Separação (Kitting)</h1><p class="text-ios-textMuted mt-1 text-sm">Acompanhe a barra de progresso do que já foi separado. Inclui OPs em até 48h.</p></div>
@@ -601,23 +593,20 @@
                 <div><h2 id="picking-modal-title" class="title-md mb-1 text-ios-orange flex items-center"><i class="fa-solid fa-dolly mr-3 text-2xl"></i><span>Check-list de Separação</span></h2><p id="picking-modal-subtitle" class="text-sm text-ios-textMuted font-medium"></p></div>
                 <button type="button" class="text-ios-textMuted hover:text-white text-4xl ml-4 close-modal leading-none" data-target="picking-modal">&times;</button>
             </div>
+            
             <div id="picking-setup-view" class="p-10 flex flex-col items-center justify-center bg-ios-card h-[50vh]">
                 <i class="fa-solid fa-clipboard-user text-6xl text-ios-orange mb-6"></i>
                 <h3 class="text-2xl font-bold text-white mb-2">Quem vai separar esta equipa?</h3>
-                <p class="text-ios-textMuted text-sm mb-8 text-center max-w-md">Insira o seu nome para iniciar o cronómetro independente.</p>
-                <input type="text" id="picking-responsible" class="form-input max-w-xs text-center text-xl py-4 mb-6 shadow-inner border border-ios-border" placeholder="O seu nome aqui" autocomplete="off">
-                <button type="button" id="btn-start-picking" class="btn-success py-4 px-10 text-lg rounded-full shadow-lg shadow-ios-green/20 hover:-translate-y-1 transform transition"><i class="fa-solid fa-play mr-2"></i> Iniciar Cronómetro</button>
+                <input type="text" id="picking-responsible" class="form-input max-w-xs text-center text-xl py-4 mb-6 mt-4 shadow-inner border border-ios-border" placeholder="O seu nome aqui" autocomplete="off">
+                <button type="button" id="btn-start-picking" class="btn-success py-4 px-10 text-lg rounded-full shadow-lg shadow-ios-green/20 hover:-translate-y-1 transform transition"><i class="fa-solid fa-play mr-2"></i> Iniciar Separação</button>
             </div>
+            
             <div id="picking-active-view" class="hidden flex-col flex-1 overflow-hidden h-[70vh]">
                 <div class="bg-ios-bg px-6 py-4 flex flex-wrap justify-between items-center shrink-0 border-b border-ios-border shadow-inner gap-4">
                     <div class="flex gap-4 items-center">
                         <div><p class="text-[10px] text-ios-textMuted uppercase font-bold tracking-widest mb-1">Responsável</p><p class="font-bold text-white text-lg flex items-center"><i class="fa-solid fa-user-check text-ios-blue mr-2"></i><span id="picking-active-resp">---</span></p></div>
                         <div class="h-10 border-l border-ios-border mx-2"></div>
                         <button type="button" id="btn-picking-scan" class="bg-ios-cardHover border border-ios-blue text-ios-blue hover:bg-ios-blue hover:text-white py-2 px-4 rounded-xl transition font-bold flex items-center shadow-lg"><i class="fa-solid fa-camera mr-2"></i>Bipar Item Coletado</button>
-                    </div>
-                    <div class="text-center bg-ios-card px-8 py-2 rounded-2xl border border-ios-border shadow-md">
-                        <div class="text-4xl font-mono font-bold text-ios-orange tracking-widest live-timer timer-active" id="picking-timer-display" data-start="">00:00</div>
-                        <p class="text-[10px] text-ios-textMuted uppercase mt-1">Tempo Corrido</p>
                     </div>
                     <button type="button" id="btn-finish-picking" class="btn-primary py-3 px-6 shadow-lg shadow-ios-blue/20 rounded-xl"><i class="fa-solid fa-flag-checkered mr-2"></i>Finalizar OPs da Linha</button>
                 </div>
@@ -910,7 +899,6 @@
         show(id('scanner-modal'));
         if(inputFallback) inputFallback.focus();
         
-        // Timeout para garantir que o modal rendeu e a div tem tamanho antes da câmera ligar
         await new Promise(r => setTimeout(r, 100));
         
         try {
@@ -922,14 +910,10 @@
             
             html5QrCode = new Html5Qrcode("reader");
             
-            // Caixa de scanner tipo horizontal (para códigos EAN)
             const config = { 
                 fps: 15, 
                 qrbox: function(viewfinderWidth, viewfinderHeight) {
-                    return {
-                        width: Math.min(viewfinderWidth * 0.9, 600),
-                        height: 150
-                    };
+                    return { width: Math.min(viewfinderWidth * 0.9, 600), height: 150 };
                 }
             };
 
@@ -978,10 +962,7 @@
     });
 
     addEvt('scanner-manual-input', 'keydown', e => {
-        if(e.key === 'Enter') {
-            e.preventDefault();
-            id('btn-scanner-manual-confirm').click();
-        }
+        if(e.key === 'Enter') { e.preventDefault(); id('btn-scanner-manual-confirm').click(); }
     });
 
     window.purchCalendarDate = new Date();
@@ -1234,11 +1215,6 @@
             }
 
             populateFilters(); 
-            renderHome();
-            renderInv(); 
-            renderRecipes(); 
-            renderPO(); 
-            renderConsum(); 
             updateSidebarBadges();
             
             const activeNav = document.querySelector('.nav-item.bg-ios-card');
@@ -1248,6 +1224,9 @@
                 if(target === 'barcodes') renderBarcodesList();
                 if(target === 'purchasing') renderPurchasing();
                 if(target === 'traceability') { updateTraceabilityFilters(); renderTraceability(); }
+                if(target === 'inventory') renderInv();
+                if(target === 'production') renderPO();
+                if(target === 'recipes') renderRecipes();
             }
             if(currentHistoryProductId) renderItemDetailsHistory();
             
@@ -1265,67 +1244,6 @@
         const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
         const mf = id('consumption-month-filter'); if(mf) { mf.innerHTML = months.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(''); mf.value = cm; }
     }
-
-    function renderHome() {
-        const todayStr = getLocalTodayStr();
-        const incoming = localInventory.filter(i => i.pendingOrder && i.pendingOrder.active && i.pendingOrder.expectedDate <= todayStr);
-        
-        const cont = id('home-incoming-orders');
-        if(!cont) return;
-        
-        if(incoming.length === 0) {
-            cont.innerHTML = '<div class="col-span-full text-ios-textMuted text-sm bg-ios-cardHover p-4 rounded-xl text-center border border-ios-border">Nenhuma entrega prevista ou atrasada para hoje.</div>';
-            return;
-        }
-        
-        const bySup = {};
-        incoming.forEach(i => {
-            const sup = i.supplier || 'Diversos';
-            if(!bySup[sup]) bySup[sup] = [];
-            bySup[sup].push(i);
-        });
-        
-        let html = '';
-        Object.keys(bySup).forEach(sup => {
-            const items = bySup[sup];
-            const itemIds = JSON.stringify(items.map(x=>x.id));
-            html += `
-            <div class="bg-ios-cardHover p-4 rounded-xl border border-ios-blue shadow-lg shadow-ios-blue/10 cursor-pointer hover:bg-ios-blue/10 transition flex justify-between items-center btn-receive-incoming" data-ids='${itemIds}'>
-                <div>
-                    <h3 class="font-bold text-white text-lg"><i class="fa-solid fa-truck-fast text-ios-blue mr-2"></i>${sup}</h3>
-                    <p class="text-xs text-ios-textMuted mt-1">${items.length} item(ns) a aguardar entrada.</p>
-                </div>
-                <i class="fa-solid fa-chevron-right text-ios-textMuted"></i>
-            </div>`;
-        });
-        cont.innerHTML = html;
-    }
-
-    addEvt('home-incoming-orders', 'click', e => {
-        const btn = e.target.closest('.btn-receive-incoming');
-        if(btn) {
-            const ids = JSON.parse(btn.dataset.ids);
-            
-            ids.forEach(idStr => {
-                const item = localInventory.find(x=>x.id===idStr);
-                if(!item) return;
-                
-                if(!bulkEntryItems.some(b => b.productId === item.id)) {
-                    bulkEntryItems.push({
-                        isNew: false,
-                        productId: item.id,
-                        name: item.name,
-                        code: item.code,
-                        qty: item.pendingOrder.qty || 0,
-                        batchCode: 'LT-' + new Date().getTime().toString(36).toUpperCase().substring(4) + Math.floor(Math.random()*100),
-                        expiryDate: '',
-                        locationCode: ''
-                    });
-                }
-            });
-            window.navTo('entry');
-        }
-    });
 
     function updateSidebarBadges() {
         const isPickingActive = localProductionOrders.some(op => op.picking?.status === 'em_andamento');
@@ -1450,9 +1368,7 @@
         }
     }
 
-    // Debounce the universal search
     const debouncedSearchUniv = debounce(() => searchUniversal(id('consulta-input').value), 500);
-
     addEvt('btn-consulta-search', 'click', () => searchUniversal(id('consulta-input').value));
     addEvt('btn-consulta-scan', 'click', () => { openScanner(code => { id('consulta-input').value = code; searchUniversal(code); }); });
     addEvt('consulta-input', 'keydown', e => { if(e.key==='Enter'){ e.preventDefault(); searchUniversal(e.target.value); } });
@@ -1627,8 +1543,6 @@
 
 
     // --- ESTOQUE GERAL ---
-    
-    // Debounce na pesquisa de estoque
     const debouncedRenderInv = debounce(renderInv, 300);
     addEvt('search-inventory', 'input', debouncedRenderInv); 
     addEvt('supplier-filter', 'input', renderInv); 
@@ -1933,7 +1847,6 @@
     addEvt('btn-save-bulk-entry', 'click', async () => {
         if(!bulkEntryItems.length) return window.showNotif('A lista está vazia.', true);
         
-        // Validation
         for(let item of bulkEntryItems) {
             if(!item.qty || item.qty <= 0) return window.showNotif('Todas as quantidades devem ser maiores que 0.', true);
             if(!item.batchCode) return window.showNotif('Todos os itens precisam de um código de lote.', true);
@@ -1959,7 +1872,6 @@
 
                 if(!p) continue;
                 
-                // Clear pending order flag if present
                 if(p.pendingOrder && p.pendingOrder.active) {
                     p.pendingOrder.active = false;
                 }
@@ -1967,7 +1879,6 @@
                 p.totalQuantity += bItem.qty; 
                 await DB.update('inventory', p);
 
-                // Auto-create location if it doesn't exist
                 if(bItem.locationCode) { 
                     const l = localLocations.find(loc => loc.code === bItem.locationCode); 
                     if(!l) await DB.add('locations', {code: bItem.locationCode, name: `Gerado Auto: ${bItem.locationCode}`}); 
