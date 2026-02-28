@@ -77,7 +77,7 @@
         .toggle-status::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.3s; }
         .toggle-status:checked { background: #30d158; }
         .toggle-status:checked::after { transform: translateX(20px); }
-
+        
         .check-nativo { appearance: auto !important; width: 1.5rem !important; height: 1.5rem !important; cursor: pointer; accent-color: #30d158; margin: 0; padding: 0; }
         .form-input { transition: all 0.2s ease; }
 
@@ -253,7 +253,7 @@
             <!-- COMPRAS / PEDIDOS -->
             <div id="screen-purchasing" class="screen-panel hidden">
                 <h1 class="title-lg mb-0 text-ios-blue"><i class="fa-solid fa-cart-shopping mr-3"></i>Gestão de Compras e Pedidos</h1>
-                <p class="text-ios-textMuted text-sm mb-6 mt-1">Acompanhe a duração do stock visualmente e gira as encomendas de fornecedores no calendário.</p>
+                <p class="text-ios-textMuted text-sm mb-6 mt-1">Acompanhe a duração do estoque visualmente e gerencie as encomendas de fornecedores no calendário.</p>
                 <div class="mb-6 flex gap-4"><input type="text" id="search-purchasing" class="form-input w-full md:w-1/2" placeholder="Buscar fornecedor ou item..." autocomplete="off"></div>
                 
                 <div id="purchasing-calendar-container" class="mb-8 max-w-4xl mx-auto"></div>
@@ -344,9 +344,9 @@
 
                             <div class="md:col-span-1"><label class="form-label">Quantidade</label><input type="number" id="entry-qty" required min="0.001" step="0.001" class="form-input text-ios-blue font-bold"></div>
                             <div class="md:col-span-1"><label class="form-label">Validade (Opcional)</label><input type="date" id="entry-expiry" class="form-input"></div>
-                            <div class="md:col-span-1"><label class="form-label">Endereço (Opcional)</label>
+                            <div class="md:col-span-1"><label class="form-label">Endereço (Obrigatório)</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="entry-loc" class="form-input font-mono" placeholder="Ex: RUA-A" autocomplete="off">
+                                    <input type="text" id="entry-loc" class="form-input font-mono" placeholder="Ex: RUA-A" autocomplete="off" required>
                                     <button type="button" id="btn-scan-entry-loc" class="bg-ios-cardHover text-ios-blue px-3 rounded-xl border border-ios-border"><i class="fa-solid fa-camera"></i></button>
                                 </div>
                             </div>
@@ -362,7 +362,7 @@
                     </div>
                     <div class="table-container overflow-visible">
                         <table class="base-table min-w-full">
-                            <thead class="base-thead"><tr><th class="base-th w-1/4">Produto</th><th class="base-th w-24">Qtd</th><th class="base-th">Lote (Auto/Manual)</th><th class="base-th w-32">Validade</th><th class="base-th w-40">Endereço (Opcional)</th><th class="base-th w-12 text-center"><i class="fa-solid fa-trash"></i></th></tr></thead>
+                            <thead class="base-thead"><tr><th class="base-th w-1/4">Produto</th><th class="base-th w-24">Qtd</th><th class="base-th">Lote</th><th class="base-th w-32">Validade</th><th class="base-th w-40">Endereço (Obrigatório)</th><th class="base-th w-12 text-center"><i class="fa-solid fa-trash"></i></th></tr></thead>
                             <tbody id="bulk-entry-list" class="divide-y divide-ios-border"><tr><td colspan="6" class="base-td text-center text-ios-textMuted py-8">Nenhum item na lista. Busque e adicione acima.</td></tr></tbody>
                         </table>
                     </div>
@@ -412,10 +412,10 @@
                 </div>
             </div>
 
-            <!-- SEPARAÇÃO (PICKING) SIMPLIFICADO -->
+            <!-- SEPARAÇÃO (PICKING) -->
             <div id="screen-picking" class="screen-panel hidden">
                 <div class="flex justify-between items-center mb-6">
-                    <div><h1 class="title-lg mb-0 text-ios-orange"><i class="fa-solid fa-dolly mr-3"></i>Separação (Kitting)</h1><p class="text-ios-textMuted mt-1 text-sm">Acompanhe a barra de progresso do que já foi separado. Inclui OPs em até 48h.</p></div>
+                    <div><h1 class="title-lg mb-0 text-ios-orange"><i class="fa-solid fa-dolly mr-3"></i>Separação (Kitting)</h1><p class="text-ios-textMuted mt-1 text-sm">Organiza as separações pendentes programadas para as próximas 48 horas.</p></div>
                 </div>
                 <div id="picking-lines-container" class="space-y-8"></div>
             </div>
@@ -508,8 +508,8 @@
     </div>
 
     <!-- MARCA D'ÁGUA -->
-    <div class="fixed bottom-2 right-3 z-[9999] text-[10px] text-ios-textMuted/40 pointer-events-none select-none">
-        &copy; Jan Gabriel todos os direitos reservados
+    <div class="fixed bottom-2 right-3 z-[9999] text-[10px] text-ios-textMuted/40 pointer-events-none select-none font-semibold">
+        &copy; Jan Gabriel Todos os direitos reservados.
     </div>
 
     <!-- ===== MODAIS FLUTUANTES GLOBAIS ===== -->
@@ -533,7 +533,7 @@
             <p class="text-sm text-white mb-4" id="picking-scan-qty-name"></p>
             <form id="picking-scan-qty-form" class="space-y-4">
                 <div><label class="form-label">Quantidade FÍSICA Coletada:</label><input type="number" id="picking-scan-qty" step="0.001" required class="form-input text-ios-blue text-2xl font-bold text-center py-4"></div>
-                <div class="flex justify-end gap-2 pt-2"><button type="button" class="btn-secondary close-modal" data-target="picking-scan-qty-modal">Cancelar</button><button type="submit" class="btn-primary px-6">Confirmar Baixa</button></div>
+                <div class="flex justify-end gap-2 pt-2"><button type="button" class="btn-secondary close-modal" data-target="picking-scan-qty-modal">Cancelar</button><button type="submit" class="btn-primary px-6">Confirmar</button></div>
             </form>
         </div>
     </div>
@@ -596,7 +596,7 @@
             
             <div id="picking-setup-view" class="p-10 flex flex-col items-center justify-center bg-ios-card h-[50vh]">
                 <i class="fa-solid fa-clipboard-user text-6xl text-ios-orange mb-6"></i>
-                <h3 class="text-2xl font-bold text-white mb-2">Quem vai separar esta equipa?</h3>
+                <h3 class="text-2xl font-bold text-white mb-2">Quem vai separar esta linha?</h3>
                 <input type="text" id="picking-responsible" class="form-input max-w-xs text-center text-xl py-4 mb-6 mt-4 shadow-inner border border-ios-border" placeholder="O seu nome aqui" autocomplete="off">
                 <button type="button" id="btn-start-picking" class="btn-success py-4 px-10 text-lg rounded-full shadow-lg shadow-ios-green/20 hover:-translate-y-1 transform transition"><i class="fa-solid fa-play mr-2"></i> Iniciar Separação</button>
             </div>
@@ -1773,7 +1773,7 @@
         bulkEntryItems.push({
             ...itemData,
             qty: qty,
-            batchCode: 'LT-' + new Date().getTime().toString(36).toUpperCase().substring(4) + Math.floor(Math.random()*100),
+            batchCode: '',
             expiryDate: id('entry-expiry').value,
             locationCode: id('entry-loc').value.trim()
         });
@@ -1804,7 +1804,7 @@
                 <td class="base-td"><input type="date" class="form-input py-1 px-2 w-full bulk-exp" value="${bItem.expiryDate}"></td>
                 <td class="base-td">
                     <div class="flex gap-1">
-                        <input type="text" class="form-input py-1 px-2 w-full bulk-loc font-mono text-xs" placeholder="RUA..." value="${bItem.locationCode}">
+                        <input type="text" class="form-input py-1 px-2 w-full bulk-loc font-mono text-xs" placeholder="RUA..." value="${bItem.locationCode}" required>
                         <button type="button" class="bg-ios-cardHover text-ios-blue px-2 rounded border border-ios-border btn-scan-bulk-loc"><i class="fa-solid fa-camera"></i></button>
                     </div>
                 </td>
@@ -1850,6 +1850,7 @@
         for(let item of bulkEntryItems) {
             if(!item.qty || item.qty <= 0) return window.showNotif('Todas as quantidades devem ser maiores que 0.', true);
             if(!item.batchCode) return window.showNotif('Todos os itens precisam de um código de lote.', true);
+            if(!item.locationCode) return window.showNotif('Todos os itens precisam de um endereço/local.', true);
         }
 
         show(id('loading-overlay'));
@@ -2023,6 +2024,22 @@
             } catch(e) { window.showNotif('Erro ao zerar.', true); }
             finally { hide(id('loading-overlay')); }
         });
+    });
+
+    addEvt('search-location-form', 'submit', e => {
+        e.preventDefault();
+        const c = id('location-search-input').value.trim();
+        if(c) searchLocation(c); else window.showNotif("Digite o código do local", true);
+    });
+
+    addEvt('btn-scan-location', 'click', () => { 
+        openScanner(code => { 
+            const inp = id('location-search-input');
+            if(inp) {
+                inp.value = code; 
+                searchLocation(code);
+            }
+        }); 
     });
 
 </script>
