@@ -781,7 +781,7 @@
     </div>
 
     <!-- Modal Picking (Separação Agrupada - Sem Cronômetro) -->
-    <div id="picking-modal" class="modal z-[60]">
+    <div id="picking-modal" class="modal z-[6000]">
         <div class="modal-content max-w-5xl max-h-[95vh] overflow-hidden flex flex-col p-0 bg-ios-bg border border-ios-border">
             <div class="flex justify-between items-start shrink-0 p-6 border-b border-ios-border bg-ios-cardHover">
                 <div>
@@ -832,7 +832,7 @@
     </div>
 
     <!-- Modal Detalhes Item (Estoque) -->
-    <div id="item-details-modal" class="modal">
+    <div id="item-details-modal" class="modal z-[6000]">
         <div class="modal-content max-w-5xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start mb-6">
                 <div>
@@ -901,7 +901,7 @@
     </div>
 
     <!-- Modal Editar Lote -->
-    <div id="edit-batch-modal" class="modal z-[60]">
+    <div id="edit-batch-modal" class="modal z-[7000]">
         <div class="modal-content max-w-sm">
             <h2 class="title-md mb-4">Editar Lote</h2>
             <form id="edit-batch-form" class="space-y-4">
@@ -916,7 +916,7 @@
     </div>
 
     <!-- Seletor Manual de Lotes -->
-    <div id="batch-selector-modal" class="modal z-[60]">
+    <div id="batch-selector-modal" class="modal z-[7000]">
         <div class="modal-content max-w-xl">
             <h2 id="batch-selector-title" class="title-md mb-4">Descontar de quais lotes?</h2>
             <div class="bg-ios-bg border border-ios-border p-4 rounded-xl flex justify-between mb-5 items-center">
@@ -929,7 +929,7 @@
     </div>
 
     <!-- Modal Alertas Complexos (Sininho) -->
-    <div id="low-stock-modal" class="modal z-[60]">
+    <div id="low-stock-modal" class="modal z-[6000]">
         <div class="modal-content max-w-4xl max-h-[85vh] flex flex-col p-0 overflow-hidden bg-ios-bg">
             <div class="flex justify-between items-start shrink-0 p-6 border-b border-ios-border bg-ios-cardHover">
                 <div>
@@ -1082,8 +1082,9 @@
                     }
                 },
                 (decodedText) => {
+                    const tempCb = scannerCallback;
                     closeScanner();
-                    if(scannerCallback) scannerCallback(decodedText);
+                    if(tempCb) tempCb(decodedText);
                 },
                 (err) => { }
             ).catch(err => {
