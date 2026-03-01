@@ -91,7 +91,7 @@
         <div class="card max-w-md w-full py-10 px-6 border border-ios-border/50 shadow-2xl">
             <div class="w-20 h-20 rounded-2xl bg-ios-blue flex items-center justify-center text-white font-bold text-4xl mx-auto mb-6"><i class="fa-solid fa-layer-group"></i></div>
             <h2 class="title-lg mb-2 text-white">Acesso Restrito</h2>
-            <p class="text-ios-textMuted mb-8 text-sm">Faça login para ter acesso ao seu banco de dados privado.</p>
+            <p class="text-ios-textMuted mb-8 text-sm">Faça login para sincronizar com o banco de dados da fábrica (Firebase).</p>
             <button type="button" id="btn-login-google" class="btn-primary w-full py-4 text-lg font-bold"><i class="fa-brands fa-google mr-2"></i>Entrar com o Google</button>
             <button type="button" id="btn-bypass-login" class="btn-secondary w-full py-3 mt-4 text-sm"><i class="fa-solid fa-flask mr-2"></i>Testar sem Login (Anônimo)</button>
             <div id="mensagem-erro" class="text-ios-red mt-4 font-medium text-sm text-left bg-ios-red/10 p-3 rounded-lg hidden"></div>
@@ -264,7 +264,7 @@
                         <h2 class="title-md text-ios-red"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Zerar Sistema</h2>
                         <button type="button" id="btn-clear-db" class="btn-danger w-full mt-4">Formatar Tudo</button>
                     </div>
-                    <div class="card border-ios-green md:col-span-2" id="pwa-install-card">
+                    <div class="card border-ios-green md:col-span-2 hidden" id="pwa-install-card">
                         <h2 class="title-md text-ios-green"><i class="fa-brands fa-android mr-2"></i>Instalar App no Android</h2>
                         <p class="text-sm text-ios-textMuted mb-4">Adicione o Estoque OS à sua tela inicial para acessar como um aplicativo nativo.</p>
                         <button type="button" id="btn-install-pwa" class="btn-success w-full mt-2">Instalar Agora</button>
@@ -293,8 +293,6 @@
 
     <div id="scanner-modal" class="modal z-[99999]"><div class="modal-content max-w-2xl relative pt-12"><button type="button" class="absolute top-2 right-2 bg-ios-red text-white w-10 h-10 rounded-full flex items-center justify-center font-bold close-scanner z-50">&times;</button><div class="flex justify-between items-center mb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-camera mr-2"></i>Leitor</h2></div><div class="bg-black rounded-xl overflow-hidden min-h-[300px] mb-4 relative"><div id="reader" class="w-full h-full absolute inset-0"></div></div><div class="flex gap-2"><input type="text" id="scanner-manual-input" class="form-input flex-1 font-mono text-center text-lg" placeholder="Ou digite aqui..."><button type="button" id="btn-scanner-manual-confirm" class="btn-primary px-8">OK</button></div></div></div>
 
-    <div id="picking-scan-qty-modal" class="modal z-[6000]"><div class="modal-content max-w-sm"><h2 class="title-md mb-2 text-ios-orange">Qtd Encontrada</h2><p class="text-sm text-white mb-4" id="picking-scan-qty-name"></p><form id="picking-scan-qty-form" class="space-y-4"><div><label class="form-label">Qtd FÍSICA Coletada:</label><input type="number" id="picking-scan-qty" step="0.001" required class="form-input text-ios-blue text-3xl font-bold text-center py-4"></div><div class="flex justify-end gap-2"><button type="button" class="btn-secondary close-modal" data-target="picking-scan-qty-modal">Cancelar</button><button type="submit" class="btn-primary">Confirmar Real</button></div></form></div></div>
-
     <div id="modal-add-loc-batch" class="modal z-[6000]"><div class="modal-content max-w-md"><h2 class="title-md mb-4 text-ios-blue">Alocar Lote</h2><form id="add-loc-batch-form" class="space-y-4"><input type="hidden" id="add-loc-target-code"><div class="z-50 relative"><label class="form-label">Produto</label><div id="add-loc-searchable-container"></div></div><div><label class="form-label">Lote</label><select id="add-loc-batch-select" required class="form-input"><option value="">Aguardando...</option></select></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="modal-add-loc-batch">Cancelar</button><button type="submit" class="btn-primary">Confirmar</button></div></form></div></div>
 
     <div id="picking-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] flex flex-col p-0 bg-ios-bg border border-ios-border"><div class="flex justify-between items-start shrink-0 p-4 border-b border-ios-border bg-ios-cardHover"><div><h2 id="picking-modal-title" class="title-md mb-1 text-ios-orange flex items-center text-xl"></h2><p id="picking-modal-subtitle" class="text-sm text-ios-textMuted"></p></div><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="picking-modal">&times;</button></div><div id="picking-setup-view" class="p-10 flex flex-col items-center justify-center bg-ios-card h-full"><i class="fa-solid fa-clipboard-user text-6xl text-ios-orange mb-6"></i><h3 class="text-2xl font-bold text-white mb-2">Quem vai separar?</h3><p class="text-ios-textMuted text-sm mb-8 text-center">Insira o seu nome.</p><input type="text" id="picking-responsible" class="form-input w-full max-w-xs text-center text-xl py-4 mb-6" autocomplete="off"><button type="button" id="btn-start-picking" class="btn-success py-4 px-10 text-lg w-full max-w-xs rounded-full"><i class="fa-solid fa-dolly mr-2"></i> Iniciar Check-list</button></div><div id="picking-active-view" class="hidden flex-col flex-1 overflow-hidden h-full"><div class="bg-ios-bg p-4 flex justify-between items-center shrink-0 border-b border-ios-border"><div class="flex items-center gap-4"><div><p class="text-[10px] text-ios-textMuted uppercase font-bold tracking-widest">Resp.</p><p class="font-bold text-white text-lg flex items-center"><i class="fa-solid fa-user-check text-ios-blue mr-2"></i><span id="picking-active-resp">---</span></p></div></div><button type="button" id="btn-finish-picking" class="btn-primary py-3 px-6 rounded-xl"><i class="fa-solid fa-flag-checkered mr-2"></i>Finalizar OPs</button></div><div class="overflow-y-auto flex-1 bg-ios-bg p-6"><div class="table-container shadow-xl"><table class="base-table w-full"><thead class="base-thead sticky top-0 z-10 shadow-sm"><tr><th class="base-th rounded-tl-lg">Item (Consolidado)</th><th class="base-th text-right">Necessário</th><th class="base-th text-center w-56">Qtd Real</th><th class="base-th text-center rounded-tr-lg">OK</th></tr></thead><tbody id="picking-checklist-body" class="divide-y divide-ios-border"></tbody></table></div></div></div></div></div>
@@ -312,6 +310,7 @@
     <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Cód. Barras (EAN)</label><div class="flex gap-2"><input type="text" id="g-quick-reg-barcode" class="form-input" placeholder="Opcional"><button type="button" id="btn-scan-quick-reg-barcode" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín.</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
 
 <datalist id="locations-datalist"></datalist>
+
 <script type="module">
 // UTILS
 const id=n=>document.getElementById(n), show=e=>{if(e){e.style.display='flex';e.classList.remove('hidden');}}, hide=e=>{if(e){e.style.display='none';e.classList.add('hidden');}}, addEvt=(e,t,f)=>{const el=id(e);if(el)el.addEventListener(t,f);};
@@ -321,19 +320,40 @@ function addBusinessDays(s,d){let dt=new Date(s),a=0;while(a<d){dt.setDate(dt.ge
 // NOTIFICATIONS API
 function notifyUser(title, body) {
     if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/2804/2804060.png' });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(reg => {
+                reg.showNotification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/2804/2804060.png', vibrate: [200, 100, 200] });
+            }).catch(() => {
+                new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/2804/2804060.png' });
+            });
+        } else {
+            new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/2804/2804060.png' });
+        }
+    } else {
+        window.showNotif(`${title} - ${body}`);
     }
-    window.showNotif(`${title} - ${body}`);
 }
 if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
     Notification.requestPermission();
 }
 
 // PWA
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+if (!isStandalone) {
+    const ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) {
+        id('ios-pwa-hint')?.classList.remove('hidden');
+    } else if (/android/.test(ua)) {
+        id('pwa-install-card')?.classList.remove('hidden');
+    } else {
+        id('pwa-install-card')?.classList.remove('hidden'); // Desktop Chrome/Edge
+    }
+}
+
 const iconSvg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%230a84ff"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
 const manifest={name:"Estoque OS",short_name:"Estoque",start_url:location.href,display:"standalone",background_color:"#000000",theme_color:"#0a84ff",icons:[{src:"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(iconSvg),sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
 document.head.insertAdjacentHTML('beforeend',`<link rel="manifest" href="${URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/json'}))}">`);
-if('serviceWorker' in navigator)navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',e=>{if(e.request.url.startsWith('http')){e.respondWith(fetch(e.request).catch(()=>new Response('Offline')));}})`],{type:'application/javascript'}))).catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',e=>{if(e.request.url.startsWith('http')){e.respondWith(fetch(e.request).catch(()=>new Response('Offline')));}});self.addEventListener('notificationclick',e=>{e.notification.close();});`],{type:'application/javascript'}))).catch(()=>{});
 let dP; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dP=e;id('pwa-install-card')?.classList.remove('hidden');});
 id('btn-install-pwa')?.addEventListener('click',async()=>{if(dP){dP.prompt();const{outcome}=await dP.userChoice;if(outcome==='accepted')id('pwa-install-card').classList.add('hidden');dP=null;} else { window.showNotif('No Android: Toque nos três pontos do Chrome > Adicionar à tela inicial.'); }});
 
