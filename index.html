@@ -91,7 +91,7 @@
         <div class="card max-w-md w-full py-10 px-6 border border-ios-border/50 shadow-2xl">
             <div class="w-20 h-20 rounded-2xl bg-ios-blue flex items-center justify-center text-white font-bold text-4xl mx-auto mb-6"><i class="fa-solid fa-layer-group"></i></div>
             <h2 class="title-lg mb-2 text-white">Acesso Restrito</h2>
-            <p class="text-ios-textMuted mb-8 text-sm">Faça login para sincronizar com o banco de dados da fábrica (Firebase).</p>
+            <p class="text-ios-textMuted mb-8 text-sm">Faça login para ter acesso ao seu banco de dados privado.</p>
             <button type="button" id="btn-login-google" class="btn-primary w-full py-4 text-lg font-bold"><i class="fa-brands fa-google mr-2"></i>Entrar com o Google</button>
             <button type="button" id="btn-bypass-login" class="btn-secondary w-full py-3 mt-4 text-sm"><i class="fa-solid fa-flask mr-2"></i>Testar sem Login (Anônimo)</button>
             <div id="mensagem-erro" class="text-ios-red mt-4 font-medium text-sm text-left bg-ios-red/10 p-3 rounded-lg hidden"></div>
@@ -358,8 +358,17 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const getCol = (c) => isCanvas ? collection(db, 'artifacts', appId, 'public', 'data', c) : collection(db, c);
-const getDocRef = (c, i) => isCanvas ? doc(db, 'artifacts', appId, 'public', 'data', c, i) : doc(db, c, i);
+
+// MODIFY HERE TO SUPPORT PRIVATE DATABASES PER USER
+const getCol = (c) => {
+    const uid = auth.currentUser?.uid || 'unknown_user';
+    return isCanvas ? collection(db, 'artifacts', appId, 'users', uid, c) : collection(db, 'users', uid, c);
+};
+
+const getDocRef = (c, i) => {
+    const uid = auth.currentUser?.uid || 'unknown_user';
+    return isCanvas ? doc(db, 'artifacts', appId, 'users', uid, c, i) : doc(db, 'users', uid, c, i);
+};
 
 const DB = {
     add: async (c, d) => {
