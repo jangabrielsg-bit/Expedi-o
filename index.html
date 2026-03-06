@@ -196,7 +196,7 @@
             <!-- Estoque Geral -->
             <div id="screen-inventory" class="screen-panel hidden">
                 <h1 class="title-lg">Estoque Atual</h1>
-                <div class="card p-0 bg-transparent border-none"><div class="flex flex-wrap gap-2 mb-5 p-1"><input type="text" id="search-inventory" placeholder="Pesquisar..." class="form-input w-full md:w-64"><div class="flex gap-2 w-full md:w-auto"><select id="type-filter" class="form-input text-sm"><option value="">Tipos</option><option value="insumo">Insumos</option><option value="semi_acabado">Semi-acabados</option></select><select id="supplier-filter" class="form-input text-sm"><option value="">Fornecedores</option></select></div><button type="button" id="btn-export-excel" class="btn-secondary w-full md:w-auto md:ml-auto"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button></div><div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th table-header-sortable" data-sort="name">Produto <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell">Tipo</th><th class="base-th hidden md:table-cell table-header-sortable" data-sort="supplier">Fornecedor <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right table-header-sortable" data-sort="totalQuantity">Saldo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th table-header-sortable" data-sort="expiry">Validade <i class="fa-solid fa-sort ml-1"></i></th></tr></thead><tbody id="inventory-table-body"></tbody></table></div></div>
+                <div class="card p-0 bg-transparent border-none"><div class="flex flex-wrap gap-2 mb-5 p-1"><input type="text" id="search-inventory" placeholder="Pesquisar..." class="form-input w-full md:w-64"><div class="flex gap-2 w-full md:w-auto"><select id="type-filter" class="form-input text-sm"><option value="">Tipos</option><option value="insumo">Insumos</option><option value="semi_acabado">Semi-acabados</option></select><select id="supplier-filter" class="form-input text-sm"><option value="">Fornecedores</option></select></div><button type="button" id="btn-export-excel" class="btn-secondary w-full md:w-auto md:ml-auto"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button></div><div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th table-header-sortable" data-sort="name">Produto <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell table-header-sortable" data-sort="code">Cód Interno <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell">Tipo</th><th class="base-th hidden md:table-cell table-header-sortable" data-sort="supplier">Fornecedor <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right table-header-sortable" data-sort="totalQuantity">Saldo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th table-header-sortable" data-sort="expiry">Validade <i class="fa-solid fa-sort ml-1"></i></th></tr></thead><tbody id="inventory-table-body"></tbody></table></div></div>
             </div>
 
             <!-- Receitas -->
@@ -872,12 +872,13 @@ function renderInv(){
     
     document.querySelectorAll('#screen-inventory .table-header-sortable i').forEach(i=>i.className='fa-solid fa-sort ml-1 text-ios-textMuted');
     
-    let f=localInventory.filter(i=>(i.name.toLowerCase().includes(t)||(i.barcodes&&i.barcodes.some(b=>b.toLowerCase().includes(t))))&&(!s||i.supplier===s)&&(!tp||i.type===tp));
+    let f=localInventory.filter(i=>(i.name.toLowerCase().includes(t)||(i.code&&i.code.toLowerCase().includes(t))||(i.barcodes&&i.barcodes.some(b=>b.toLowerCase().includes(t))))&&(!s||i.supplier===s)&&(!tp||i.type===tp));
     const gE=i=>localBatches.filter(b=>b.productId===i.id&&b.quantity>0&&b.expiryDate).sort((a,b)=>new Date(a.expiryDate)-new Date(b.expiryDate))[0]?.expiryDate||'9999-12-31';
     
     f.sort((a,b)=>{
         let vA,vB;
         if(invSort.col==='name'){vA=a.name.toLowerCase();vB=b.name.toLowerCase();}
+        else if(invSort.col==='code'){vA=(a.code||'').toLowerCase();vB=(b.code||'').toLowerCase();}
         else if(invSort.col==='supplier'){vA=(a.supplier||'').toLowerCase();vB=(b.supplier||'').toLowerCase();}
         else if(invSort.col==='totalQuantity'){vA=a.totalQuantity||0;vB=b.totalQuantity||0;}
         else if(invSort.col==='expiry'){vA=gE(a);vB=gE(b);}
@@ -885,7 +886,7 @@ function renderInv(){
     });
     
     if(!f.length){
-        tb.innerHTML=`<tr><td colspan="5" class="text-center py-6 text-ios-textMuted">Vazio</td></tr>`;
+        tb.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-ios-textMuted">Vazio</td></tr>`;
         return;
     }
     
@@ -893,7 +894,7 @@ function renderInv(){
         const ex=gE(i);
         const exF=ex!=='9999-12-31'?new Date(ex+'T00:00:00').toLocaleDateString('pt-BR').substring(0,5):'-';
         const tC=i.type==='semi_acabado'?'bg-ios-orange/20 text-ios-orange border-ios-orange/30':'bg-gray-800 text-gray-300 border-gray-600';
-        return `<tr class="base-tr cursor-pointer" data-id="${i.id}"><td class="base-td text-white font-medium break-words">${i.name}<div class="sm:hidden text-[10px] text-ios-textMuted mt-1">${i.supplier||'-'}</div><div class="sm:hidden mt-1"><span class="badge border ${tC} text-[9px] px-1 py-0">${typeLabels[i.type]||'Insumo'}</span></div></td><td class="base-td hidden sm:table-cell"><span class="badge border ${tC}">${typeLabels[i.type]||'Insumo'}</span></td><td class="base-td hidden md:table-cell text-ios-textMuted truncate">${i.supplier||'-'}</td><td class="base-td text-right font-bold text-white">${(i.totalQuantity||0).toFixed(2)}</td><td class="base-td text-ios-textMuted text-xs">${exF}</td></tr>`;
+        return `<tr class="base-tr cursor-pointer" data-id="${i.id}"><td class="base-td text-white font-medium break-words">${i.name}<div class="sm:hidden text-[10px] text-ios-textMuted mt-1">Cód: ${i.code||'-'} | Forn: ${i.supplier||'-'}</div><div class="sm:hidden mt-1"><span class="badge border ${tC} text-[9px] px-1 py-0">${typeLabels[i.type]||'Insumo'}</span></div></td><td class="base-td hidden sm:table-cell text-xs font-mono text-ios-textMuted">${i.code||'-'}</td><td class="base-td hidden sm:table-cell"><span class="badge border ${tC}">${typeLabels[i.type]||'Insumo'}</span></td><td class="base-td hidden md:table-cell text-ios-textMuted truncate">${i.supplier||'-'}</td><td class="base-td text-right font-bold text-white">${(i.totalQuantity||0).toFixed(2)}</td><td class="base-td text-ios-textMuted text-xs">${exF}</td></tr>`;
     }).join('');
 }
 
@@ -1471,31 +1472,40 @@ function renderPickingScreen(){
         if(!bD[d][l])bD[d][l]=[];
         bD[d][l].push(o);
     });
-    c.innerHTML=Object.keys(bD).sort().map(d=>`
-        <div class="mb-8">
-            <h2 class="text-xl text-white font-bold mb-4 border-b border-ios-border pb-2">${d}</h2>
-            <div class="space-y-4">
-                ${Object.keys(bD[d]).map(l=>{
-                    const ops=bD[d][l],cc=ops.filter(x=>x.picking?.status==='concluido').length,ea=ops.filter(x=>x.picking?.status==='em_andamento').length,pct=(cc/ops.length)*100,ex=ops.filter(x=>x.isExtra&&x.picking?.status!=='concluido');
-                    let sH='';
-                    if(cc===ops.length)sH=`<span class="badge bg-ios-green/20 text-ios-green">OK</span>`;
-                    else if(ea>0)sH=`<span class="badge bg-ios-blue/20 text-ios-blue animate-pulse">Andamento</span>`;
-                    else sH=`<span class="badge bg-ios-orange/20 text-ios-orange">A Separar</span>`;
-                    return `
-                    <div class="card p-0 overflow-hidden border ${ea>0?'border-ios-blue':''}">
-                        <div class="p-4 bg-ios-cardHover flex justify-between items-center">
-                            <div><h3 class="font-bold text-white text-lg">${l.toUpperCase()} ${ex.length?`<span class="badge bg-ios-red text-white">🚨 ${ex.length} EXTRA</span>`:''}</h3><p class="text-xs text-ios-textMuted">${cc}/${ops.length} OK</p></div>
-                            <div class="flex gap-2 items-center">${sH}${cc<ops.length?`<button class="btn-primary py-1 px-3 text-xs btn-open-line-picking" data-line="${l}" data-opids='${JSON.stringify(ops.map(x=>x.id))}'>Separar</button>`:''}</div>
-                        </div>
-                        <div class="h-1 bg-ios-bg"><div class="h-full bg-ios-green transition-all" style="width:${pct}%"></div></div>
-                        <div class="p-3 grid grid-cols-2 md:grid-cols-3 gap-2">
-                            ${ops.map(o=>`<div class="bg-ios-card p-2 rounded border border-ios-border text-xs flex justify-between ${o.isExtra?'border-l-4 border-l-ios-red':''}"><span class="text-white truncate">${o.recipeName} (${o.multiplier}x)</span>${o.picking?.status==='concluido'?'<span class="text-ios-green"><i class="fa fa-check"></i></span>':'<span class="text-ios-textMuted"><i class="fa fa-clock"></i></span>'}</div>`).join('')}
-                        </div>
-                    </div>`;
-                }).join('')}
-            </div>
-        </div>
-    `).join('');
+    
+    let html = '';
+    Object.keys(bD).sort().forEach(d=>{
+        let lineHtml = '';
+        Object.keys(bD[d]).forEach(l=>{
+            const ops=bD[d][l];
+            const cc=ops.filter(x=>x.picking?.status==='concluido').length;
+            if(cc === ops.length) return; 
+            
+            const ea=ops.filter(x=>x.picking?.status==='em_andamento').length;
+            const pct=(cc/ops.length)*100;
+            const ex=ops.filter(x=>x.isExtra&&x.picking?.status!=='concluido');
+            let sH='';
+            if(ea>0)sH=`<span class="badge bg-ios-blue/20 text-ios-blue animate-pulse">Andamento</span>`;
+            else sH=`<span class="badge bg-ios-orange/20 text-ios-orange">A Separar</span>`;
+            
+            lineHtml += `
+                <div class="card p-0 overflow-hidden border ${ea>0?'border-ios-blue':''}">
+                    <div class="p-4 bg-ios-cardHover flex justify-between items-center">
+                        <div><h3 class="font-bold text-white text-lg">${l.toUpperCase()} ${ex.length?`<span class="badge bg-ios-red text-white">🚨 ${ex.length} EXTRA</span>`:''}</h3><p class="text-xs text-ios-textMuted">${cc}/${ops.length} OK</p></div>
+                        <div class="flex gap-2 items-center">${sH}<button class="btn-primary py-1 px-3 text-xs btn-open-line-picking" data-line="${l}" data-opids='${JSON.stringify(ops.map(x=>x.id))}'>Separar</button></div>
+                    </div>
+                    <div class="h-1 bg-ios-bg"><div class="h-full bg-ios-green transition-all" style="width:${pct}%"></div></div>
+                    <div class="p-3 grid grid-cols-2 md:grid-cols-3 gap-2">
+                        ${ops.map(o=>`<div class="bg-ios-card p-2 rounded border border-ios-border text-xs flex justify-between ${o.isExtra?'border-l-4 border-l-ios-red':''}"><span class="text-white truncate">${o.recipeName} (${o.multiplier}x)</span>${o.picking?.status==='concluido'?'<span class="text-ios-green"><i class="fa fa-check"></i></span>':'<span class="text-ios-textMuted"><i class="fa fa-clock"></i></span>'}</div>`).join('')}
+                    </div>
+                </div>`;
+        });
+        if(lineHtml) {
+            html += `<div class="mb-8"><h2 class="text-xl text-white font-bold mb-4 border-b border-ios-border pb-2">${d}</h2><div class="space-y-4">${lineHtml}</div></div>`;
+        }
+    });
+    
+    c.innerHTML = html || `<div class="text-center py-16"><i class="fa-solid fa-check text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Tudo separado!</p></div>`;
 }
 
 addEvt('picking-lines-container','click',e=>{
@@ -1834,6 +1844,23 @@ addEvt('btn-confirm-production','click',async()=>{
     showConfirmationModal('Efetivar Baixa',`Gerar baixas para ${p.length} OP(s)? Será debitado o lote e a quantidade exata informada na etapa de separação.`,async()=>{
         show(id('loading-overlay'));
         try {
+            for(const op of p){
+                for(const ing of op.ingredients){
+                    let actualQty = ing.adjustedQuantity;
+                    if(op.picking?.status==='concluido' && op.picking.pickedItems?.[ing.productId] !== undefined) { actualQty = op.picking.pickedItems[ing.productId]; }
+                    
+                    if(actualQty > 0) {
+                        const pr = await DB.get('inventory', ing.productId);
+                        if(!pr) throw new Error(`Produto não encontrado: ID ${ing.productId}`);
+                        if((pr.totalQuantity || 0) < actualQty - 0.001) throw new Error(`Sem saldo suficiente de ${pr.name} (Físico atual: ${(pr.totalQuantity||0).toFixed(2)} | Requer: ${actualQty.toFixed(2)})`);
+                        
+                        let planToUse = (ing.consumptionPlan && ing.consumptionPlan.length > 0) ? JSON.parse(JSON.stringify(ing.consumptionPlan)) : getFIFOPlan(ing.productId, actualQty).plan;
+                        let totalPlan = planToUse.reduce((s,x)=>s+x.quantity, 0);
+                        if(totalPlan < actualQty - 0.001) throw new Error(`Lotes insuficientes ou bloqueados para: ${pr.name}`);
+                    }
+                }
+            }
+
             for(const op of p){
                 for(const ing of op.ingredients){
                     let actualQty = ing.adjustedQuantity;
