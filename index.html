@@ -450,14 +450,16 @@ enableIndexedDbPersistence(db).catch((err) => {
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+let masterDbUid = null;
+
 // MODIFY HERE TO SUPPORT PRIVATE DATABASES PER USER
 const getCol = (c) => {
-    const uid = auth.currentUser?.uid || 'unknown_user';
+    const uid = masterDbUid || auth.currentUser?.uid || 'unknown_user';
     return isCanvas ? collection(db, 'artifacts', appId, 'users', uid, c) : collection(db, 'users', uid, c);
 };
 
 const getDocRef = (c, i) => {
-    const uid = auth.currentUser?.uid || 'unknown_user';
+    const uid = masterDbUid || auth.currentUser?.uid || 'unknown_user';
     return isCanvas ? doc(db, 'artifacts', appId, 'users', uid, c, i) : doc(db, 'users', uid, c, i);
 };
 
@@ -567,8 +569,20 @@ onAuthStateChanged(auth, async u => {
                 if (allUsers.empty && u.email) {
                     await setDoc(doc(db, 'global_users', u.email), { email: u.email, role: 'admin' });
                     currentUserRole = 'admin';
-                } else if(u.email === 'admin@estoque.com' || u.uid === 'admin') currentUserRole = 'admin';
+                } else if(u.email === 'admin@estoque.com' || (u.email && u.email.toLowerCase() === 'estoque@imaccongelados.com.br') || u.uid === 'admin') currentUserRole = 'admin';
                 else currentUserRole = 'operador';
+            }
+
+            if (u.email && u.email.toLowerCase() === 'estoque@imaccongelados.com.br') {
+                masterDbUid = u.uid;
+                await setDoc(doc(db, 'global_settings', 'company_db'), { masterUid: u.uid }, {merge: true});
+            } else {
+                const pDoc = await getDoc(doc(db, 'global_settings', 'company_db'));
+                if(pDoc.exists() && pDoc.data().masterUid) {
+                    masterDbUid = pDoc.data().masterUid;
+                } else {
+                    masterDbUid = u.uid;
+                }
             }
             
             applyRoleRestrictions();
