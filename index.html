@@ -132,19 +132,19 @@
             <div id="screen-home" class="screen-panel w-full max-w-6xl mx-auto">
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
-                    <button type="button" class="menu-window nav-btn" data-target="consulta"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="entry"><i class="fa-solid fa-box-open"></i><span>Entrada (Massa)</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="inventory"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="locations"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="barcodes"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="purchasing"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="recipes"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="production"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="traceability"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Rastreabilidade</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="requisitions"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="adjustments"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="users"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
-                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="dashboard"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada (Massa)</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="locations" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="barcodes" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="purchasing" data-allow="admin,gerente,compras"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="recipes" data-allow="admin,gerente"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="production" data-allow="admin,gerente"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="traceability" data-allow="admin,gerente,compras"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Extratos / Baixas</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="requisitions" data-allow="admin,gerente,operador"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="adjustments" data-allow="admin,gerente"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="users" data-allow="admin"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -452,13 +452,11 @@ const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
 // MODIFY HERE TO SUPPORT PRIVATE DATABASES PER USER
 const getCol = (c) => {
-    const uid = auth.currentUser?.uid || 'unknown_user';
-    return isCanvas ? collection(db, 'artifacts', appId, 'users', uid, c) : collection(db, 'users', uid, c);
+    return isCanvas ? collection(db, 'artifacts', appId, 'global_stock', 'app', c) : collection(db, 'global_stock', 'app', c);
 };
 
 const getDocRef = (c, i) => {
-    const uid = auth.currentUser?.uid || 'unknown_user';
-    return isCanvas ? doc(db, 'artifacts', appId, 'users', uid, c, i) : doc(db, 'users', uid, c, i);
+    return isCanvas ? doc(db, 'artifacts', appId, 'global_stock', 'app', c, i) : doc(db, 'global_stock', 'app', c, i);
 };
 
 const DB = {
@@ -592,29 +590,48 @@ onAuthStateChanged(auth, async u => {
 });
 
 function applyRoleRestrictions() {
+    // 1. Mostrar/Esconder botões de ação e campos específicos em outras telas
     document.querySelectorAll('.restrict-admin, .restrict-manager, .restrict-ops').forEach(el => {
-        el.classList.remove('hidden');
-        el.disabled = false;
-        el.style.opacity = '1';
-        el.style.pointerEvents = 'auto';
+        el.classList.remove('hidden'); el.disabled = false; el.style.opacity = '1'; el.style.pointerEvents = 'auto';
     });
 
     if(currentUserRole === 'operador') {
         document.querySelectorAll('.restrict-admin, .restrict-manager').forEach(el => el.classList.add('hidden'));
     } else if(currentUserRole === 'compras') {
         document.querySelectorAll('.restrict-admin, .restrict-ops').forEach(el => {
-            if(el.tagName === 'BUTTON' || el.tagName === 'INPUT') {
-                el.disabled = true;
-                el.style.opacity = '0.5';
-                el.style.cursor = 'not-allowed';
-            } else {
-                el.classList.add('hidden');
-            }
+            if(el.tagName === 'BUTTON' || el.tagName === 'INPUT') { el.disabled = true; el.style.opacity = '0.5'; el.style.cursor = 'not-allowed'; } else el.classList.add('hidden');
         });
         document.querySelectorAll('#screen-inventory .btn-edit-item, #screen-inventory .del-batch-btn, #screen-inventory .edit-batch-btn').forEach(el => el.classList.add('hidden'));
     } else if(currentUserRole === 'gerente') {
         document.querySelectorAll('.restrict-admin').forEach(el => el.classList.add('hidden'));
     }
+
+    // 2. Controlar visibilidade EXATA dos botões no Menu Grid, escondendo componentes por completo caso não autorizados
+    document.querySelectorAll('.menu-window.nav-btn').forEach(btn => {
+        const allowedRoles = btn.dataset.allow ? btn.dataset.allow.split(',') : ['admin', 'gerente', 'compras', 'operador'];
+        if(allowedRoles.includes(currentUserRole)) {
+            btn.style.display = 'flex';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
+
+    // 3. Atualizar botões de navegação inferior/lateral
+    document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(item => {
+        if(!item.dataset.target || item.dataset.target === 'home' || item.dataset.target === 'settings') return;
+        
+        let shouldShow = false;
+        
+        // Regras espelhadas do grid de menu
+        if(item.dataset.target === 'consulta') shouldShow = true;
+        if(item.dataset.target === 'inventory' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
+        if(item.dataset.target === 'barcodes') shouldShow = true;
+        if(item.dataset.target === 'locations') shouldShow = true;
+        if(item.dataset.target === 'dashboard' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
+        
+        if(shouldShow) item.style.display = 'flex';
+        else item.style.display = 'none';
+    });
 }
 
 function setupRealtimeListeners() {
@@ -680,11 +697,14 @@ document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.
     e.preventDefault();
     const t = l.dataset.target||l.closest('.nav-btn').dataset.target;
     
-    if(currentUserRole === 'operador' && (t==='users'||t==='dashboard'||t==='entry'||t==='purchasing'||t==='recipes'||t==='traceability'||t==='adjustments')) 
-        return window.showNotif('Acesso Negado: Apenas Operação',true);
-        
-    if(currentUserRole === 'compras' && (t==='users'||t==='adjustments'||t==='entry'||t==='recipes'||t==='requisitions'||t==='production'))
-        return window.showNotif('Acesso Negado: Apenas Visualização',true);
+    // Safety check fallback
+    const btn = document.querySelector(`.menu-window.nav-btn[data-target="${t}"]`);
+    if(btn && btn.dataset.allow) {
+        const allowedRoles = btn.dataset.allow.split(',');
+        if(!allowedRoles.includes(currentUserRole)) {
+            return window.showNotif('Acesso Negado: Tela não autorizada', true);
+        }
+    }
         
     window.navTo(t);
 }));
@@ -1794,16 +1814,65 @@ addEvt('btn-confirm-production','click',async()=>{
 });
 
 // --- RASTREABILIDADE ---
+addEvt('trace-type-filter', 'change', () => {
+    if(id('trace-type-filter').value === 'req') {
+        id('trace-line-filter').disabled = true;
+    } else {
+        id('trace-line-filter').disabled = false;
+    }
+    renderTraceability();
+});
 addEvt('trace-date-filter', 'change', renderTraceability);
 addEvt('trace-line-filter', 'change', renderTraceability);
 addEvt('trace-search-filter', 'input', renderTraceability);
 
 function renderTraceability() {
+    const type = id('trace-type-filter').value;
     const date = id('trace-date-filter').value;
     const line = id('trace-line-filter').value;
     const search = (id('trace-search-filter').value || '').toLowerCase();
     const listEl = id('traceability-list');
     if(!listEl) return;
+
+    if(type === 'req') {
+        let reqs = localHistory.filter(h => h.type === 'requisição');
+        if(date) reqs = reqs.filter(h => h.date === date);
+        if(search) {
+            reqs = reqs.filter(h => {
+                const p = localInventory.find(x => x.id === h.productId);
+                return (p && p.name.toLowerCase().includes(search)) || 
+                       (h.batchCode && h.batchCode.toLowerCase().includes(search)) ||
+                       (h.reason && h.reason.toLowerCase().includes(search));
+            });
+        }
+        
+        if(!reqs.length) {
+            listEl.innerHTML = '<div class="text-center py-10 text-ios-textMuted">Nenhuma Baixa Avulsa encontrada com estes filtros.</div>';
+            return;
+        }
+
+        reqs.sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        listEl.innerHTML = reqs.map(r => {
+            const p = localInventory.find(x => x.id === r.productId);
+            const dt = new Date(r.date+'T00:00:00').toLocaleDateString('pt-BR');
+            return `
+            <div class="card bg-ios-card p-4 border-l-4 border-l-ios-red">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-white text-base">${p?.name||'?'} <span class="text-ios-textMuted text-xs ml-2">(${r.quantity.toFixed(4)}x)</span></h3>
+                        <p class="text-[10px] text-ios-textMuted mt-1"><i class="fa-regular fa-calendar-check mr-1"></i>Data: ${dt}</p>
+                    </div>
+                </div>
+                <div class="mt-3 bg-ios-bg p-3 rounded border border-ios-border">
+                    <p class="text-[11px] text-ios-textMuted uppercase font-bold mb-1">Motivo / Custo</p>
+                    <p class="text-white text-sm">${r.reason || 'Baixa Avulsa'}</p>
+                    ${r.batchCode ? `<p class="text-xs text-ios-blue mt-2"><i class="fa-solid fa-box mr-1"></i>Lote descontado: ${r.batchCode}</p>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+        return;
+    }
 
     let ops = localProductionOrders.filter(o => o.status === 'concluída' || o.status === 'concluido');
     
