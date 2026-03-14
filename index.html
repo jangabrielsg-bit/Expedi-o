@@ -207,8 +207,14 @@
 
             <!-- Produção OP -->
             <div id="screen-production" class="screen-panel hidden">
-                <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-confirm-production" class="btn-success"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
-                <div class="card mb-5 flex gap-4 items-center border-l-4 border-l-ios-blue"><label class="text-sm font-medium text-ios-textMuted"><i class="fa-solid fa-filter mr-2"></i>Data OP:</label><input type="date" id="search-po-by-date" class="form-input w-auto py-2"></div>
+                <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-confirm-production" class="btn-success restrict-ops"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary restrict-ops"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
+                <div class="card mb-5 flex flex-col sm:flex-row gap-4 items-center border-l-4 border-l-ios-blue">
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-medium text-ios-textMuted"><i class="fa-solid fa-filter mr-2"></i>Data OP:</label>
+                        <input type="date" id="search-po-by-date" class="form-input w-auto py-2">
+                    </div>
+                    <button type="button" id="btn-po-show-all-pending" class="btn-secondary py-2 text-sm"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Todas Pendentes</button>
+                </div>
                 <div id="production-orders-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
             </div>
             
@@ -237,29 +243,46 @@
 
             <!-- Dashboard Gráfico -->
             <div id="screen-dashboard" class="screen-panel hidden">
-                <h1 class="title-lg mb-6"><i class="fa-solid fa-chart-pie text-ios-orange mr-3"></i>Dashboard Gerencial</h1>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <div class="card relative h-80 flex flex-col items-center justify-center">
-                        <h2 class="title-md absolute top-4 left-4 text-ios-textMuted text-sm">OEE Produção x Falhas</h2>
-                        <canvas id="chart-oee" class="mt-8 w-full h-full p-2"></canvas>
+                <h1 class="title-lg mb-6"><i class="fa-solid fa-chart-pie text-ios-orange mr-3"></i>Visão Global</h1>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="card bg-ios-input/50 text-center py-6">
+                        <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">SKUs Únicos</h3>
+                        <p class="text-white text-3xl font-bold font-mono" id="dash-skus">0</p>
                     </div>
-                    <div class="card relative h-80 flex flex-col items-center justify-center">
-                        <h2 class="title-md absolute top-4 left-4 text-ios-textMuted text-sm">Top 10 Insumos Consumidos</h2>
-                        <canvas id="chart-top-insumos" class="mt-8 w-full h-full p-2"></canvas>
+                    <div class="card bg-ios-input/50 text-center py-6">
+                        <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Fornecedores</h3>
+                        <p class="text-white text-3xl font-bold font-mono" id="dash-fornecedores">0</p>
+                    </div>
+                    <div class="card bg-ios-input/50 text-center py-6">
+                        <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Média Entradas/Dia</h3>
+                        <p class="text-ios-green text-3xl font-bold font-mono" id="dash-entradas-media">0</p>
+                        <p class="text-[9px] text-ios-textMuted mt-1">Últimos 30 dias</p>
+                    </div>
+                    <div class="card bg-ios-input/50 text-center py-6">
+                        <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Média OPs/Dia</h3>
+                        <p class="text-ios-blue text-3xl font-bold font-mono" id="dash-ops-media">0</p>
+                        <p class="text-[9px] text-ios-textMuted mt-1">Últimos 30 dias</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="card bg-ios-blue/10 border border-ios-blue/30 text-center py-8">
-                        <h3 class="text-ios-blue font-bold text-sm uppercase mb-2">Pedidos Atrasados</h3>
-                        <p class="text-white text-5xl font-bold font-mono" id="dash-atrasados">0</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col items-center justify-center border-ios-blue/30">
+                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Top 10 Insumos Consumidos</h2>
+                        <canvas id="chart-top-insumos" class="mt-8 w-full h-full p-2"></canvas>
                     </div>
-                    <div class="card bg-ios-green/10 border border-ios-green/30 text-center py-8">
-                        <h3 class="text-ios-green font-bold text-sm uppercase mb-2">Volume OPs (30 Dias)</h3>
-                        <p class="text-white text-5xl font-bold font-mono" id="dash-volume">0</p>
+                    <div class="card col-span-1 bg-ios-orange/10 border border-ios-orange/30 text-center py-8 flex flex-col justify-center">
+                        <h3 class="text-ios-orange font-bold text-sm uppercase mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Insumos Críticos</h3>
+                        <p class="text-white text-6xl font-bold font-mono mb-2" id="dash-criticos">0</p>
+                        <p class="text-xs text-ios-orange/80">Estoque Menor que a Reserva Real</p>
                     </div>
-                    <div class="card bg-ios-orange/10 border border-ios-orange/30 text-center py-8">
-                        <h3 class="text-ios-orange font-bold text-sm uppercase mb-2">Insumos Críticos Diários</h3>
-                        <p class="text-white text-5xl font-bold font-mono" id="dash-criticos">0</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div class="card bg-ios-bg border-ios-border">
+                        <h3 class="text-sm font-bold text-white uppercase mb-4 flex items-center"><i class="fa-solid fa-scale-balanced text-ios-textMuted mr-2"></i>Volume Médio Consumido Diário</h3>
+                        <p class="text-4xl text-white font-mono" id="dash-volume-medio">0 <span class="text-lg text-ios-textMuted">UN/KG/L</span></p>
+                    </div>
+                    <div class="card bg-ios-bg border-ios-border">
+                        <h3 class="text-sm font-bold text-white uppercase mb-4 flex items-center"><i class="fa-solid fa-clock text-ios-red mr-2"></i>Qtd Perto da Validade</h3>
+                        <p class="text-4xl text-ios-red font-mono" id="dash-validade">0 <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span></p>
                     </div>
                 </div>
             </div>
@@ -269,20 +292,21 @@
                 <h1 class="title-lg mb-6"><i class="fa-solid fa-users text-ios-green mr-3"></i>Permissões de Acesso</h1>
                 <div class="card mb-6">
                     <h2 class="title-md text-sm mb-4">Cadastrar / Atualizar Permissão</h2>
-                    <form id="user-role-form" class="flex gap-4 items-end">
-                        <div class="flex-1">
+                    <form id="user-role-form" class="flex flex-col sm:flex-row gap-4 items-end">
+                        <div class="flex-1 w-full">
                             <label class="form-label">Email do Funcionário</label>
                             <input type="email" id="user-role-email" required class="form-input" placeholder="email@gmail.com" autocomplete="off">
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 w-full">
                             <label class="form-label">Perfil</label>
                             <select id="user-role-type" required class="form-input">
                                 <option value="operador">Operador (Apenas Baixas)</option>
+                                <option value="compras">Setor de Compras (Visualizar Estoque/Dashboard)</option>
                                 <option value="gerente">Gerente de Setor (Receitas / OPs)</option>
                                 <option value="admin">Administrador (Total)</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn-primary shrink-0 py-[14px]">Conceder</button>
+                        <button type="submit" class="btn-primary shrink-0 w-full sm:w-auto py-[14px]">Conceder</button>
                     </form>
                 </div>
                 <div class="card">
@@ -568,9 +592,26 @@ onAuthStateChanged(auth, async u => {
 });
 
 function applyRoleRestrictions() {
-    document.querySelectorAll('.restrict-admin, .restrict-manager').forEach(el => el.classList.remove('hidden'));
+    document.querySelectorAll('.restrict-admin, .restrict-manager, .restrict-ops').forEach(el => {
+        el.classList.remove('hidden');
+        el.disabled = false;
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+    });
+
     if(currentUserRole === 'operador') {
         document.querySelectorAll('.restrict-admin, .restrict-manager').forEach(el => el.classList.add('hidden'));
+    } else if(currentUserRole === 'compras') {
+        document.querySelectorAll('.restrict-admin, .restrict-ops').forEach(el => {
+            if(el.tagName === 'BUTTON' || el.tagName === 'INPUT') {
+                el.disabled = true;
+                el.style.opacity = '0.5';
+                el.style.cursor = 'not-allowed';
+            } else {
+                el.classList.add('hidden');
+            }
+        });
+        document.querySelectorAll('#screen-inventory .btn-edit-item, #screen-inventory .del-batch-btn, #screen-inventory .edit-batch-btn').forEach(el => el.classList.add('hidden'));
     } else if(currentUserRole === 'gerente') {
         document.querySelectorAll('.restrict-admin').forEach(el => el.classList.add('hidden'));
     }
@@ -638,7 +679,13 @@ window.navTo=t=>{
 document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.addEventListener('click',e=>{
     e.preventDefault();
     const t = l.dataset.target||l.closest('.nav-btn').dataset.target;
-    if((t==='users'||t==='dashboard'||t==='entry'||t==='purchasing'||t==='recipes'||t==='traceability'||t==='adjustments') && currentUserRole === 'operador') return window.showNotif('Acesso Negado',true);
+    
+    if(currentUserRole === 'operador' && (t==='users'||t==='dashboard'||t==='entry'||t==='purchasing'||t==='recipes'||t==='traceability'||t==='adjustments')) 
+        return window.showNotif('Acesso Negado: Apenas Operação',true);
+        
+    if(currentUserRole === 'compras' && (t==='users'||t==='adjustments'||t==='entry'||t==='recipes'||t==='requisitions'||t==='production'))
+        return window.showNotif('Acesso Negado: Apenas Visualização',true);
+        
     window.navTo(t);
 }));
 
@@ -1550,10 +1597,18 @@ addEvt('recipe-form','submit',async e=>{
 });
 
 // PRODUCTION ORDERS
-addEvt('search-po-by-date','change',renderPO);
+let showAllPendingOPs = false;
+addEvt('search-po-by-date','change', () => { showAllPendingOPs = false; renderPO(); });
+addEvt('btn-po-show-all-pending','click', () => { showAllPendingOPs = true; id('search-po-by-date').value = ''; renderPO(); });
+
 function renderPO(){
     const d=id('search-po-by-date')?.value,c=id('production-orders-list');if(!c)return;
-    const l=localProductionOrders.filter(x=>x.date===d);
+    let l = [];
+    if(showAllPendingOPs) {
+        l = localProductionOrders.filter(x => x.status === 'pendente').sort((a,b) => new Date(a.date) - new Date(b.date));
+    } else {
+        l = localProductionOrders.filter(x=>x.date===d);
+    }
     c.innerHTML=l.length?l.map(o=>`
         <div class="card relative pl-12 border-l-4 ${o.status==='pendente'?'border-l-ios-orange':'border-l-ios-green'}">
             <div class="absolute left-3 top-5"><input type="checkbox" class="ui-checkbox scale-75 po-select-checkbox" data-id="${o.id}" ${o.status!=='pendente'?'disabled':''}></div>
@@ -1919,30 +1974,30 @@ addEvt('users-table-body', 'click', async e => {
 });
 
 // DASHBOARD
-let chartOee=null, chartInsumos=null;
+let chartInsumos=null;
 function renderDashboard() {
-    if(!id('chart-oee')) return;
-    
-    // Calcular OEE simplificado (OPs Concluídas vs OPs Lançadas)
-    const opsLast30 = localProductionOrders.filter(o => {
-        const d = new Date(o.date);
-        return (new Date() - d) / (1000*60*60*24) <= 30;
-    });
-    const c = opsLast30.filter(o => o.status === 'concluída' || o.status === 'concluido').length;
-    const p = opsLast30.filter(o => o.status === 'pendente').length;
-    
-    if(chartOee) chartOee.destroy();
-    chartOee = new Chart(id('chart-oee'), {
-        type: 'doughnut',
-        data: { labels: ['Concluídas', 'Pendentes/Atrasadas'], datasets: [{ data: [c, p], backgroundColor: ['#30d158', '#ff453a'], borderWidth: 0, hoverOffset: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } }, cutout: '75%' }
-    });
+    if(!id('chart-top-insumos')) return;
 
-    // Top Insumos
+    // Calcular OPs Last 30 Days
+    const mt = new Date(); mt.setDate(mt.getDate() - 30);
+    const mIso = mt.toISOString().split('T')[0];
+    const opsLast30 = localProductionOrders.filter(o => o.date >= mIso || (o.executionDate && o.executionDate >= mIso));
+    const opsSeparadas = opsLast30.filter(o => o.status === 'concluída' || o.status === 'concluido').length;
+    const avgOps = opsSeparadas / 30;
+
+    // Recebimentos Diários Médios
+    const entLast30 = localHistory.filter(h => h.date >= mIso && h.type.includes('entrada'));
+    const avgEntradas = entLast30.length / 30;
+
+    // Top Insumos & Volume Absoluto
     const usage = {};
-    localHistory.filter(h => h.type === 'saída' || h.type === 'requisição').forEach(h => {
+    let volTotal = 0;
+    localHistory.filter(h => h.date >= mIso && (h.type === 'saída' || h.type === 'requisição')).forEach(h => {
         usage[h.productId] = (usage[h.productId] || 0) + h.quantity;
+        volTotal += h.quantity;
     });
+    const avgVol = volTotal / 30;
+    
     const top = Object.entries(usage).sort((a,b) => b[1]-a[1]).slice(0, 10).map(x => {
         const p = localInventory.find(i => i.id === x[0]);
         return { name: p ? p.name.substring(0,15) : '?', qty: x[1] };
@@ -1951,15 +2006,26 @@ function renderDashboard() {
     if(chartInsumos) chartInsumos.destroy();
     chartInsumos = new Chart(id('chart-top-insumos'), {
         type: 'bar',
-        data: { labels: top.map(x=>x.name), datasets: [{ label: 'Qtd Consumida', data: top.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+        data: { labels: top.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: top.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
     });
 
+    // Validations & Validade
+    const qD = new Date(); qD.setDate(qD.getDate() + 45);
+    const eb = localBatches.filter(b => b.quantity > 0 && b.expiryDate && new Date(b.expiryDate) <= qD).length;
+
+    // Fornecedores Update
+    const sups = [...new Set(localInventory.map(i => i.supplier))].filter(Boolean);
+
     // Cards
-    const tS=new Date().toISOString().split('T')[0];
-    id('dash-atrasados').innerText = localInventory.filter(i=>i.pendingOrder?.active && i.pendingOrder.expectedDate < tS).length;
-    id('dash-volume').innerText = c;
-    id('dash-criticos').innerText = localInventory.filter(i => { const info = getStockInfo(i.id); return (i.totalQuantity||0) <= Math.max(info.theoretical, info.real); }).length;
+    id('dash-skus').innerText = localInventory.filter(i => i.type !== 'semi_acabado').length;
+    id('dash-fornecedores').innerText = sups.length;
+    id('dash-entradas-media').innerText = avgEntradas.toFixed(1);
+    id('dash-ops-media').innerText = avgOps.toFixed(1);
+    id('dash-criticos').innerText = localInventory.filter(i => { const info = getStockInfo(i.id); return (i.totalQuantity||0) > 0 && (i.totalQuantity||0) <= info.real; }).length;
+    
+    id('dash-volume-medio').innerHTML = `${avgVol.toFixed(1)} <span class="text-lg text-ios-textMuted">UN/KG/L</span>`;
+    id('dash-validade').innerHTML = `${eb} <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span>`;
 }
 
 addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:await DB.getAll('inventory'),batches:await DB.getAll('batches'),history:await DB.getAll('history'),recipes:await DB.getAll('recipes'),productionOrders:await DB.getAll('productionOrders'),monthlyConsumption:await DB.getAll('monthlyConsumption'),locations:await DB.getAll('locations')};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});addEvt('btn-clear-db','click',()=>{showConfirmationModal('Cuidado!','APAGA TUDO!',async()=>{show(id('loading-overlay'));try{await DB.clear('inventory');await DB.clear('batches');await DB.clear('history');await DB.clear('recipes');await DB.clear('productionOrders');await DB.clear('monthlyConsumption');await DB.clear('locations');await refreshData();window.showNotif('Formatado!');}catch(e){}finally{hide(id('loading-overlay'));}});});
