@@ -352,6 +352,7 @@ const fC = isCanvas ? JSON.parse(__firebase_config) : {
 const app = initializeApp(fC);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
 const db = getFirestore(app);
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -511,7 +512,7 @@ function setupRealtimeListeners() {
 
 // STATE
 let localInventory=[],localBatches=[],localHistory=[],localRecipes=[],localProductionOrders=[],localLocations=[];
-let currentRecipeCategory='Todos',currentHistoryProductId=null,bulkEntryItems=[],quickRegisterCallback=null;
+let currentRecipeCategory='Todos',currentHistoryProductId=null,bulkEntryItems=[],quickRegisterCallback=null,currentOpSubstitutions={};
 let invSort={col:'name',asc:true}; const typeLabels={insumo:'Insumo',semi_acabado:'Semi-acabado'};
 let batchSelectorContext = null; 
 let currentBatchTarget = null;
@@ -1487,9 +1488,11 @@ addEvt('po-quantity','input',()=>{
         const r=localRecipes.find(x=>x.id===s.dataset.selectedId),m=parseFloat(id('po-quantity').value)||1;
         if(r&&r.isSemi)id('po-total-output').value=((r.outputYield||1)*m).toFixed(4);
         id('po-ingredients-body').innerHTML=(r?.ingredients||[]).map(i=>{
-            const p=localInventory.find(x=>x.id===i.productId),q=i.quantity*m,f=getFIFOPlan(i.productId,q);
-            return `<tr class="base-tr" data-product-id="${i.productId}" data-plan='${JSON.stringify(f.plan).replace(/'/g, "&#39;")}'>
-                <td class="base-td text-white text-xs">${p?.name||'?'}</td>
+            const aId=currentOpSubstitutions[i.productId]||i.productId;
+            const p=localInventory.find(x=>x.id===aId),q=i.quantity*m,f=getFIFOPlan(aId,q);
+            const isS=aId!==i.productId;
+            return `<tr class="base-tr" data-product-id="${aId}" data-plan='${JSON.stringify(f.plan).replace(/'/g, "&#39;")}'>
+                <td class="base-td text-white text-xs po-ing-name-cell"><div class="flex flex-col gap-1"><span class="whitespace-normal ${isS?'text-ios-orange':''}">${isS?'<i class="fa-solid fa-right-left mr-1"></i>':''}${p?.name||'?'}</span><button type="button" class="text-ios-orange btn-substitute-ing text-left text-[9px] hover:underline whitespace-nowrap" data-orig="${i.productId}"><i class="fa-solid fa-right-left"></i> Substituir</button></div></td>
                 <td class="base-td hidden sm:table-cell text-xs">${(p?.totalQuantity||0).toFixed(2)}</td>
                 <td class="base-td"><input type="number" value="${q.toFixed(4)}" class="form-input py-1 px-1 w-20 text-center text-xs po-ing-qty bg-ios-bg border-ios-border" readonly></td>
                 <td class="base-td text-[10px] ${f.isSufficient?'text-ios-green':'text-ios-red font-bold'}">
@@ -1501,10 +1504,27 @@ addEvt('po-quantity','input',()=>{
     }
 });
 
+addEvt('po-ingredients-body', 'click', e => {
+    const btn = e.target.closest('.btn-substitute-ing');
+    if (btn) {
+        const tr = btn.closest('tr');
+        const origId = btn.dataset.orig;
+        const cell = tr.querySelector('.po-ing-name-cell');
+        cell.innerHTML = '<div class="searchable-container po-sub-container w-full min-w-[120px]"></div>';
+        createSearchableSelect(cell.querySelector('.searchable-container'), localInventory, 'Buscar...', p => {
+            currentOpSubstitutions[origId] = p.id;
+            id('po-quantity').dispatchEvent(new Event('input'));
+        });
+        setTimeout(() => cell.querySelector('input')?.focus(), 100);
+    }
+});
+
 addEvt('btn-new-production-order','click',()=>{
+    currentOpSubstitutions = {};
     id('production-order-form').reset();
     id('po-ingredients-body').innerHTML='';
     createSearchableSelect(id('po-recipe-searchable-container'),localRecipes,'Receita...',r=>{
+        currentOpSubstitutions = {};
         if(r.isSemi){
             show(id('po-output-fields'));
             const d = new Date();
