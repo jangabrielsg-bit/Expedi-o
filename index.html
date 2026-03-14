@@ -113,10 +113,8 @@
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="picking"><i class="fa-solid fa-dolly w-6 text-center text-lg text-ios-orange"></i><span class="ml-3 hidden lg:block font-medium text-ios-orange">Separação (Picking)</span><span id="badge-nav-picking" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="divergences"><i class="fa-solid fa-scale-unbalanced w-6 text-center text-lg" style="color:#ff375f;"></i><span class="ml-3 hidden lg:block font-medium">Divergências</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
@@ -139,10 +137,8 @@
                     <button type="button" class="menu-window nav-btn" data-target="barcodes"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="purchasing"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="recipes"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
-                    <button type="button" class="menu-window nav-btn relative" data-target="picking"><i class="fa-solid fa-dolly text-ios-orange"></i><span class="text-ios-orange">Separação</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="production"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="traceability"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Rastreabilidade</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="divergences"><i class="fa-solid fa-scale-unbalanced" style="color:#ff375f;"></i><span>Divergências</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="requisitions"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="adjustments"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
                 </div>
@@ -205,12 +201,6 @@
                 <div class="flex flex-col lg:flex-row gap-6"><div class="w-full lg:w-1/4 card"><h2 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Categorias</h2><ul id="recipe-categories-list" class="flex lg:flex-col gap-2 w-max lg:w-full"></ul></div><div id="recipes-grid" class="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
             </div>
 
-            <!-- Picking -->
-            <div id="screen-picking" class="screen-panel hidden">
-                <h1 class="title-lg mb-6 text-ios-orange"><i class="fa-solid fa-dolly mr-3"></i>Separação</h1>
-                <div id="picking-lines-container" class="space-y-6"></div>
-            </div>
-
             <!-- Produção OP -->
             <div id="screen-production" class="screen-panel hidden">
                 <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-confirm-production" class="btn-success"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
@@ -227,17 +217,6 @@
                     <div><label class="form-label">Buscar Insumo ou OP...</label><input type="text" id="trace-search-filter" class="form-input" placeholder="Ex: Farinha..."></div>
                 </div>
                 <div id="traceability-list" class="space-y-4"></div>
-            </div>
-
-            <!-- Divergências -->
-            <div id="screen-divergences" class="screen-panel hidden">
-                <h1 class="title-lg mb-0 text-ios-red"><i class="fa-solid fa-scale-unbalanced mr-3"></i>Relatório de Divergências</h1>
-                <p class="text-ios-textMuted text-sm mb-6 mt-1 italic">"Não se gerencia o que não se mede, não se mede o que não se define..."</p>
-                <div class="card mb-6">
-                    <label class="form-label">Filtrar por Data da OP:</label>
-                    <input type="date" id="divergences-date-filter" class="form-input w-full md:w-1/3">
-                </div>
-                <div id="divergences-list" class="space-y-4"></div>
             </div>
 
             <!-- Baixa Avulsa -->
@@ -277,13 +256,13 @@
             </div>
         </main>
         
-        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/4 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center" data-target="consulta"><i class="fa-solid fa-magnifying-glass text-xl mb-1"></i><span class="text-[10px] font-bold">Consulta</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative" data-target="picking"><i class="fa-solid fa-dolly text-xl mb-1"></i><span class="text-[10px] font-bold">Picking</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
+        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/4 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center" data-target="consulta"><i class="fa-solid fa-magnifying-glass text-xl mb-1"></i><span class="text-[10px] font-bold">Consulta</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative" data-target="production"><i class="fa-solid fa-hammer text-xl mb-1"></i><span class="text-[10px] font-bold">Produção</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
     </div>
 
     <!-- Modais Flutuantes -->
     <div id="recipe-modal" class="modal z-[6000]"><div class="modal-content max-w-2xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 id="recipe-modal-title" class="title-md mb-0 text-ios-blue"><i class="fa-solid fa-book-bookmark mr-3"></i>Nova Receita</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="recipe-modal">&times;</button></div><form id="recipe-form" class="space-y-6"><input type="hidden" id="edit-recipe-id"><div class="grid grid-cols-2 gap-4"><div><label class="form-label">Produto Final</label><input type="text" id="recipe-name" required class="form-input"></div><div><label class="form-label">Categoria</label><input type="text" id="recipe-category" required class="form-input"></div></div><div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border"><div class="flex items-center gap-3"><input type="checkbox" id="recipe-is-semi" class="w-5 h-5 accent-ios-orange"><label for="recipe-is-semi" class="text-white">É um Semi-acabado</label></div><div id="yield-wrapper" class="hidden mt-2"><label class="form-label text-ios-orange">Rendimento</label><input type="number" step="0.0001" id="recipe-yield" class="form-input w-1/2" value="1"></div></div><div class="border-t border-ios-border pt-4"><div class="flex justify-between items-center mb-4"><h3 class="text-sm text-ios-textMuted">Ingredientes</h3><button type="button" id="add-ingredient-btn" class="text-ios-blue bg-ios-blue/20 px-3 py-2 rounded-lg">Adicionar Insumo</button></div><div id="ingredients-container" class="space-y-3"></div></div><div class="flex justify-end gap-3 pt-4 border-t border-ios-border mt-6"><button type="button" class="btn-secondary close-modal" data-target="recipe-modal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
 
-    <div id="production-order-modal" class="modal z-[6000]"><div class="modal-content max-w-4xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-hammer mr-3 text-ios-orange"></i>Nova OP</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="production-order-modal">&times;</button></div><form id="production-order-form" class="space-y-6"><div class="grid grid-cols-3 gap-4 relative"><div class="z-50 col-span-2"><label class="form-label">Ficha produzida</label><div id="po-recipe-searchable-container"></div></div><div><label class="form-label">Data Programada</label><input type="date" id="po-date" required class="form-input"></div></div><div class="grid grid-cols-4 gap-4 items-end"><div><label class="form-label">Multiplicador</label><input type="number" step="0.01" id="po-quantity" required class="form-input font-bold text-center text-ios-blue py-3" value="1" min="0.01"></div><div class="col-span-3 flex items-center gap-3 bg-ios-cardHover p-3 rounded-xl border border-ios-border"><input type="checkbox" id="po-is-extra" class="w-6 h-6 accent-ios-red"><label for="po-is-extra" class="text-white text-sm">OP EXTRA / URGENTE</label></div></div><div id="po-output-fields" class="grid grid-cols-2 gap-4 bg-ios-orange/10 p-4 rounded-xl border border-ios-orange/30 hidden"><div><label class="form-label text-ios-orange">Lote Gerado Auto</label><input type="text" id="po-output-batch" class="form-input bg-ios-bg border-ios-orange/50 text-white text-sm"></div><div><label class="form-label text-ios-orange">Rend. Previsto</label><input type="text" id="po-total-output" readonly class="form-input bg-ios-bg border-ios-orange/50 font-bold text-white text-lg"></div></div><div class="border-t border-ios-border pt-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3"><i class="fa-solid fa-calculator mr-2"></i>Previsão Físico</h3><div class="table-container max-h-64 overflow-y-auto"><table class="base-table w-full"><thead class="base-thead"><tr><th>Insumo</th><th>Saldo</th><th>Necessário</th><th>PEPS</th></tr></thead><tbody id="po-ingredients-body"></tbody></table></div></div><div class="flex justify-end gap-3 mt-6"><button type="button" class="btn-secondary close-modal" data-target="production-order-modal">Cancelar</button><button type="submit" class="btn-primary">Adicionar OP</button></div></form></div></div>
+    <div id="production-order-modal" class="modal z-[6000]"><div class="modal-content max-w-4xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-hammer mr-3 text-ios-orange"></i>Nova OP</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="production-order-modal">&times;</button></div><form id="production-order-form" class="space-y-6"><div class="grid grid-cols-3 gap-4 relative"><div class="z-50 col-span-2"><label class="form-label">Ficha produzida</label><div id="po-recipe-searchable-container"></div></div><div><label class="form-label">Data Programada</label><input type="date" id="po-date" required class="form-input"></div></div><div class="grid grid-cols-4 gap-4 items-end"><div><label class="form-label">Multiplicador</label><input type="number" step="0.01" id="po-quantity" required class="form-input font-bold text-center text-ios-blue py-3" value="1" min="0.01"></div><div class="col-span-3 flex items-center gap-3 bg-ios-cardHover p-3 rounded-xl border border-ios-border"><input type="checkbox" id="po-is-extra" class="w-6 h-6 accent-ios-red"><label for="po-is-extra" class="text-white text-sm">OP EXTRA / URGENTE</label></div></div><div id="po-output-fields" class="grid grid-cols-2 gap-4 bg-ios-orange/10 p-4 rounded-xl border border-ios-orange/30 hidden"><div><label class="form-label text-ios-orange">Lote Gerado Auto</label><input type="text" id="po-output-batch" class="form-input bg-ios-bg border-ios-orange/50 text-white text-sm"></div><div><label class="form-label text-ios-orange">Rend. Previsto</label><input type="text" id="po-total-output" readonly class="form-input bg-ios-bg border-ios-orange/50 font-bold text-white text-lg"></div></div><div class="border-t border-ios-border pt-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3"><i class="fa-solid fa-calculator mr-2"></i>Previsão Físico</h3><div class="table-container max-h-64 overflow-y-auto"><table class="base-table w-full"><thead class="base-thead"><tr><th>Insumo</th><th>Saldo</th><th>Necessário</th><th>Lotes Escolhidos</th></tr></thead><tbody id="po-ingredients-body"></tbody></table></div></div><div class="flex justify-end gap-3 mt-6"><button type="button" class="btn-secondary close-modal" data-target="production-order-modal">Cancelar</button><button type="submit" class="btn-primary">Adicionar OP</button></div></form></div></div>
 
     <div id="edit-location-modal" class="modal z-[6000]"><div class="modal-content max-w-sm"><h2 class="title-md mb-4 text-ios-blue">Editar Endereço</h2><form id="edit-location-form" class="space-y-4"><input type="hidden" id="edit-loc-old-code"><div><label class="form-label">Código</label><input type="text" id="edit-loc-new-code" required class="form-input font-mono text-ios-blue"></div><div><label class="form-label">Nome Visível</label><input type="text" id="edit-loc-new-name" required class="form-input"></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="edit-location-modal">Cancelar</button><button type="submit" class="btn-primary">Atualizar</button></div></form></div></div>
 
@@ -295,9 +274,7 @@
 
     <div id="modal-add-loc-batch" class="modal z-[6000]"><div class="modal-content max-w-md"><h2 class="title-md mb-4 text-ios-blue">Alocar Lote</h2><form id="add-loc-batch-form" class="space-y-4"><input type="hidden" id="add-loc-target-code"><div class="z-50 relative"><label class="form-label">Produto</label><div id="add-loc-searchable-container"></div></div><div><label class="form-label">Lote</label><select id="add-loc-batch-select" required class="form-input"><option value="">Aguardando...</option></select></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="modal-add-loc-batch">Cancelar</button><button type="submit" class="btn-primary">Confirmar</button></div></form></div></div>
 
-    <div id="picking-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] flex flex-col p-0 bg-ios-bg border border-ios-border"><div class="flex justify-between items-start shrink-0 p-4 border-b border-ios-border bg-ios-cardHover"><div><h2 id="picking-modal-title" class="title-md mb-1 text-ios-orange flex items-center text-xl"></h2><p id="picking-modal-subtitle" class="text-sm text-ios-textMuted"></p></div><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="picking-modal">&times;</button></div><div id="picking-setup-view" class="p-10 flex flex-col items-center justify-center bg-ios-card h-full"><i class="fa-solid fa-clipboard-user text-6xl text-ios-orange mb-6"></i><h3 class="text-2xl font-bold text-white mb-2">Quem vai separar?</h3><p class="text-ios-textMuted text-sm mb-8 text-center">Insira o seu nome.</p><input type="text" id="picking-responsible" class="form-input w-full max-w-xs text-center text-xl py-4 mb-6" autocomplete="off"><button type="button" id="btn-start-picking" class="btn-success py-4 px-10 text-lg w-full max-w-xs rounded-full"><i class="fa-solid fa-dolly mr-2"></i> Iniciar Check-list</button></div><div id="picking-active-view" class="hidden flex-col flex-1 overflow-hidden h-full"><div class="bg-ios-bg p-4 flex justify-between items-center shrink-0 border-b border-ios-border"><div class="flex items-center gap-4"><div><p class="text-[10px] text-ios-textMuted uppercase font-bold tracking-widest">Resp.</p><p class="font-bold text-white text-lg flex items-center"><i class="fa-solid fa-user-check text-ios-blue mr-2"></i><span id="picking-active-resp">---</span></p></div></div><button type="button" id="btn-finish-picking" class="btn-primary py-3 px-6 rounded-xl"><i class="fa-solid fa-flag-checkered mr-2"></i>Finalizar OPs</button></div><div class="overflow-y-auto flex-1 bg-ios-bg p-6"><div class="table-container shadow-xl"><table class="base-table w-full"><thead class="base-thead sticky top-0 z-10 shadow-sm"><tr><th class="base-th rounded-tl-lg">Item (Consolidado)</th><th class="base-th text-right">Necessário</th><th class="base-th text-center w-56">Qtd Real</th><th class="base-th text-center rounded-tr-lg">OK</th></tr></thead><tbody id="picking-checklist-body" class="divide-y divide-ios-border"></tbody></table></div></div></div></div></div>
-
-    <div id="item-details-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 gap-3"><div class="flex-1 w-full"><h2 class="title-md flex items-center mb-1 text-2xl tracking-tight break-words pr-8"><span id="details-product-name"></span></h2><span id="details-product-type-badge" class="badge bg-ios-cardHover text-ios-textMuted border border-ios-border"></span></div><div class="flex items-center gap-2"><button type="button" id="btn-edit-item" class="text-ios-blue bg-ios-blue/10 p-3 rounded-full"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-item" class="text-ios-red bg-ios-red/10 p-3 rounded-full"><i class="fa-solid fa-trash"></i></button><button type="button" class="text-white text-3xl ml-2 close-modal" data-target="item-details-modal">&times;</button></div></div><div id="item-details-view" class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm bg-ios-bg p-5 rounded-2xl mb-6 shadow-inner border border-ios-border"><div class="col-span-1"><span class="text-ios-textMuted block mb-1">Cód. Interno</span><span id="details-product-code" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Fornecedor</span><span id="details-supplier" class="text-white font-medium truncate"></span></div><div class="col-span-2 md:col-span-1"><span class="text-ios-textMuted block mb-1">Estoque Mín.</span><span id="details-min-stock" class="text-ios-orange font-medium"></span></div><div class="col-span-2"><span class="text-ios-textMuted block mb-1">EANs</span><span id="details-product-barcode" class="text-white font-mono break-all text-xs"></span></div><div class="col-span-2 md:col-span-6 bg-ios-cardHover p-3 rounded-xl mt-1"><span class="text-ios-textMuted block mb-1 uppercase font-bold text-[10px]">Saldo Físico Total</span><span id="details-total-quantity" class="text-ios-green font-bold text-3xl"></span></div></div><div id="item-details-edit" class="hidden mb-6 bg-ios-bg p-5 rounded-2xl border border-ios-border shadow-inner"><form id="edit-item-form" class="grid grid-cols-1 md:grid-cols-6 gap-5"><input type="hidden" id="edit-item-id"><div class="md:col-span-6"><label class="form-label">Classificação</label><select id="edit-product-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div class="md:col-span-6"><label class="form-label">Nome</label><input type="text" id="edit-product-name" required class="form-input"></div><div class="md:col-span-3"><label class="form-label">Cód Interno</label><input type="text" id="edit-product-code" class="form-input"></div><div class="md:col-span-3"><label class="form-label">Fornecedor</label><input type="text" id="edit-supplier" class="form-input"></div><div class="md:col-span-2"><label class="form-label">Estoque Mín.</label><input type="number" step="0.01" id="edit-min-stock" class="form-input text-ios-orange font-bold"></div><div class="md:col-span-4"><label class="form-label">EANs (Separe por vírgula)</label><input type="text" id="edit-product-barcode" class="form-input font-mono"></div><div class="md:col-span-6 flex justify-end gap-3 mt-2"><button type="button" id="btn-cancel-edit" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Salvar Edição</button></div></form></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Lotes Físicos</h3><div class="table-container mb-8 max-h-96 overflow-y-auto"><table class="base-table min-w-[400px]"><thead class="base-thead"><tr><th>Lote</th><th>Status</th><th>Local</th><th>Validade</th><th>Volume</th><th class="text-center">Ações</th></tr></thead><tbody id="details-batches-table"></tbody></table></div></div><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3 flex justify-between items-center">Extrato<button type="button" id="btn-clear-hist-filters" class="text-xs text-ios-blue hover:text-blue-300 font-normal underline hidden">Limpar Filtros</button></h3><div class="flex gap-2 mb-3 bg-ios-bg p-3 rounded-xl border border-ios-border shadow-inner items-center"><input type="date" id="hist-filter-start" class="form-input py-1 px-2 text-xs"><span class="text-ios-textMuted text-xs">até</span><input type="date" id="hist-filter-end" class="form-input py-1 px-2 text-xs"><select id="hist-filter-type" class="form-input py-1 px-2 text-xs ml-auto"><option value="">Todas</option><option value="entrada">Entradas</option><option value="saída">Saídas (OP)</option><option value="requisição">Baixa Avulsa</option><option value="ajuste">Ajustes</option></select></div><div class="table-container max-h-72 overflow-y-auto bg-ios-bg p-2" id="details-history-container"></div></div></div></div></div>
+    <div id="item-details-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 gap-3"><div class="flex-1 w-full"><h2 class="title-md flex items-center mb-1 text-2xl tracking-tight break-words pr-8"><span id="details-product-name"></span></h2><span id="details-product-type-badge" class="badge bg-ios-cardHover text-ios-textMuted border border-ios-border"></span></div><div class="flex items-center gap-2"><button type="button" id="btn-edit-item" class="text-ios-blue bg-ios-blue/10 p-3 rounded-full"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-item" class="text-ios-red bg-ios-red/10 p-3 rounded-full"><i class="fa-solid fa-trash"></i></button><button type="button" class="text-white text-3xl ml-2 close-modal" data-target="item-details-modal">&times;</button></div></div><div id="item-details-view" class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm bg-ios-bg p-5 rounded-2xl mb-6 shadow-inner border border-ios-border"><div class="col-span-1"><span class="text-ios-textMuted block mb-1">Cód. Interno</span><span id="details-product-code" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Fornecedor</span><span id="details-supplier" class="text-white font-medium truncate"></span></div><div class="col-span-2 md:col-span-1"><span class="text-ios-textMuted block mb-1">Estoque Mín.</span><span id="details-min-stock" class="text-ios-orange font-medium"></span></div><div class="col-span-2"><span class="text-ios-textMuted block mb-1">EANs</span><span id="details-product-barcode" class="text-white font-mono break-all text-xs"></span></div><div class="col-span-2 md:col-span-6 bg-ios-cardHover p-3 rounded-xl mt-1"><span class="text-ios-textMuted block mb-1 uppercase font-bold text-[10px]">Saldo Físico Total</span><span id="details-total-quantity" class="text-ios-green font-bold text-3xl"></span></div></div><div id="item-details-edit" class="hidden mb-6 bg-ios-bg p-5 rounded-2xl border border-ios-border shadow-inner"><form id="edit-item-form" class="grid grid-cols-1 md:grid-cols-6 gap-5"><input type="hidden" id="edit-item-id"><div class="md:col-span-6"><label class="form-label">Classificação</label><select id="edit-product-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div class="md:col-span-6"><label class="form-label">Nome</label><input type="text" id="edit-product-name" required class="form-input"></div><div class="md:col-span-3"><label class="form-label">Cód Interno</label><input type="text" id="edit-product-code" class="form-input"></div><div class="md:col-span-3"><label class="form-label">Fornecedor</label><input type="text" id="edit-supplier" class="form-input"></div><div class="md:col-span-2"><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="edit-min-stock" class="form-input text-ios-orange font-bold"></div><div class="md:col-span-4"><label class="form-label">EANs (Separe por vírgula)</label><input type="text" id="edit-product-barcode" class="form-input font-mono"></div><div class="md:col-span-6 flex justify-end gap-3 mt-2"><button type="button" id="btn-cancel-edit" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Salvar Edição</button></div></form></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Lotes Físicos</h3><div class="table-container mb-8 max-h-96 overflow-y-auto"><table class="base-table min-w-[400px]"><thead class="base-thead"><tr><th>Lote</th><th>Status</th><th>Local</th><th>Validade</th><th>Volume</th><th class="text-center">Ações</th></tr></thead><tbody id="details-batches-table"></tbody></table></div></div><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3 flex justify-between items-center">Extrato<button type="button" id="btn-clear-hist-filters" class="text-xs text-ios-blue hover:text-blue-300 font-normal underline hidden">Limpar Filtros</button></h3><div class="flex gap-2 mb-3 bg-ios-bg p-3 rounded-xl border border-ios-border shadow-inner items-center"><input type="date" id="hist-filter-start" class="form-input py-1 px-2 text-xs"><span class="text-ios-textMuted text-xs">até</span><input type="date" id="hist-filter-end" class="form-input py-1 px-2 text-xs"><select id="hist-filter-type" class="form-input py-1 px-2 text-xs ml-auto"><option value="">Todas</option><option value="entrada">Entradas</option><option value="saída">Saídas (OP)</option><option value="requisição">Baixa Avulsa</option><option value="ajuste">Ajustes</option></select></div><div class="table-container max-h-72 overflow-y-auto bg-ios-bg p-2" id="details-history-container"></div></div></div></div></div>
 
     <div id="edit-batch-modal" class="modal z-[7000]"><div class="modal-content max-w-sm"><h2 class="title-md mb-4">Editar Lote</h2><form id="edit-batch-form" class="space-y-4"><input type="hidden" id="edit-batch-id"><input type="hidden" id="edit-batch-product-id"><div><label class="form-label">Código Lote</label><input type="text" id="edit-batch-code" required class="form-input"></div><div><label class="form-label">Quantidade</label><input type="number" step="0.001" id="edit-batch-qty" required class="form-input text-ios-blue font-bold"></div><div><label class="form-label">Validade</label><input type="date" id="edit-batch-expiry" class="form-input"></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="edit-batch-modal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
 
@@ -307,7 +284,7 @@
 
     <div id="confirm-action-modal" class="modal z-[9999]"><div class="modal-content max-w-md text-center flex flex-col items-center p-6"><div class="w-16 h-16 rounded-full bg-ios-cardHover border border-ios-border flex items-center justify-center mb-5 shrink-0"><i class="fa-solid fa-circle-question text-3xl text-ios-blue"></i></div><h3 id="confirm-title" class="title-md mb-2 text-xl"></h3><p id="confirm-message" class="text-ios-textMuted text-sm mb-8 leading-relaxed"></p><div class="flex gap-3 w-full justify-center"><button type="button" id="cancel-action-btn" class="btn-secondary w-1/2">Cancelar</button><button type="button" id="confirm-action-btn" class="btn-primary w-1/2">Sim, Continuar</button></div></div></div>
 
-    <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Cód. Barras (EAN)</label><div class="flex gap-2"><input type="text" id="g-quick-reg-barcode" class="form-input" placeholder="Opcional"><button type="button" id="btn-scan-quick-reg-barcode" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín.</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
+    <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Cód. Barras (EAN)</label><div class="flex gap-2"><input type="text" id="g-quick-reg-barcode" class="form-input" placeholder="Opcional"><button type="button" id="btn-scan-quick-reg-barcode" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
 
 <datalist id="locations-datalist"></datalist>
 
@@ -515,12 +492,6 @@ function setupRealtimeListeners() {
                 if (change.type === "added" && op.status === 'pendente') {
                     notifyUser('Nova OP Lançada', `Setor: ${op.recipeCategory} - Receita: ${op.recipeName}`);
                 }
-                if (change.type === "modified") {
-                    const oldOp = localProductionOrders.find(x => x.id === op.id);
-                    if (oldOp && oldOp.picking?.status !== 'concluido' && op.picking?.status === 'concluido') {
-                        notifyUser('Separação Concluída', `O setor ${op.recipeCategory} separou itens para OP de ${op.recipeName}`);
-                    }
-                }
             });
         }
         localProductionOrders = snapshot.docs.map(d => d.data());
@@ -529,9 +500,7 @@ function setupRealtimeListeners() {
         if(aN) {
             const t=aN.dataset.target;
             if(t==='production') renderPO();
-            if(t==='picking') renderPickingScreen();
             if(t==='traceability') renderTraceability();
-            if(t==='divergences') renderDivergences();
         }
         updateSidebarBadges();
         isInitialLoad = false;
@@ -541,16 +510,15 @@ function setupRealtimeListeners() {
 }
 
 // STATE
-let localInventory=[],localBatches=[],localHistory=[],localRecipes=[],localProductionOrders=[],localMonthlyConsumption=[],localLocations=[];
-let currentRecipeCategory='Todos',currentHistoryProductId=null,activePickingLine=null,activePickingOpIds=[],pickingScanProductId=null,bulkEntryItems=[],quickRegisterCallback=null;
+let localInventory=[],localBatches=[],localHistory=[],localRecipes=[],localProductionOrders=[],localLocations=[];
+let currentRecipeCategory='Todos',currentHistoryProductId=null,bulkEntryItems=[],quickRegisterCallback=null;
 let invSort={col:'name',asc:true}; const typeLabels={insumo:'Insumo',semi_acabado:'Semi-acabado'};
 let batchSelectorContext = null; 
-let currentPickingPlans = {}; 
 let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','consumption','locations','barcodes','picking','purchasing','settings','traceability','divergences'];
+const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -563,12 +531,10 @@ window.navTo=t=>{
     
     if(t==='adjustments') createSearchableSelect(id('adjustment-searchable-container'),localInventory,'Buscar...',p=>{const b=id('adjustment-batch');if(b)b.innerHTML='<option value="">Lote...</option>'+localBatches.filter(x=>x.productId===p.id&&x.quantity>0).map(x=>`<option value="${x.id}">${x.code}</option>`).join('');});
     if(t==='requisitions'){const r=id('requisition-items-container');if(r){r.innerHTML='';addIngRowReq(r);}}
-    if(t==='picking') renderPickingScreen(); 
     if(t==='purchasing') renderPurchasing(); 
     if(t==='barcodes'){renderBarcodesList();createSearchableSelect(id('barcode-searchable-container'),localInventory,'Produto...');}
     if(t==='locations'){renderAllLocations();id('location-search-input').value='';hide(id('location-details-panel'));hide(id('location-create-panel'));show(id('location-empty-state'));}
     if(t==='traceability') renderTraceability();
-    if(t==='divergences') renderDivergences();
     if(t==='production') renderPO();
     if(t==='consulta'){id('consulta-input').value='';id('consulta-results').innerHTML=`<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>`;setTimeout(()=>id('consulta-input').focus(),100);}
     if(t==='entry'){createSearchableSelect(id('entry-searchable-container'),localInventory,'Pesquisar...',p=>{document.querySelector('#entry-form input[name="quantity"]').focus();});renderBulkEntry();}
@@ -709,9 +675,34 @@ function hasPEPSBreak(productId, chosenPlan) {
     return false;
 }
 
+// DYNAMIC MINIMUM STOCK CALCULATION
+function getStockInfo(productId) {
+    const p = localInventory.find(x => x.id === productId);
+    if(!p) return { theoretical: 0, real: 0, dailyAvg: 0 };
+    
+    const dt = new Date(); dt.setDate(dt.getDate() - 30);
+    const dS = dt.toISOString().split('T')[0];
+    let consumed = 0;
+    localHistory.forEach(h => {
+        if(h.productId === productId && (h.type === 'saída' || h.type === 'requisição') && h.date >= dS) {
+            consumed += h.quantity;
+        }
+    });
+    const dailyAvg = consumed / 30;
+    const leadTime = p.leadTime || 0;
+    
+    const calculatedReal = dailyAvg * leadTime * 2; 
+    
+    return {
+        theoretical: p.minStock || 0,
+        real: calculatedReal > 0 ? calculatedReal : (p.minStock || 0),
+        dailyAvg: dailyAvg
+    };
+}
+
 async function refreshData(){
     try{
-        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localMonthlyConsumption,localLocations]=await Promise.all([DB.getAll('inventory'),DB.getAll('batches'),DB.getAll('history'),DB.getAll('recipes'),DB.getAll('productionOrders'),DB.getAll('monthlyConsumption'),DB.getAll('locations')]);
+        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([DB.getAll('inventory'),DB.getAll('batches'),DB.getAll('history'),DB.getAll('recipes'),DB.getAll('productionOrders'),DB.getAll('locations')]);
         
         let cI=false;
         for(let i of localInventory){
@@ -738,12 +729,10 @@ async function refreshData(){
         const aN=document.querySelector('.nav-item.bg-ios-card')||document.querySelector('.nav-item-mobile.text-ios-blue');
         if(aN){
             const t=aN.dataset.target;
-            if(t==='picking')renderPickingScreen();
             if(t==='barcodes')renderBarcodesList();
             if(t==='purchasing')renderPurchasing();
             if(t==='locations')renderAllLocations();
             if(t==='traceability')renderTraceability();
-            if(t==='divergences')renderDivergences();
         }
         if(currentHistoryProductId)renderItemDetailsHistory();
     }catch(e){
@@ -796,10 +785,12 @@ addEvt('home-incoming-orders','click',e=>{
 });
 
 function updateSidebarBadges(){
-    const iPA=localProductionOrders.some(o=>o.picking?.status==='em_andamento');
-    [id('badge-nav-prod'),id('badge-nav-picking'),id('badge-nav-picking-mobile')].forEach(e=>{if(e)iPA?e.classList.remove('hidden'):e.classList.add('hidden');});
+    const ls=localInventory.filter(i => {
+        const info = getStockInfo(i.id);
+        const activeMin = Math.max(info.theoretical, info.real);
+        return activeMin > 0 && (i.totalQuantity || 0) <= activeMin;
+    });
     
-    const ls=localInventory.filter(i=>(i.minStock||0)>0&&(i.totalQuantity||0)<=i.minStock);
     const qD=new Date();
     qD.setDate(qD.getDate()+45);
     const eb=localBatches.filter(b=>b.quantity>0&&b.expiryDate&&new Date(b.expiryDate)<=qD);
@@ -814,7 +805,11 @@ function updateSidebarBadges(){
     
     const lsl=id('low-stock-list');
     if(lsl){
-        lsl.innerHTML=ls.length?ls.map(i=>`<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange flex justify-between items-center cursor-pointer alert-item" data-id="${i.id}"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-[10px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold">${(i.totalQuantity||0).toFixed(2)}</p><p class="text-[9px] text-ios-textMuted">Min: ${i.minStock}</p></div></li>`).join(''):'<li class="text-center text-ios-textMuted py-4">Tudo OK.</li>';
+        lsl.innerHTML=ls.length?ls.map(i=>{
+            const info = getStockInfo(i.id);
+            const activeMin = Math.max(info.theoretical, info.real);
+            return `<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange flex justify-between items-center cursor-pointer alert-item" data-id="${i.id}"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-[10px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold">${(i.totalQuantity||0).toFixed(2)}</p><p class="text-[9px] text-ios-textMuted">Min: ${activeMin.toFixed(2)}</p></div></li>`
+        }).join(''):'<li class="text-center text-ios-textMuted py-4">Tudo OK.</li>';
     }
     
     const el=id('expiring-list');
@@ -932,12 +927,14 @@ function openDetails(pId){
     const p=localInventory.find(i=>i.id===pId);
     if(!p)return;
     
+    const info = getStockInfo(pId);
+    
     id('details-product-name').innerText=p.name;
     id('details-product-type-badge').innerText=typeLabels[p.type||'insumo'];
     id('details-product-code').innerText=p.code||'-';
     id('details-supplier').innerText=p.supplier||'-';
     id('details-product-barcode').innerText=p.barcodes?.join(', ')||'-';
-    id('details-min-stock').innerText=(p.minStock||0).toFixed(2);
+    id('details-min-stock').innerHTML=`Teórico: ${info.theoretical.toFixed(2)} <br> Real: ${info.real.toFixed(2)}`;
     id('details-total-quantity').innerText=(p.totalQuantity||0).toFixed(2);
     id('edit-item-id').value=p.id;
     id('edit-product-name').value=p.name;
@@ -1216,24 +1213,17 @@ function renderPurchasing(){
     const c=id('purchasing-container');
     if(!c)return;
     const tr=(id('search-purchasing')?.value||'').toLowerCase();
-    const dt=new Date();
-    dt.setDate(dt.getDate()-30);
-    const dS=dt.toISOString().split('T')[0];
-    const cM={};
-    localHistory.filter(h=>(h.type==='saída'||h.type==='requisição')&&h.date>=dS).forEach(h=>{
-        if(!cM[h.productId])cM[h.productId]=0;
-        cM[h.productId]+=h.quantity;
-    });
     const sp={};
     localInventory.filter(i=>i.type!=='semi_acabado').forEach(i=>{
         const s=i.supplier||'Diversos';
         if(tr&&!s.toLowerCase().includes(tr)&&!i.name.toLowerCase().includes(tr))return;
         if(!sp[s])sp[s]=[];
-        const da=(cM[i.id]||0)/30, ms=i.minStock||0, lt=i.leadTime||0, bl=i.totalQuantity||0;
+        const info = getStockInfo(i.id);
         let dl=999;
-        if(da>0)dl=Math.floor(bl/da);
-        else if(bl<=ms&&ms>0)dl=0;
-        sp[s].push({...i,da,dl,lt});
+        const bl=i.totalQuantity||0;
+        if(info.dailyAvg>0)dl=Math.floor(bl/info.dailyAvg);
+        else if(bl<=info.real&&info.real>0)dl=0;
+        sp[s].push({...i, da: info.dailyAvg, dl, lt: i.leadTime||0, minReal: info.real});
     });
     let h='';
     Object.keys(sp).sort().forEach((s,idx)=>{
@@ -1241,7 +1231,7 @@ function renderPurchasing(){
         const cId=`sup-content-${idx}`;
         h+=`<div class="card p-0 mb-6"><div class="bg-ios-cardHover p-3 flex justify-between items-center cursor-pointer sup-header" data-target="${cId}"><h2 class="font-bold text-white flex items-center"><i class="fa-solid fa-chevron-down text-ios-textMuted mr-3 text-sm accordion-icon"></i><i class="fa-solid fa-truck-field mr-2"></i>${s}</h2><div class="flex gap-2"><button class="btn-place-sup-order text-ios-green bg-ios-green/10 px-2 py-1 rounded text-xs" data-sup="${s}">Reg. Entrega</button><button class="btn-edit-sup text-ios-blue bg-ios-blue/10 px-2 py-1 rounded text-xs" data-sup="${s}">Editar</button></div></div><div id="${cId}" class="p-3 grid gap-3 hidden">`;
         it.forEach(i=>{
-            const ms=i.minStock||0, bl=i.totalQuantity||0, mT=Math.max(bl,ms*3,1), fP=Math.min(100,(bl/mT)*100), mP=Math.min(100,(ms/mT)*100);
+            const ms=i.minReal||0, bl=i.totalQuantity||0, mT=Math.max(bl,ms*3,1), fP=Math.min(100,(bl/mT)*100), mP=Math.min(100,(ms/mT)*100);
             let tC='bg-ios-green', sC='text-ios-green';
             if(bl<=ms){tC='bg-ios-red';sC='text-ios-red';}
             else if(bl<=ms*1.5){tC='bg-ios-orange';sC='text-ios-orange';}
@@ -1458,295 +1448,6 @@ addEvt('recipe-form','submit',async e=>{
     refreshData();
 });
 
-// PICKING
-function renderPickingScreen(){
-    const c=id('picking-lines-container');
-    if(!c)return;
-    const pOps=localProductionOrders.filter(o=>o.status==='pendente');
-    if(!pOps.length){c.innerHTML=`<div class="text-center py-16"><i class="fa-solid fa-check text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Tudo separado!</p></div>`;return;}
-    const bD={};
-    pOps.forEach(o=>{
-        const d=o.date||'';
-        if(!bD[d])bD[d]={};
-        const l=o.recipeCategory||'Div';
-        if(!bD[d][l])bD[d][l]=[];
-        bD[d][l].push(o);
-    });
-    
-    let html = '';
-    Object.keys(bD).sort().forEach(d=>{
-        let lineHtml = '';
-        Object.keys(bD[d]).forEach(l=>{
-            const ops=bD[d][l];
-            const cc=ops.filter(x=>x.picking?.status==='concluido').length;
-            if(cc === ops.length) return; 
-            
-            const ea=ops.filter(x=>x.picking?.status==='em_andamento').length;
-            const pct=(cc/ops.length)*100;
-            const ex=ops.filter(x=>x.isExtra&&x.picking?.status!=='concluido');
-            let sH='';
-            if(ea>0)sH=`<span class="badge bg-ios-blue/20 text-ios-blue animate-pulse">Andamento</span>`;
-            else sH=`<span class="badge bg-ios-orange/20 text-ios-orange">A Separar</span>`;
-            
-            lineHtml += `
-                <div class="card p-0 overflow-hidden border ${ea>0?'border-ios-blue':''}">
-                    <div class="p-4 bg-ios-cardHover flex justify-between items-center">
-                        <div><h3 class="font-bold text-white text-lg">${l.toUpperCase()} ${ex.length?`<span class="badge bg-ios-red text-white">🚨 ${ex.length} EXTRA</span>`:''}</h3><p class="text-xs text-ios-textMuted">${cc}/${ops.length} OK</p></div>
-                        <div class="flex gap-2 items-center">${sH}<button class="btn-primary py-1 px-3 text-xs btn-open-line-picking" data-line="${l}" data-opids='${JSON.stringify(ops.map(x=>x.id))}'>Separar</button></div>
-                    </div>
-                    <div class="h-1 bg-ios-bg"><div class="h-full bg-ios-green transition-all" style="width:${pct}%"></div></div>
-                    <div class="p-3 grid grid-cols-2 md:grid-cols-3 gap-2">
-                        ${ops.map(o=>`<div class="bg-ios-card p-2 rounded border border-ios-border text-xs flex justify-between ${o.isExtra?'border-l-4 border-l-ios-red':''}"><span class="text-white truncate">${o.recipeName} (${o.multiplier}x)</span>${o.picking?.status==='concluido'?'<span class="text-ios-green"><i class="fa fa-check"></i></span>':'<span class="text-ios-textMuted"><i class="fa fa-clock"></i></span>'}</div>`).join('')}
-                    </div>
-                </div>`;
-        });
-        if(lineHtml) {
-            html += `<div class="mb-8"><h2 class="text-xl text-white font-bold mb-4 border-b border-ios-border pb-2">${d}</h2><div class="space-y-4">${lineHtml}</div></div>`;
-        }
-    });
-    
-    c.innerHTML = html || `<div class="text-center py-16"><i class="fa-solid fa-check text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Tudo separado!</p></div>`;
-}
-
-addEvt('picking-lines-container','click',e=>{
-    const b=e.target.closest('.btn-open-line-picking');
-    if(b){
-        activePickingLine=b.dataset.line;
-        activePickingOpIds=JSON.parse(b.dataset.opids);
-        const ops=localProductionOrders.filter(x=>activePickingOpIds.includes(x.id));
-        const pk=ops[0].picking||{status:'pendente',responsible:'',pickedItems:{}};
-        
-        id('picking-modal-title').innerHTML=`Setor: ${activePickingLine}`;
-        id('picking-responsible').value=pk.responsible||'';
-        
-        if(pk.status==='em_andamento'){
-            hide(id('picking-setup-view'));
-            show(id('picking-active-view'));
-            id('picking-active-resp').innerText=pk.responsible;
-        }else{
-            show(id('picking-setup-view'));
-            hide(id('picking-active-view'));
-        }
-        
-        currentPickingPlans = {};
-        const ag={};
-        ops.forEach(o=>o.ingredients.forEach(i=>{
-            if(!ag[i.productId])ag[i.productId]={p:i.productId,q:0};
-            ag[i.productId].q+=i.adjustedQuantity;
-        }));
-        
-        id('picking-checklist-body').innerHTML=Object.values(ag).map(i=>{
-            const p=localInventory.find(x=>x.id===i.p);
-            let tP=0;
-            let allPlans = [];
-            
-            ops.forEach(o=>{
-                if(o.picking?.pickedItems?.[i.p]) tP+=o.picking.pickedItems[i.p];
-                const ing = o.ingredients.find(x=>x.productId===i.p);
-                if(ing && ing.consumptionPlan) allPlans = allPlans.concat(ing.consumptionPlan);
-            });
-            
-            const cK=tP>0; 
-            if(cK) {
-                currentPickingPlans[i.p] = [];
-                allPlans.forEach(x => {
-                    const existing = currentPickingPlans[i.p].find(y => y.batchId === x.batchId);
-                    if(existing) existing.quantity += x.quantity;
-                    else currentPickingPlans[i.p].push({...x});
-                });
-            } else {
-                currentPickingPlans[i.p] = getFIFOPlan(i.p, i.q).plan; 
-            }
-            const planText = currentPickingPlans[i.p].map(x => `${x.batchCode}`).join(', ');
-
-            return `
-            <tr class="border-b border-ios-border/50 ${cK?'opacity-50':''}" data-pid="${i.p}">
-                <td class="py-3 px-4 text-white text-xs ${cK?'line-through':''}">${p?.name||'?'}</td>
-                <td class="py-3 px-4 text-right text-ios-blue font-bold">${i.q.toFixed(2)}</td>
-                <td class="py-3 px-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <input type="number" step="0.001" value="${cK?tP:''}" class="form-input w-20 text-center py-1 text-xs picking-qty-input inline-block bg-ios-input border border-ios-border" placeholder="0">
-                        <button type="button" class="btn-pick-select-batch mt-1 text-[10px] text-ios-blue bg-ios-cardHover px-2 py-1 rounded border border-ios-border w-full hover:bg-ios-blue/20"><i class="fa-solid fa-box"></i> Lotes</button>
-                        <div class="picking-plan-display text-[8px] text-ios-textMuted mt-1">${planText?planText:'PEPS'}</div>
-                    </div>
-                </td>
-                <td class="py-3 px-4 text-center"><input type="checkbox" class="ui-checkbox scale-75 picking-row-check" ${cK?'checked':''}></td>
-            </tr>`;
-        }).join('');
-        show(id('picking-modal'));
-    }
-});
-
-addEvt('btn-start-picking','click',async()=>{
-    const r=id('picking-responsible').value.trim();
-    if(!r)return;
-    for(let i of activePickingOpIds){
-        let o=localProductionOrders.find(x=>x.id===i);
-        if(o){
-            o.picking.status='em_andamento';
-            o.picking.responsible=r;
-            o.picking.start=Date.now();
-            await DB.update('productionOrders',o);
-        }
-    }
-    hide(id('picking-setup-view'));
-    show(id('picking-active-view'));
-    id('picking-active-resp').innerText=r;
-});
-
-addEvt('picking-checklist-body','input',e=>{
-    if(e.target.classList.contains('picking-qty-input')){
-        const r=e.target.closest('tr');
-        const chk=r.querySelector('.picking-row-check');
-        if(chk&&chk.checked){
-            chk.checked=false;
-            r.classList.remove('opacity-50');
-            r.cells[0].classList.remove('line-through');
-        }
-    }
-});
-
-addEvt('picking-checklist-body','click',e=>{
-    const btnBatch = e.target.closest('.btn-pick-select-batch');
-    if(btnBatch) {
-        batchSelectorContext = 'picking';
-        currentBatchTarget = btnBatch.closest('tr');
-        const pId = currentBatchTarget.dataset.pid;
-        
-        let typedQty = parseFloat(currentBatchTarget.querySelector('.picking-qty-input').value);
-        if(isNaN(typedQty) || typedQty <= 0) {
-            typedQty = parseFloat(currentBatchTarget.cells[1].innerText) || 0;
-            currentBatchTarget.querySelector('.picking-qty-input').value = typedQty.toFixed(4);
-        }
-        
-        if(id('batch-selector-needed')) id('batch-selector-needed').innerText = typedQty.toFixed(4);
-        
-        const batches = localBatches.filter(b => b.productId === pId && b.quantity > 0 && b.isReleased !== false);
-        const listEl = id('batch-selector-list');
-        const activePlan = currentPickingPlans[pId] || [];
-
-        if(listEl) {
-            listEl.innerHTML = batches.map(b => {
-                const inPlan = activePlan.find(p => p.batchId === b.id);
-                const val = inPlan ? inPlan.quantity : '';
-                return `<div class="flex justify-between items-center mb-2 sm:mb-3 bg-ios-input p-2 sm:p-3 rounded-xl border border-ios-border"><span class="text-white font-medium text-xs sm:text-sm"><i class="fa-solid fa-box mr-1 sm:mr-2 text-ios-textMuted"></i>${b.code} <br><span class="text-[9px] sm:text-[10px] text-ios-textMuted ml-4 sm:ml-6">Disp: ${b.quantity.toFixed(2)}</span></span><input type="number" class="form-input w-20 sm:w-28 text-right batch-input font-bold text-xs sm:text-sm py-2 px-2" data-bid="${b.id}" data-bcode="${b.code}" max="${b.quantity + (inPlan?inPlan.quantity:0)}" value="${val}" placeholder="0"></div>`;
-            }).join('');
-        }
-        updateBatchSelectorSum();
-        show(id('batch-selector-modal'));
-        return;
-    }
-
-    if(e.target.classList.contains('picking-row-check')){
-        const r=e.target.closest('tr');
-        const pid = r.dataset.pid;
-        if(e.target.checked){
-            const i=r.querySelector('.picking-qty-input');
-            let typedQty = parseFloat(i.value);
-            const totalNeeded = parseFloat(r.cells[1].innerText);
-            
-            if (isNaN(typedQty) || typedQty <= 0) {
-                typedQty = totalNeeded;
-                i.value = typedQty.toFixed(4);
-            }
-            
-            let planSum = currentPickingPlans[pid] ? currentPickingPlans[pid].reduce((s,x)=>s+x.quantity,0) : 0;
-            if (!currentPickingPlans[pid] || Math.abs(planSum - typedQty) > 0.001) {
-                currentPickingPlans[pid] = getFIFOPlan(pid, typedQty).plan;
-            }
-            
-            const actualSum = currentPickingPlans[pid].reduce((s,x)=>s+x.quantity, 0);
-            if (Math.abs(actualSum - typedQty) > 0.001) {
-                i.value = actualSum.toFixed(4);
-            }
-
-            r.classList.add('opacity-50');
-            r.cells[0].classList.add('line-through');
-            const display = r.querySelector('.picking-plan-display');
-            if (display) display.innerText = currentPickingPlans[pid].map(x=>x.batchCode).join(', ');
-        }else{
-            r.classList.remove('opacity-50');
-            r.cells[0].classList.remove('line-through');
-        }
-    }
-});
-
-addEvt('btn-finish-picking','click',async()=>{
-    const ops=localProductionOrders.filter(x=>activePickingOpIds.includes(x.id));
-    const finalPlans = {};
-    const finalQtys = {};
-    
-    id('picking-checklist-body').querySelectorAll('tr').forEach(r=>{
-        if(r.querySelector('.picking-row-check')?.checked) {
-            const pid = r.dataset.pid;
-            const typedQty = parseFloat(r.querySelector('.picking-qty-input').value) || 0;
-            finalQtys[pid] = typedQty;
-            
-            let planSum = currentPickingPlans[pid] ? currentPickingPlans[pid].reduce((s,x)=>s+x.quantity,0) : 0;
-            if(!currentPickingPlans[pid] || Math.abs(planSum - typedQty) > 0.001) {
-                currentPickingPlans[pid] = getFIFOPlan(pid, typedQty).plan;
-            }
-            finalPlans[pid] = currentPickingPlans[pid] ? JSON.parse(JSON.stringify(currentPickingPlans[pid])) : [];
-        }
-    });
-
-    Object.keys(finalPlans).forEach(pid => {
-        let planRemaining = finalPlans[pid];
-        let totalPickedForPid = finalQtys[pid]; 
-        
-        ops.forEach(op => {
-            const ing = op.ingredients.find(x => x.productId === pid);
-            if(ing) {
-                let needed = ing.adjustedQuantity;
-                let takeQty = Math.min(needed, totalPickedForPid);
-                
-                let assignedPlan = [];
-                let planNeeded = takeQty;
-                
-                while(planNeeded > 0 && planRemaining.length > 0) {
-                    let available = planRemaining[0].quantity;
-                    let takePlan = Math.min(planNeeded, available);
-                    assignedPlan.push({batchId: planRemaining[0].batchId, batchCode: planRemaining[0].batchCode, quantity: takePlan});
-                    planRemaining[0].quantity -= takePlan;
-                    planNeeded -= takePlan;
-                    if(planRemaining[0].quantity <= 0) planRemaining.shift();
-                }
-                
-                op.picking.pickedItems = op.picking.pickedItems || {};
-                op.picking.pickedItems[pid] = takeQty;
-                ing.consumptionPlan = assignedPlan; 
-                
-                totalPickedForPid -= takeQty;
-            }
-        });
-
-        if(totalPickedForPid > 0.001) {
-            for(let i = ops.length - 1; i >= 0; i--) {
-                let op = ops[i];
-                const ing = op.ingredients.find(x => x.productId === pid);
-                if(ing) {
-                    op.picking.pickedItems[pid] += totalPickedForPid;
-                    while(planRemaining.length > 0) {
-                        let tPlan = planRemaining.shift();
-                        ing.consumptionPlan.push({batchId: tPlan.batchId, batchCode: tPlan.batchCode, quantity: tPlan.quantity});
-                    }
-                    totalPickedForPid = 0;
-                    break;
-                }
-            }
-        }
-    });
-
-    for(let o of ops){
-        o.picking.end=Date.now();
-        o.picking.status='concluido';
-        await DB.update('productionOrders',o);
-    }
-    hide(id('picking-modal'));
-    refreshData();
-    window.showNotif('Concluído!');
-});
-
 // PRODUCTION ORDERS
 addEvt('search-po-by-date','change',renderPO);
 function renderPO(){
@@ -1766,10 +1467,6 @@ function renderPO(){
                     let aQ=i.adjustedQuantity; 
                     let usedPlan = i.consumptionPlan || getFIFOPlan(i.productId, aQ).plan;
                     let hasPEPSBreakVar = hasPEPSBreak(i.productId, usedPlan);
-
-                    if(o.picking?.status==='concluido'&&o.picking.pickedItems?.[i.productId]!==undefined) {
-                        aQ=o.picking.pickedItems[i.productId];
-                    }
 
                     const badgeWarning = hasPEPSBreakVar && o.status==='pendente' ? `<span class="badge bg-ios-red/20 text-ios-red ml-2 text-[8px]"><i class="fa-solid fa-triangle-exclamation"></i> Quebra PVPS</span>` : '';
 
@@ -1841,13 +1538,12 @@ addEvt('production-order-form','submit',async e=>{
 addEvt('btn-confirm-production','click',async()=>{
     const c=document.querySelectorAll('.po-select-checkbox:checked');if(!c.length)return window.showNotif('Selecione OP!',true);
     const sIds=Array.from(c).map(x=>x.dataset.id),p=localProductionOrders.filter(x=>sIds.includes(x.id)&&x.status==='pendente');if(!p.length)return;
-    showConfirmationModal('Efetivar Baixa',`Gerar baixas para ${p.length} OP(s)? Será debitado o lote e a quantidade exata informada na etapa de separação.`,async()=>{
+    showConfirmationModal('Efetivar Baixa',`Gerar baixas para ${p.length} OP(s)? Será debitado o lote escolhido.`,async()=>{
         show(id('loading-overlay'));
         try {
             for(const op of p){
                 for(const ing of op.ingredients){
                     let actualQty = ing.adjustedQuantity;
-                    if(op.picking?.status==='concluido' && op.picking.pickedItems?.[ing.productId] !== undefined) { actualQty = op.picking.pickedItems[ing.productId]; }
                     
                     if(actualQty > 0) {
                         const pr = await DB.get('inventory', ing.productId);
@@ -1864,7 +1560,6 @@ addEvt('btn-confirm-production','click',async()=>{
             for(const op of p){
                 for(const ing of op.ingredients){
                     let actualQty = ing.adjustedQuantity;
-                    if(op.picking?.status==='concluido' && op.picking.pickedItems?.[ing.productId] !== undefined) { actualQty = op.picking.pickedItems[ing.productId]; }
                     
                     if(actualQty > 0) {
                         const pr = await DB.get('inventory', ing.productId);
@@ -2012,68 +1707,6 @@ addEvt('traceability-list', 'click', async e => {
     }
 });
 
-// --- DIVERGÊNCIAS ---
-addEvt('divergences-date-filter', 'change', renderDivergences);
-function renderDivergences() {
-    const listEl = id('divergences-list');
-    if(!listEl) return;
-    let d = id('divergences-date-filter').value;
-    if(!d) {
-        d = new Date().toISOString().split('T')[0];
-        id('divergences-date-filter').value = d;
-    }
-
-    let ops = localProductionOrders.filter(o => o.date === d && (o.picking?.status === 'concluido' || o.status === 'concluída'));
-    
-    let html = '';
-    let hasDivergence = false;
-
-    ops.forEach(op => {
-        let opDivs = '';
-        op.ingredients.forEach(ing => {
-            const needed = ing.adjustedQuantity;
-            let real = needed;
-            if(op.picking?.pickedItems && op.picking.pickedItems[ing.productId] !== undefined) {
-                real = op.picking.pickedItems[ing.productId];
-            }
-            
-            if(Math.abs(needed - real) > 0.001) {
-                hasDivergence = true;
-                const pName = localInventory.find(x=>x.id===ing.productId)?.name || '?';
-                const diff = real - needed;
-                const diffClass = diff > 0 ? 'text-ios-green' : 'text-ios-red';
-                const diffSign = diff > 0 ? '+' : '';
-                opDivs += `
-                <div class="flex justify-between items-center border-b border-ios-border/50 py-2 last:border-0">
-                    <span class="text-white text-sm w-1/3 truncate">${pName}</span>
-                    <span class="text-ios-textMuted text-xs w-1/6 text-center">Prev: ${needed.toFixed(2)}</span>
-                    <span class="text-white font-bold text-sm w-1/6 text-center">Real: ${real.toFixed(2)}</span>
-                    <span class="${diffClass} font-bold text-sm w-1/6 text-right">${diffSign}${diff.toFixed(2)}</span>
-                </div>`;
-            }
-        });
-
-        if(opDivs) {
-            html += `
-            <div class="card p-4 border-l-4 border-l-ios-red mb-4">
-                <div class="flex justify-between mb-2">
-                    <h3 class="font-bold text-white">${op.recipeName} <span class="text-ios-blue">(${op.multiplier}x)</span></h3>
-                    <span class="text-xs text-ios-textMuted">${op.recipeCategory}</span>
-                </div>
-                <div class="bg-ios-bg p-3 rounded-lg border border-ios-border">
-                    ${opDivs}
-                </div>
-            </div>`;
-        }
-    });
-
-    if(!hasDivergence) {
-        listEl.innerHTML = `<div class="card text-center py-10 border-dashed border-ios-border"><i class="fa-solid fa-check-circle text-5xl text-ios-green mb-4"></i><p class="text-ios-textMuted text-sm">Nenhuma divergência registrada para esta data.</p></div>`;
-    } else {
-        listEl.innerHTML = html;
-    }
-}
-
 // --- REQUISICOES ---
 addEvt('requisition-form','submit',async e=>{e.preventDefault();const c=id('requisition-items-container');const ings=[...c.children].map(r=>{
     let plan = [];
@@ -2084,7 +1717,7 @@ if(ings.some(x=>!x.productId||x.qty<=0))return;const rS=id('requisition-reason')
 
 addEvt('adjustment-form','submit',async e=>{e.preventDefault();const pId=id('adjustment-searchable-container').querySelector('input').dataset.selectedId,bId=id('adjustment-batch').value,nQ=parseFloat(id('adjustment-new-quantity').value),rS=id('adjustment-reason').value;if(!pId||!bId||isNaN(nQ))return;showConfirmationModal('Ajustar?','Sobrescreve saldo.',async()=>{show(id('loading-overlay'));try{const b=await DB.get('batches',bId),p=await DB.get('inventory',pId);if(b&&p){const df=nQ-b.quantity;b.quantity=nQ;p.totalQuantity+=df;await DB.update('batches',b);await DB.update('inventory',p);await DB.add('history',{productId:p.id,batchCode:b.code,type:'ajuste',quantity:df,date:new Date().toISOString().split('T')[0],reason:`Aj: ${rS}`});window.showNotif('Ajustado!');id('adjustment-form').reset();id('adjustment-searchable-container').querySelector('input').value='';id('adjustment-batch').innerHTML='';await refreshData();}}catch(e){}finally{hide(id('loading-overlay'));}});});
 
-// MUDAR LOTE MANUALMENTE (USADO NA REQUISIÇÃO, OP E PICKING)
+// MUDAR LOTE MANUALMENTE (USADO NA REQUISIÇÃO, OP)
 document.addEventListener('click', e => {
     const btn = e.target.closest('.open-batch-selector');
     if(btn) { 
@@ -2124,27 +1757,6 @@ addEvt('confirm-batch-selection', 'click', () => {
     const listEl = id('batch-selector-list'); if(!listEl) return; 
     const inputs = [...listEl.querySelectorAll('.batch-input')]; 
     const newPlan = inputs.map(inp => ({ batchId: inp.dataset.bid, batchCode: inp.dataset.bcode, quantity: parseFloat(inp.value) || 0 })).filter(p => p.quantity > 0);
-
-    if (batchSelectorContext === 'picking') {
-        const pId = currentBatchTarget.dataset.pid;
-        currentPickingPlans[pId] = newPlan;
-        
-        const sum = newPlan.reduce((a,b) => a + b.quantity, 0);
-        const input = currentBatchTarget.querySelector('.picking-qty-input');
-        if(input) input.value = sum.toFixed(4);
-        
-        const chk = currentBatchTarget.querySelector('.picking-row-check');
-        if(chk) chk.checked = true;
-        
-        currentBatchTarget.classList.add('opacity-50');
-        currentBatchTarget.cells[0].classList.add('line-through');
-        
-        const display = currentBatchTarget.querySelector('.picking-plan-display');
-        if(display) display.innerText = newPlan.map(x=>x.batchCode).join(', ');
-        
-        hide(id('batch-selector-modal'));
-        return;
-    }
 
     const needed = parseFloat(id('batch-selector-needed')?.innerText || 0); const sum = parseFloat(id('batch-selector-selected')?.innerText || 0);
     if(sum < needed - 0.001) return window.showNotif('A quantidade marcada é menor que a necessária!', true);
