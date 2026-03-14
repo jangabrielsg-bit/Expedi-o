@@ -450,16 +450,14 @@ enableIndexedDbPersistence(db).catch((err) => {
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-let masterDbUid = null;
-
 // MODIFY HERE TO SUPPORT PRIVATE DATABASES PER USER
 const getCol = (c) => {
-    const uid = masterDbUid || auth.currentUser?.uid || 'unknown_user';
+    const uid = auth.currentUser?.uid || 'unknown_user';
     return isCanvas ? collection(db, 'artifacts', appId, 'users', uid, c) : collection(db, 'users', uid, c);
 };
 
 const getDocRef = (c, i) => {
-    const uid = masterDbUid || auth.currentUser?.uid || 'unknown_user';
+    const uid = auth.currentUser?.uid || 'unknown_user';
     return isCanvas ? doc(db, 'artifacts', appId, 'users', uid, c, i) : doc(db, 'users', uid, c, i);
 };
 
@@ -571,16 +569,6 @@ onAuthStateChanged(auth, async u => {
                     currentUserRole = 'admin';
                 } else if(u.email === 'admin@estoque.com' || u.uid === 'admin') currentUserRole = 'admin';
                 else currentUserRole = 'operador';
-            }
-
-            const pDoc = await getDoc(doc(db, 'global_settings', 'company_db'));
-            if(pDoc.exists() && pDoc.data().masterUid) masterDbUid = pDoc.data().masterUid;
-            
-            if(currentUserRole === 'admin' && !masterDbUid) {
-                masterDbUid = u.uid;
-                await setDoc(doc(db, 'global_settings', 'company_db'), { masterUid: u.uid }, {merge: true});
-            } else if (!masterDbUid) {
-                masterDbUid = u.uid;
             }
             
             applyRoleRestrictions();
