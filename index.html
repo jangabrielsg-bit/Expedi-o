@@ -14,11 +14,12 @@
     
     <title>Controle de Estoque e Produção</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
         tailwind.config = {
@@ -108,8 +109,9 @@
             <div class="px-4 mb-8 flex items-center justify-center lg:justify-start cursor-pointer" onclick="navTo('home')"><div class="w-10 h-10 rounded-xl bg-ios-blue flex items-center justify-center text-white font-bold text-xl"><i class="fa-solid fa-layer-group"></i></div><span class="ml-3 font-bold text-xl text-white hidden lg:block tracking-tight">Estoque OS</span></div>
             <nav class="flex-1 w-full px-3 space-y-2 overflow-y-auto">
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
@@ -131,16 +133,18 @@
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
                     <button type="button" class="menu-window nav-btn" data-target="consulta"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="entry"><i class="fa-solid fa-box-open"></i><span>Entrada (Massa)</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="inventory"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="entry"><i class="fa-solid fa-box-open"></i><span>Entrada (Massa)</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="inventory"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="locations"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="barcodes"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="purchasing"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="recipes"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="purchasing"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="recipes"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="production"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="traceability"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Rastreabilidade</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="traceability"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Rastreabilidade</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="requisitions"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="adjustments"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="adjustments"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="users"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
+                    <button type="button" class="menu-window nav-btn restrict-admin restrict-manager" data-target="dashboard"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -231,6 +235,66 @@
                 <div class="card max-w-2xl mx-auto"><form id="adjustment-form" class="space-y-5"><div class="z-50 relative"><label class="form-label">Buscar Produto</label><div id="adjustment-searchable-container"></div></div><div><label class="form-label">Lote</label><select id="adjustment-batch" required class="form-input"><option value="">Aguardando...</option></select></div><div><label class="form-label">Nova Qtd Real</label><input type="number" id="adjustment-new-quantity" required min="0" step="0.01" class="form-input text-ios-blue font-bold"></div><div><label class="form-label">Motivo</label><input type="text" id="adjustment-reason" required class="form-input"></div><div><label class="form-label">Responsável</label><input type="text" id="adjustment-responsible" required class="form-input"></div><div class="mt-8 flex justify-end"><button type="submit" class="btn-primary">Registrar Ajuste</button></div></form></div>
             </div>
 
+            <!-- Dashboard Gráfico -->
+            <div id="screen-dashboard" class="screen-panel hidden">
+                <h1 class="title-lg mb-6"><i class="fa-solid fa-chart-pie text-ios-orange mr-3"></i>Dashboard Gerencial</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="card relative h-80 flex flex-col items-center justify-center">
+                        <h2 class="title-md absolute top-4 left-4 text-ios-textMuted text-sm">OEE Produção x Falhas</h2>
+                        <canvas id="chart-oee" class="mt-8 w-full h-full p-2"></canvas>
+                    </div>
+                    <div class="card relative h-80 flex flex-col items-center justify-center">
+                        <h2 class="title-md absolute top-4 left-4 text-ios-textMuted text-sm">Top 10 Insumos Consumidos</h2>
+                        <canvas id="chart-top-insumos" class="mt-8 w-full h-full p-2"></canvas>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="card bg-ios-blue/10 border border-ios-blue/30 text-center py-8">
+                        <h3 class="text-ios-blue font-bold text-sm uppercase mb-2">Pedidos Atrasados</h3>
+                        <p class="text-white text-5xl font-bold font-mono" id="dash-atrasados">0</p>
+                    </div>
+                    <div class="card bg-ios-green/10 border border-ios-green/30 text-center py-8">
+                        <h3 class="text-ios-green font-bold text-sm uppercase mb-2">Volume OPs (30 Dias)</h3>
+                        <p class="text-white text-5xl font-bold font-mono" id="dash-volume">0</p>
+                    </div>
+                    <div class="card bg-ios-orange/10 border border-ios-orange/30 text-center py-8">
+                        <h3 class="text-ios-orange font-bold text-sm uppercase mb-2">Insumos Críticos Diários</h3>
+                        <p class="text-white text-5xl font-bold font-mono" id="dash-criticos">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usuários -->
+            <div id="screen-users" class="screen-panel hidden max-w-4xl mx-auto">
+                <h1 class="title-lg mb-6"><i class="fa-solid fa-users text-ios-green mr-3"></i>Permissões de Acesso</h1>
+                <div class="card mb-6">
+                    <h2 class="title-md text-sm mb-4">Cadastrar / Atualizar Permissão</h2>
+                    <form id="user-role-form" class="flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="form-label">Email do Funcionário</label>
+                            <input type="email" id="user-role-email" required class="form-input" placeholder="email@gmail.com" autocomplete="off">
+                        </div>
+                        <div class="flex-1">
+                            <label class="form-label">Perfil</label>
+                            <select id="user-role-type" required class="form-input">
+                                <option value="operador">Operador (Apenas Baixas)</option>
+                                <option value="gerente">Gerente de Setor (Receitas / OPs)</option>
+                                <option value="admin">Administrador (Total)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary shrink-0 py-[14px]">Conceder</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <table class="base-table">
+                        <thead class="base-thead">
+                            <tr><th>Email Autorizado</th><th>Perfil de Acesso</th><th class="text-center">Remover</th></tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Configurações -->
             <div id="screen-settings" class="screen-panel hidden max-w-3xl mx-auto">
                 <h1 class="title-lg">Banco de Dados</h1>
@@ -239,7 +303,7 @@
                         <h2 class="title-md text-ios-blue"><i class="fa-solid fa-download mr-2"></i>Backup</h2>
                         <button type="button" id="btn-download-db" class="btn-primary w-full mt-4">Backup Seguro</button>
                     </div>
-                    <div class="card border-ios-red">
+                    <div class="card border-ios-red restrict-admin">
                         <h2 class="title-md text-ios-red"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Zerar Sistema</h2>
                         <button type="button" id="btn-clear-db" class="btn-danger w-full mt-4">Formatar Tudo</button>
                     </div>
@@ -337,7 +401,7 @@ id('btn-install-pwa')?.addEventListener('click',async()=>{if(dP){dP.prompt();con
 // FIREBASE
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut,signInAnonymously,signInWithCustomToken}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import{getFirestore,collection,doc,addDoc,setDoc,getDoc,getDocs,deleteDoc,onSnapshot}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import{getFirestore,collection,doc,addDoc,setDoc,getDoc,getDocs,deleteDoc,onSnapshot,enableIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const isCanvas = typeof __firebase_config !== 'undefined';
 const fC = isCanvas ? JSON.parse(__firebase_config) : {
@@ -354,6 +418,11 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 const db = getFirestore(app);
+
+enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code == 'failed-precondition') console.warn('Múltiplas abas abertas, persistência offline apenas na primeira.');
+    else if (err.code == 'unimplemented') console.warn('Navegador não suporta persistência offline do Firebase.');
+});
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
@@ -458,17 +527,27 @@ const logout=()=>{signOut(auth).then(()=>window.showNotif('Sessão encerrada.'))
 addEvt('btn-sair','click',logout); addEvt('btn-sair-mobile','click',logout);
 
 let opsUnsubscribe = null;
+let currentUserRole = 'operador';
 
 onAuthStateChanged(auth, async u => {
     if(u) {
         hide(id('login-wrapper'));
         show(id('app-wrapper'));
-        if(id('nome-usuario')) id('nome-usuario').innerText = u.displayName || 'Estoquista';
         show(id('loading-overlay'));
-        window.navTo('home');
+        
         try {
+            const userDoc = await getDoc(doc(db, 'global_users', u.email || u.uid));
+            if(userDoc.exists()) currentUserRole = userDoc.data().role;
+            else if(u.email === 'admin@estoque.com' || u.uid === 'admin') currentUserRole = 'admin';
+            else currentUserRole = 'operador';
+            
+            applyRoleRestrictions();
+            if(id('nome-usuario')) id('nome-usuario').innerText = `${u.displayName || 'Estoquista'} (${currentUserRole})`;
+            
+            window.navTo('home');
             await refreshData();
             setupRealtimeListeners();
+            if(currentUserRole === 'admin' || currentUserRole === 'gerente') fetchUsersList();
         } catch(e) {
             window.showNotif('Erro de permissão no banco.', true);
             console.error(e);
@@ -481,6 +560,15 @@ onAuthStateChanged(auth, async u => {
         hide(id('loading-overlay'));
     }
 });
+
+function applyRoleRestrictions() {
+    document.querySelectorAll('.restrict-admin, .restrict-manager').forEach(el => el.classList.remove('hidden'));
+    if(currentUserRole === 'operador') {
+        document.querySelectorAll('.restrict-admin, .restrict-manager').forEach(el => el.classList.add('hidden'));
+    } else if(currentUserRole === 'gerente') {
+        document.querySelectorAll('.restrict-admin').forEach(el => el.classList.add('hidden'));
+    }
+}
 
 function setupRealtimeListeners() {
     if(!auth.currentUser) return;
@@ -519,7 +607,7 @@ let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability'];
+const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -537,10 +625,16 @@ window.navTo=t=>{
     if(t==='locations'){renderAllLocations();id('location-search-input').value='';hide(id('location-details-panel'));hide(id('location-create-panel'));show(id('location-empty-state'));}
     if(t==='traceability') renderTraceability();
     if(t==='production') renderPO();
+    if(t==='dashboard') renderDashboard();
     if(t==='consulta'){id('consulta-input').value='';id('consulta-results').innerHTML=`<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>`;setTimeout(()=>id('consulta-input').focus(),100);}
     if(t==='entry'){createSearchableSelect(id('entry-searchable-container'),localInventory,'Pesquisar...',p=>{document.querySelector('#entry-form input[name="quantity"]').focus();});renderBulkEntry();}
 };
-document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.addEventListener('click',e=>{e.preventDefault();window.navTo(l.dataset.target||l.closest('.nav-btn').dataset.target);}));
+document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.addEventListener('click',e=>{
+    e.preventDefault();
+    const t = l.dataset.target||l.closest('.nav-btn').dataset.target;
+    if((t==='users'||t==='dashboard'||t==='entry'||t==='purchasing'||t==='recipes'||t==='traceability'||t==='adjustments') && currentUserRole === 'operador') return window.showNotif('Acesso Negado',true);
+    window.navTo(t);
+}));
 
 function showConfirmationModal(t,m,cb){
     id('confirm-title').textContent=t;
@@ -1786,6 +1880,81 @@ addEvt('confirm-batch-selection', 'click', () => {
     if(planDisplay) planDisplay.innerHTML = '<i class="fa-solid fa-hand mr-1"></i> Manual: ' + newPlan.map(p => `<strong>${p.batchCode}</strong>(${p.quantity})`).join(', '); 
     hide(id('batch-selector-modal'));
 });
+
+// USUÁRIOS E PERMISSÕES
+async function fetchUsersList() {
+    if(currentUserRole === 'operador') return;
+    const snap = await getDocs(collection(db, 'global_users'));
+    const tb = id('users-table-body');
+    if(!tb) return;
+    tb.innerHTML = '';
+    snap.forEach(d => {
+        const u = d.data();
+        tb.innerHTML += `<tr class="base-tr"><td class="base-td text-white font-bold">${u.email}</td><td class="base-td"><span class="badge ${u.role==='admin'?'bg-ios-red/20 text-ios-red':(u.role==='gerente'?'bg-ios-orange/20 text-ios-orange':'bg-ios-green/20 text-ios-green')} uppercase">${u.role}</span></td><td class="base-td text-center"><button class="text-ios-red btn-del-user p-2" data-email="${u.email}"><i class="fa fa-trash"></i></button></td></tr>`;
+    });
+}
+addEvt('user-role-form', 'submit', async e => {
+    e.preventDefault();
+    if(currentUserRole !== 'admin') return window.showNotif('Apenas admins podem criar usuários', true);
+    const email = id('user-role-email').value.toLowerCase().trim();
+    const role = id('user-role-type').value;
+    await setDoc(doc(db, 'global_users', email), { email, role });
+    window.showNotif('Permissão concedida!');
+    id('user-role-form').reset();
+    fetchUsersList();
+});
+addEvt('users-table-body', 'click', async e => {
+    const btn = e.target.closest('.btn-del-user');
+    if(btn) {
+        if(currentUserRole !== 'admin') return window.showNotif('Apenas admins', true);
+        await deleteDoc(doc(db, 'global_users', btn.dataset.email));
+        fetchUsersList();
+    }
+});
+
+// DASHBOARD
+let chartOee=null, chartInsumos=null;
+function renderDashboard() {
+    if(!id('chart-oee')) return;
+    
+    // Calcular OEE simplificado (OPs Concluídas vs OPs Lançadas)
+    const opsLast30 = localProductionOrders.filter(o => {
+        const d = new Date(o.date);
+        return (new Date() - d) / (1000*60*60*24) <= 30;
+    });
+    const c = opsLast30.filter(o => o.status === 'concluída' || o.status === 'concluido').length;
+    const p = opsLast30.filter(o => o.status === 'pendente').length;
+    
+    if(chartOee) chartOee.destroy();
+    chartOee = new Chart(id('chart-oee'), {
+        type: 'doughnut',
+        data: { labels: ['Concluídas', 'Pendentes/Atrasadas'], datasets: [{ data: [c, p], backgroundColor: ['#30d158', '#ff453a'], borderWidth: 0, hoverOffset: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } }, cutout: '75%' }
+    });
+
+    // Top Insumos
+    const usage = {};
+    localHistory.filter(h => h.type === 'saída' || h.type === 'requisição').forEach(h => {
+        usage[h.productId] = (usage[h.productId] || 0) + h.quantity;
+    });
+    const top = Object.entries(usage).sort((a,b) => b[1]-a[1]).slice(0, 10).map(x => {
+        const p = localInventory.find(i => i.id === x[0]);
+        return { name: p ? p.name.substring(0,15) : '?', qty: x[1] };
+    });
+    
+    if(chartInsumos) chartInsumos.destroy();
+    chartInsumos = new Chart(id('chart-top-insumos'), {
+        type: 'bar',
+        data: { labels: top.map(x=>x.name), datasets: [{ label: 'Qtd Consumida', data: top.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+    });
+
+    // Cards
+    const tS=new Date().toISOString().split('T')[0];
+    id('dash-atrasados').innerText = localInventory.filter(i=>i.pendingOrder?.active && i.pendingOrder.expectedDate < tS).length;
+    id('dash-volume').innerText = c;
+    id('dash-criticos').innerText = localInventory.filter(i => { const info = getStockInfo(i.id); return (i.totalQuantity||0) <= Math.max(info.theoretical, info.real); }).length;
+}
 
 addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:await DB.getAll('inventory'),batches:await DB.getAll('batches'),history:await DB.getAll('history'),recipes:await DB.getAll('recipes'),productionOrders:await DB.getAll('productionOrders'),monthlyConsumption:await DB.getAll('monthlyConsumption'),locations:await DB.getAll('locations')};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});addEvt('btn-clear-db','click',()=>{showConfirmationModal('Cuidado!','APAGA TUDO!',async()=>{show(id('loading-overlay'));try{await DB.clear('inventory');await DB.clear('batches');await DB.clear('history');await DB.clear('recipes');await DB.clear('productionOrders');await DB.clear('monthlyConsumption');await DB.clear('locations');await refreshData();window.showNotif('Formatado!');}catch(e){}finally{hide(id('loading-overlay'));}});});
 
