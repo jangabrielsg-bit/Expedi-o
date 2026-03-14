@@ -452,11 +452,13 @@ const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
 // MODIFY HERE TO SUPPORT PRIVATE DATABASES PER USER
 const getCol = (c) => {
-    return isCanvas ? collection(db, 'artifacts', appId, 'global_stock', 'app', c) : collection(db, 'global_stock', 'app', c);
+    const uid = auth.currentUser?.uid || 'unknown_user';
+    return isCanvas ? collection(db, 'artifacts', appId, 'users', uid, c) : collection(db, 'users', uid, c);
 };
 
 const getDocRef = (c, i) => {
-    return isCanvas ? doc(db, 'artifacts', appId, 'global_stock', 'app', c, i) : doc(db, 'global_stock', 'app', c, i);
+    const uid = auth.currentUser?.uid || 'unknown_user';
+    return isCanvas ? doc(db, 'artifacts', appId, 'users', uid, c, i) : doc(db, 'users', uid, c, i);
 };
 
 const DB = {
@@ -2097,7 +2099,50 @@ function renderDashboard() {
     id('dash-validade').innerHTML = `${eb} <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span>`;
 }
 
-addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:await DB.getAll('inventory'),batches:await DB.getAll('batches'),history:await DB.getAll('history'),recipes:await DB.getAll('recipes'),productionOrders:await DB.getAll('productionOrders'),monthlyConsumption:await DB.getAll('monthlyConsumption'),locations:await DB.getAll('locations')};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});addEvt('btn-clear-db','click',()=>{showConfirmationModal('Cuidado!','APAGA TUDO!',async()=>{show(id('loading-overlay'));try{await DB.clear('inventory');await DB.clear('batches');await DB.clear('history');await DB.clear('recipes');await DB.clear('productionOrders');await DB.clear('monthlyConsumption');await DB.clear('locations');await refreshData();window.showNotif('Formatado!');}catch(e){}finally{hide(id('loading-overlay'));}});});
+addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:localInventory,batches:localBatches,history:localHistory,recipes:localRecipes,productionOrders:localProductionOrders,locations:localLocations};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});
+
+addEvt('btn-upload-json','change',async e=>{
+    const f=e.target.files[0];
+    if(!f)return;
+    const r=new FileReader();
+    r.onload=async ev=>{
+        try{
+            const d=JSON.parse(ev.target.result);
+            showConfirmationModal('Restaurar Backup','APAGARÁ OS DADOS ATUAIS. Tem certeza?',async()=>{
+                show(id('loading-overlay'));
+                const cols = ['inventory','locations','batches','recipes','productionOrders','history'];
+                for(let c of cols){
+                    const docs=await getDocs(getCol(c));
+                    for(let doc of docs.docs) await deleteDoc(getDocRef(c,doc.id));
+                }
+                
+                for(let c of cols){
+                    if(d[c]&&Array.isArray(d[c])){
+                        for(let item of d[c]){
+                            let iId = item.id;
+                            delete item.id; // Let firebase generate new, or keep if we want, but usually safer logic to assign new or manual
+                            if(iId) {
+                                await setDoc(getDocRef(c, iId), item); // keep exact IDs to preserve relations
+                            } else {
+                                const newR = await addDoc(getCol(c), item);
+                                await setDoc(newR, { id: newR.id }, { merge: true });
+                            }
+                        }
+                    }
+                }
+                hide(id('loading-overlay'));
+                window.showNotif('Backup Restaurado!');
+                e.target.value = '';
+                refreshData();
+            });
+        }catch(err){
+            window.showNotif('Erro ao processar arquivo JSON.', true);
+        }
+    };
+    r.readAsText(f);
+});
+
+addEvt('btn-clear-db','click',()=>{showConfirmationModal('Cuidado!','APAGA TUDO!',async()=>{show(id('loading-overlay'));try{const cols=['inventory','batches','history','recipes','productionOrders','locations'];for(let c of cols){const docs=await getDocs(getCol(c));for(let d of docs.docs)await deleteDoc(getDocRef(c,d.id));}await refreshData();window.showNotif('Formatado!');}catch(e){}finally{hide(id('loading-overlay'));}});});
 
 </script>
 </body>
