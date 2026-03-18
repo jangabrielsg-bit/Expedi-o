@@ -350,7 +350,7 @@
     <!-- Modais Flutuantes -->
     <div id="recipe-modal" class="modal z-[6000]"><div class="modal-content max-w-2xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 id="recipe-modal-title" class="title-md mb-0 text-ios-blue"><i class="fa-solid fa-book-bookmark mr-3"></i>Nova Receita</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="recipe-modal">&times;</button></div><form id="recipe-form" class="space-y-6"><input type="hidden" id="edit-recipe-id"><div class="grid grid-cols-2 gap-4"><div><label class="form-label">Produto Final</label><input type="text" id="recipe-name" required class="form-input"></div><div><label class="form-label">Categoria</label><input type="text" id="recipe-category" required class="form-input"></div></div><div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border"><div class="flex items-center gap-3"><input type="checkbox" id="recipe-is-semi" class="w-5 h-5 accent-ios-orange"><label for="recipe-is-semi" class="text-white">É um Semi-acabado</label></div><div id="yield-wrapper" class="hidden mt-2"><label class="form-label text-ios-orange">Rendimento</label><input type="number" step="0.0001" id="recipe-yield" class="form-input w-1/2" value="1"></div></div><div class="border-t border-ios-border pt-4"><div class="flex justify-between items-center mb-4"><h3 class="text-sm text-ios-textMuted">Ingredientes</h3><button type="button" id="add-ingredient-btn" class="text-ios-blue bg-ios-blue/20 px-3 py-2 rounded-lg">Adicionar Insumo</button></div><div id="ingredients-container" class="space-y-3"></div></div><div class="flex justify-end gap-3 pt-4 border-t border-ios-border mt-6"><button type="button" class="btn-secondary close-modal" data-target="recipe-modal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
 
-    <div id="production-order-modal" class="modal z-[6000]"><div class="modal-content max-w-4xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-hammer mr-3 text-ios-orange"></i>Nova OP</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="production-order-modal">&times;</button></div><form id="production-order-form" class="space-y-6"><div class="grid grid-cols-3 gap-4 relative"><div class="z-50 col-span-2"><label class="form-label">Ficha produzida</label><div id="po-recipe-searchable-container"></div></div><div><label class="form-label">Data Programada</label><input type="date" id="po-date" required class="form-input"></div></div><div class="grid grid-cols-4 gap-4 items-end"><div><label class="form-label">Multiplicador</label><input type="number" step="0.01" id="po-quantity" required class="form-input font-bold text-center text-ios-blue py-3" value="1" min="0.01"></div><div class="col-span-3 flex items-center gap-3 bg-ios-cardHover p-3 rounded-xl border border-ios-border"><input type="checkbox" id="po-is-extra" class="w-6 h-6 accent-ios-red"><label for="po-is-extra" class="text-white text-sm">OP EXTRA / URGENTE</label></div></div><div id="po-output-fields" class="grid grid-cols-2 gap-4 bg-ios-orange/10 p-4 rounded-xl border border-ios-orange/30 hidden"><div><label class="form-label text-ios-orange">Lote Gerado Auto</label><input type="text" id="po-output-batch" class="form-input bg-ios-bg border-ios-orange/50 text-white text-sm"></div><div><label class="form-label text-ios-orange">Rend. Previsto</label><input type="text" id="po-total-output" readonly class="form-input bg-ios-bg border-ios-orange/50 font-bold text-white text-lg"></div></div><div class="border-t border-ios-border pt-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3"><i class="fa-solid fa-calculator mr-2"></i>Previsão Físico</h3><div class="table-container max-h-64 overflow-y-auto"><table class="base-table w-full"><thead class="base-thead"><tr><th>Insumo</th><th>Saldo</th><th>Necessário</th><th>Lotes Escolhidos</th></tr></thead><tbody id="po-ingredients-body"></tbody></table></div></div><div class="flex justify-end gap-3 mt-6"><button type="button" class="btn-secondary close-modal" data-target="production-order-modal">Cancelar</button><button type="submit" class="btn-primary">Adicionar OP</button></div></form></div></div>
+    <div id="production-order-modal" class="modal z-[6000]"><div class="modal-content max-w-4xl"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-hammer mr-3 text-ios-orange"></i>Nova OP</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="production-order-modal">&times;</button></div><form id="production-order-form" class="space-y-6"><input type="hidden" id="edit-po-id"><div class="grid grid-cols-3 gap-4 relative"><div class="z-50 col-span-2"><label class="form-label">Ficha produzida</label><div id="po-recipe-searchable-container"></div></div><div><label class="form-label">Data Programada</label><input type="date" id="po-date" required class="form-input"></div></div><div class="grid grid-cols-4 gap-4 items-end"><div><label class="form-label">Multiplicador</label><input type="number" step="0.01" id="po-quantity" required class="form-input font-bold text-center text-ios-blue py-3" value="1" min="0.01"></div><div class="col-span-3 flex items-center gap-3 bg-ios-cardHover p-3 rounded-xl border border-ios-border"><input type="checkbox" id="po-is-extra" class="w-6 h-6 accent-ios-red"><label for="po-is-extra" class="text-white text-sm">OP EXTRA / URGENTE</label></div></div><div id="po-output-fields" class="grid grid-cols-2 gap-4 bg-ios-orange/10 p-4 rounded-xl border border-ios-orange/30 hidden"><div><label class="form-label text-ios-orange">Lote Gerado Auto</label><input type="text" id="po-output-batch" class="form-input bg-ios-bg border-ios-orange/50 text-white text-sm"></div><div><label class="form-label text-ios-orange">Rend. Previsto</label><input type="text" id="po-total-output" readonly class="form-input bg-ios-bg border-ios-orange/50 font-bold text-white text-lg"></div></div><div class="border-t border-ios-border pt-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3"><i class="fa-solid fa-calculator mr-2"></i>Previsão Físico</h3><div class="table-container max-h-64 overflow-y-auto"><table class="base-table w-full"><thead class="base-thead"><tr><th>Insumo</th><th>Saldo</th><th>Necessário</th><th>Lotes Escolhidos</th></tr></thead><tbody id="po-ingredients-body"></tbody></table></div></div><div class="flex justify-end gap-3 mt-6"><button type="button" class="btn-secondary close-modal" data-target="production-order-modal">Cancelar</button><button type="submit" class="btn-primary">Adicionar OP</button></div></form></div></div>
 
     <div id="edit-location-modal" class="modal z-[6000]"><div class="modal-content max-w-sm"><h2 class="title-md mb-4 text-ios-blue">Editar Endereço</h2><form id="edit-location-form" class="space-y-4"><input type="hidden" id="edit-loc-old-code"><div><label class="form-label">Código</label><input type="text" id="edit-loc-new-code" required class="form-input font-mono text-ios-blue"></div><div><label class="form-label">Nome Visível</label><input type="text" id="edit-loc-new-name" required class="form-input"></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="edit-location-modal">Cancelar</button><button type="submit" class="btn-primary">Atualizar</button></div></form></div></div>
 
@@ -1554,13 +1554,18 @@ function addIngRowReq(c,pI=null,pQ=''){
     if(!c)return;
     const d=document.createElement('div');
     d.className='flex flex-col gap-2 bg-ios-bg p-3 rounded-xl border border-ios-border';
-    d.innerHTML=`<div class="flex gap-2 items-center"><div class="searchable-container flex-1"></div><input type="number" step="0.0001" value="${pQ}" class="form-input w-20 py-2 text-center req-qty-input font-bold text-sm" required><button type="button" class="text-ios-red p-2 bg-ios-cardHover rounded remove-ing"><i class="fa fa-times"></i></button></div><div class="flex justify-between items-center text-[10px] text-ios-textMuted px-1 req-plan-wrapper hidden mt-1 border-t border-ios-border pt-2 gap-2"><span class="plan-display"></span><button type="button" class="text-ios-blue open-batch-selector bg-ios-card px-2 py-1 rounded shrink-0 whitespace-nowrap border border-ios-border"><i class="fa-solid fa-pen mr-1"></i> Lotes</button></div>`;
+    d.innerHTML=`<div class="flex gap-2 items-center"><div class="searchable-container flex-1"></div><input type="text" class="form-input w-20 py-2 text-center req-code-input text-xs bg-ios-input/50 border-transparent placeholder-ios-textMuted/50 text-ios-textMuted" readonly placeholder="Cód"><input type="number" step="0.0001" value="${pQ}" class="form-input w-20 py-2 text-center req-qty-input font-bold text-sm" required><button type="button" class="text-ios-red p-2 bg-ios-cardHover rounded remove-ing"><i class="fa fa-times"></i></button></div><div class="flex justify-between items-center text-[10px] text-ios-textMuted px-1 req-plan-wrapper hidden mt-1 border-t border-ios-border pt-2 gap-2"><span class="plan-display"></span><button type="button" class="text-ios-blue open-batch-selector bg-ios-card px-2 py-1 rounded shrink-0 whitespace-nowrap border border-ios-border"><i class="fa-solid fa-pen mr-1"></i> Lotes</button></div>`;
     c.appendChild(d);
-    const iR=c.id==='ingredients-container',pW=d.querySelector('.req-plan-wrapper'),pD=d.querySelector('.plan-display'),qI=d.querySelector('.req-qty-input');
+    const iR=c.id==='ingredients-container',pW=d.querySelector('.req-plan-wrapper'),pD=d.querySelector('.plan-display'),qI=d.querySelector('.req-qty-input'),cI=d.querySelector('.req-code-input');
     if(!iR)pW.classList.remove('hidden');
+    if(iR&&cI)cI.classList.add('hidden');
     const uP=()=>{
         if(iR)return;
         const iS=d.querySelector('.searchable-container input'),pi=iS?.dataset.selectedId,q=parseFloat(qI.value);
+        if(pi){
+            const selP=localInventory.find(x=>x.id===pi);
+            if(selP&&cI)cI.value=selP.code||'-';
+        }
         if(pi&&q>0){
             const{plan,isSufficient}=getFIFOPlan(pi,q);
             d.dataset.productId=pi;
@@ -1675,10 +1680,59 @@ function renderPO(){
                     </li>`;
                 }).join('')}</ul>
             </div>
-            ${o.status==='pendente'?`<div class="absolute bottom-2 right-2"><button class="text-ios-red p-2 del-po-btn" data-id="${o.id}"><i class="fa-solid fa-trash"></i></button></div>`:''}
+            ${o.status==='pendente'?`<div class="absolute bottom-2 right-2 flex gap-1"><button type="button" class="text-ios-blue p-2 edit-po-btn bg-ios-cardHover rounded" data-id="${o.id}"><i class="fa-solid fa-pen"></i></button><button class="text-ios-red p-2 del-po-btn bg-ios-cardHover rounded" data-id="${o.id}"><i class="fa-solid fa-trash"></i></button></div>`:''}
         </div>`).join(''):'<div class="col-span-full text-center p-4">Vazio</div>';
 }
-addEvt('production-orders-list','click',e=>{const d=e.target.closest('.del-po-btn');if(d)showConfirmationModal('Excluir OP?','',async()=>{await DB.remove('productionOrders',d.dataset.id);refreshData();});});
+addEvt('production-orders-list','click',e=>{
+    const d=e.target.closest('.del-po-btn');if(d)showConfirmationModal('Excluir OP?','',async()=>{await DB.remove('productionOrders',d.dataset.id);refreshData();});
+    const ed=e.target.closest('.edit-po-btn');
+    if(ed) {
+        const o=localProductionOrders.find(x=>x.id===ed.dataset.id);
+        if(o) {
+            if(id('edit-po-id')) id('edit-po-id').value = o.id;
+            id('po-date').value = o.date;
+            id('po-quantity').value = o.multiplier;
+            id('po-is-extra').checked = !!o.isExtra;
+            if(o.quantityProduced) {
+                show(id('po-output-fields'));
+                id('po-output-batch').value = o.outputBatch;
+                id('po-total-output').value = o.quantityProduced;
+            } else {
+                hide(id('po-output-fields'));
+            }
+            createSearchableSelect(id('po-recipe-searchable-container'),localRecipes,'Receita...',r=>{
+                currentOpSubstitutions = {};
+                if(r.isSemi){
+                    show(id('po-output-fields'));
+                    const d = new Date();
+                    id('po-output-batch').value=`OP${String(d.getDate()).padStart(2,'0')}${String(d.getMonth()+1).padStart(2,'0')}${d.getFullYear().toString().slice(-2)}-${Math.floor(Math.random()*1000).toString().padStart(3,'0')}`;
+                }else hide(id('po-output-fields'));
+                id('po-quantity').dispatchEvent(new Event('input'));
+            });
+            const s=id('po-recipe-searchable-container').querySelector('input');
+            if(s) {
+                s.value = o.recipeName;
+                s.dataset.selectedId = o.recipeId;
+            }
+            currentOpSubstitutions = {};
+            id('po-ingredients-body').innerHTML = (o.ingredients||[]).map(i=>{
+                const p=localInventory.find(x=>x.id===i.productId);
+                const q=i.adjustedQuantity;
+                const pl = i.consumptionPlan || getFIFOPlan(i.productId, q).plan;
+                return `<tr class="base-tr" data-product-id="${i.productId}" data-plan='${JSON.stringify(pl).replace(/'/g, "&#39;")}'>
+                    <td class="base-td text-white text-xs po-ing-name-cell"><div class="flex flex-col gap-1"><span class="whitespace-normal">${p?.name||'?'}</span><button type="button" class="text-ios-orange btn-substitute-ing text-left text-[9px] hover:underline whitespace-nowrap" data-orig="${i.productId}"><i class="fa-solid fa-right-left"></i> Substituir</button></div></td>
+                    <td class="base-td hidden sm:table-cell text-xs">${(p?.totalQuantity||0).toFixed(2)}</td>
+                    <td class="base-td"><input type="number" value="${q.toFixed(4)}" class="form-input py-1 px-1 w-20 text-center text-xs po-ing-qty bg-ios-bg border-ios-border" readonly></td>
+                    <td class="base-td text-[10px] ${pl.length?'text-ios-green':'text-ios-red font-bold'}">
+                        <div class="plan-display">${pl.length?pl.map(x=>x.batchCode).join(','):'PEPS'}</div>
+                        <button type="button" class="text-ios-blue mt-1 open-batch-selector bg-ios-bg p-1 rounded border border-ios-border text-[10px] w-full"><i class="fa-solid fa-pen"></i> Escolher Lotes</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            show(id('production-order-modal'));
+        }
+    }
+});
 
 addEvt('po-quantity','input',()=>{
     const s=id('po-recipe-searchable-container')?.querySelector('input');
@@ -1720,6 +1774,7 @@ addEvt('po-ingredients-body', 'click', e => {
 addEvt('btn-new-production-order','click',()=>{
     currentOpSubstitutions = {};
     id('production-order-form').reset();
+    if(id('edit-po-id')) id('edit-po-id').value = '';
     id('po-ingredients-body').innerHTML='';
     createSearchableSelect(id('po-recipe-searchable-container'),localRecipes,'Receita...',r=>{
         currentOpSubstitutions = {};
@@ -1748,7 +1803,14 @@ addEvt('production-order-form','submit',async e=>{
             consumptionPlan:plan
         };
     });
-    await DB.add('productionOrders',{recipeId:r.id,recipeName:r.name,recipeCategory:r.category,date:id('po-date').value,multiplier:m,quantityProduced:r.isSemi?(parseFloat(id('po-total-output').value)||0):null,status:'pendente',outputBatch:r.isSemi?id('po-output-batch').value:null,ingredients:ings,isExtra:id('po-is-extra').checked,picking:{status:'pendente',pickedItems:{}}});
+    const poData = {recipeId:r.id,recipeName:r.name,recipeCategory:r.category,date:id('po-date').value,multiplier:m,quantityProduced:r.isSemi?(parseFloat(id('po-total-output').value)||0):null,status:'pendente',outputBatch:r.isSemi?id('po-output-batch').value:null,ingredients:ings,isExtra:id('po-is-extra').checked,picking:{status:'pendente',pickedItems:{}}};
+    const eId = id('edit-po-id')?.value;
+    if(eId) {
+        poData.id = eId;
+        await DB.update('productionOrders', poData);
+    } else {
+        await DB.add('productionOrders', poData);
+    }
     hide(id('production-order-modal'));
     refreshData();
 });
