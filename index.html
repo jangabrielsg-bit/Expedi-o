@@ -362,11 +362,15 @@
                 <div class="bg-ios-bg w-full max-w-4xl rounded-xl flex flex-col overflow-hidden shadow-2xl border border-ios-border">
                     <div class="flex flex-wrap justify-between items-center p-4 border-b border-ios-border bg-ios-card gap-2">
                         <h3 class="text-white font-bold text-sm md:text-base flex items-center justify-center"><i class="fa-solid fa-chart-line text-ios-green mr-2"></i><span id="projection-chart-title">Evolução Histórica</span></h3>
-                        <div class="flex items-center gap-4">
-                            <label class="flex items-center gap-1 text-[10px] sm:text-xs text-ios-textMuted cursor-pointer bg-ios-bg p-1.5 px-3 rounded border border-ios-border hover:bg-ios-blue/10">
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                            <div class="flex items-center gap-1 bg-ios-bg p-1 rounded border border-ios-border">
+                                <button type="button" id="btn-chart-mode-history" class="text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors">Passado</button>
+                                <button type="button" id="btn-chart-mode-future" class="text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors">Esgotamento (Futuro)</button>
+                            </div>
+                            <label id="lbl-toggle-stock-history" class="flex items-center gap-1 text-[10px] sm:text-xs text-ios-textMuted cursor-pointer bg-ios-bg p-1.5 px-3 rounded border border-ios-border hover:bg-ios-blue/10">
                                 <input type="checkbox" id="toggle-stock-history" class="accent-ios-blue w-4 h-4"> Histórico de Saldo 
                             </label>
-                            <button type="button" class="text-ios-textMuted hover:text-white" onclick="id('modal-projection-chart').classList.add('hidden')"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                            <button type="button" class="text-ios-textMuted hover:text-white ml-auto" onclick="document.getElementById('modal-projection-chart').classList.add('hidden')"><i class="fa-solid fa-xmark text-2xl"></i></button>
                         </div>
                     </div>
                     <div class="p-4 relative h-[60vh] sm:h-[400px] w-full">
@@ -2322,9 +2326,32 @@ addEvt('projection-type', 'change', e => {
 });
 addEvt('projection-table-body', 'click', e => {
     const btn = e.target.closest('.btn-chart-proj');
-    if(btn && btn.dataset.id) renderProjectionChart(btn.dataset.id);
+    if(btn && btn.dataset.id) {
+        const mod = id('modal-projection-chart');
+        if(mod) mod.dataset.mode = 'history';
+        id('btn-chart-mode-history').className = "text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors";
+        id('btn-chart-mode-future').className = "text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors";
+        id('lbl-toggle-stock-history').classList.remove('hidden');
+        renderProjectionChart(btn.dataset.id);
+    }
 });
 addEvt('toggle-stock-history', 'change', () => {
+    const cId = id('modal-projection-chart')?.dataset.itemId;
+    if(cId) renderProjectionChart(cId);
+});
+addEvt('btn-chart-mode-history', 'click', () => {
+    id('btn-chart-mode-history').className = "text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors";
+    id('btn-chart-mode-future').className = "text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors";
+    id('modal-projection-chart').dataset.mode = "history";
+    id('lbl-toggle-stock-history').classList.remove('hidden');
+    const cId = id('modal-projection-chart')?.dataset.itemId;
+    if(cId) renderProjectionChart(cId);
+});
+addEvt('btn-chart-mode-future', 'click', () => {
+    id('btn-chart-mode-future').className = "text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors";
+    id('btn-chart-mode-history').className = "text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors";
+    id('modal-projection-chart').dataset.mode = "future";
+    id('lbl-toggle-stock-history').classList.add('hidden');
     const cId = id('modal-projection-chart')?.dataset.itemId;
     if(cId) renderProjectionChart(cId);
 });
@@ -2427,22 +2454,59 @@ function renderProjectionChart(pId) {
     });
     
     const p = localInventory.find(x => x.id === pId);
-    let s = new Array(BINS).fill(0);
-    s[BINS - 1] = p ? (p.totalQuantity || 0) : 0;
-    for(let i = BINS - 1; i >= 1; i--) s[i - 1] = s[i] - netChange[i];
+    const mode = id('modal-projection-chart')?.dataset?.mode || 'history';
     
-    const showS = id('toggle-stock-history')?.checked;
-    const ds = [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4, yAxisID: 'y' }];
-    if(showS) ds.push({ label: 'Saldo no Fim do Per.', data: s, borderColor: '#0a84ff', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, fill: false, pointBackgroundColor: '#0a84ff', pointRadius: 4, yAxisID: 'yStock' });
-    
-    let labels = [];
-    for(let i = BINS - 1; i >= 0; i--) labels.push(`${i * 7}-${(i * 7) + 6} d`);
-    
-    chartProj = new Chart(ctx, {
-        type: 'line',
-        data: { labels: labels, datasets: ds },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, yStock: { type: 'linear', display: showS, position: 'right', beginAtZero: true, ticks: { color: '#0a84ff' }, grid: { drawOnChartArea: false } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: showS, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw.toFixed(2); } } } } }
-    });
+    if (mode === 'history') {
+        let s = new Array(BINS).fill(0);
+        s[BINS - 1] = p ? (p.totalQuantity || 0) : 0;
+        for(let i = BINS - 1; i >= 1; i--) s[i - 1] = s[i] - netChange[i];
+        
+        const showS = id('toggle-stock-history')?.checked;
+        const ds = [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4, yAxisID: 'y' }];
+        if(showS) ds.push({ label: 'Saldo no Fim do Per.', data: s, borderColor: '#0a84ff', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, fill: false, pointBackgroundColor: '#0a84ff', pointRadius: 4, yAxisID: 'yStock' });
+        
+        let labels = [];
+        for(let i = BINS - 1; i >= 0; i--) labels.push(`${i * 7}-${(i * 7) + 6} d`);
+        
+        chartProj = new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: ds },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, yStock: { type: 'linear', display: showS, position: 'right', beginAtZero: true, ticks: { color: '#0a84ff' }, grid: { drawOnChartArea: false } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: showS, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw.toFixed(2); } } } } }
+        });
+    } else {
+        const avgWeekly = cons.reduce((a,b)=>a+b, 0) / BINS;
+        let currentStock = p ? (p.totalQuantity || 0) : 0;
+        
+        let labels = ['Semana Atual'];
+        let stockData = [currentStock];
+        let consData = [avgWeekly];
+        
+        let w = 1;
+        let st = currentStock;
+        while(st > 0 && w <= 24) {
+            st -= avgWeekly;
+            labels.push(`+${w} Semana(s)`);
+            stockData.push(Math.max(0, st));
+            consData.push(avgWeekly);
+            if(st <= 0) break;
+            w++;
+        }
+        if(avgWeekly === 0) {
+            for(let i=1; i<=4; i++) { labels.push(`+${i} Semana(s)`); stockData.push(currentStock); consData.push(0); }
+        }
+        
+        chartProj = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Saldo Disponível', data: stockData, borderColor: '#0a84ff', backgroundColor: 'rgba(10, 132, 255, 0.2)', fill: true, tension: 0.1, pointBackgroundColor: '#0a84ff', pointRadius: 4 },
+                    { label: 'Consumo Médio Projetado', data: consData, borderColor: '#ff9f0a', backgroundColor: 'transparent', borderDash: [5, 5], fill: false, tension: 0, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: {color: '#8e8e93'}, grid: {color: '#38383a'} }, x: { ticks: {color: '#8e8e93'}, grid: {display: false} } }, plugins: { legend: { display: true, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw.toFixed(2) } } } }
+        });
+    }
 }
 
 addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:localInventory,batches:localBatches,history:localHistory,recipes:localRecipes,productionOrders:localProductionOrders,locations:localLocations};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});
