@@ -361,8 +361,11 @@
             <div id="modal-projection-chart" class="fixed inset-0 bg-black/80 z-50 hidden flex flex-col items-center justify-center p-4">
                 <div class="bg-ios-bg w-full max-w-4xl rounded-xl flex flex-col overflow-hidden shadow-2xl border border-ios-border">
                     <div class="flex flex-wrap justify-between items-center p-4 border-b border-ios-border bg-ios-card gap-2">
-                        <h3 class="text-white font-bold text-sm md:text-base flex items-center justify-center"><i class="fa-solid fa-chart-line text-ios-green mr-2"></i><span id="projection-chart-title">Evolução Histórica</span></h3>
-                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                        <div>
+                            <h3 class="text-white font-bold text-sm md:text-base flex items-center"><i class="fa-solid fa-chart-line text-ios-green mr-2"></i><span id="projection-chart-title">Evolução Histórica</span></h3>
+                            <div class="text-[10px] sm:text-xs text-ios-textMuted mt-1" id="projection-chart-subtitle"></div>
+                        </div>
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 mt-2 sm:mt-0 ml-auto">
                             <div class="flex items-center gap-1 bg-ios-bg p-1 rounded border border-ios-border">
                                 <button type="button" id="btn-chart-mode-history" class="text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors">Passado</button>
                                 <button type="button" id="btn-chart-mode-future" class="text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors">Esgotamento (Futuro)</button>
@@ -2452,6 +2455,12 @@ function renderProjectionChart(pId) {
         }
         netChange[revIndex] += (h.quantity * m);
     });
+    
+    const totalCons = cons.reduce((a,b)=>a+b, 0);
+    const agW = totalCons / BINS;
+    const agD = totalCons / (BINS * 7);
+    const subL = id('projection-chart-subtitle');
+    if(subL) subL.innerHTML = `Média: <span class="text-ios-blue font-bold px-1">${agD.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW.toFixed(3)}/sem</span>`;
     
     const p = localInventory.find(x => x.id === pId);
     const mode = id('modal-projection-chart')?.dataset?.mode || 'history';
