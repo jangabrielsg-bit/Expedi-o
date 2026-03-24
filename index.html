@@ -125,6 +125,7 @@
             <nav class="flex-1 w-full px-3 space-y-2 overflow-y-auto">
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="projection"><i class="fa-solid fa-chart-line w-6 text-center text-lg" style="color:#30d158;"></i><span class="ml-3 hidden lg:block font-medium">Projeção PCP</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
@@ -160,6 +161,7 @@
                     <button type="button" class="menu-window nav-btn" data-target="adjustments" data-allow="admin,gerente"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="users" data-allow="admin"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -298,6 +300,66 @@
                     <div class="card bg-ios-bg border-ios-border">
                         <h3 class="text-sm font-bold text-white uppercase mb-4 flex items-center"><i class="fa-solid fa-clock text-ios-red mr-2"></i>Qtd Perto da Validade</h3>
                         <p class="text-4xl text-ios-red font-mono" id="dash-validade">0 <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projeção -->
+            <div id="screen-projection" class="screen-panel hidden max-w-6xl mx-auto">
+                <h1 class="title-lg mb-6"><i class="fa-solid fa-chart-line text-ios-green mr-3"></i>Projeção de Consumo (PCP)</h1>
+                <div class="card mb-6">
+                    <div class="flex flex-col sm:flex-row gap-4 items-end">
+                        <div class="w-full sm:w-1/3">
+                            <label class="form-label">Tipo de Projeção</label>
+                            <select id="projection-type" class="form-input">
+                                <option value="end_of_month">Para o final do mês atual</option>
+                                <option value="next_30_days">Para daqui a 30 dias (Base Histórico)</option>
+                            </select>
+                        </div>
+                        <div class="w-full sm:w-1/3">
+                            <label class="form-label" id="projection-working-days-label">Dias Úteis no Mês</label>
+                            <input type="number" id="projection-working-days" class="form-input text-ios-blue font-bold text-center" value="22" min="1">
+                        </div>
+                        <button type="button" id="btn-calc-projection" class="btn-primary shrink-0 w-full sm:w-auto px-8 py-3">Calcular / Atualizar</button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col justify-center border-ios-blue/30">
+                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Histórico (últimos 60 dias por quinzena)</h2>
+                        <select id="projection-chart-item" class="absolute top-4 right-4 bg-ios-input text-white text-xs p-2 rounded border border-ios-border z-10 w-48 font-bold">
+                            <option value="">Selecione um insumo...</option>
+                        </select>
+                        <canvas id="chart-projection-history" class="mt-8 w-full h-full p-2"></canvas>
+                    </div>
+                    
+                    <div class="card col-span-1 border border-ios-border text-center py-6 flex flex-col items-center justify-center">
+                        <h3 class="text-ios-blue font-bold text-sm uppercase mb-4"><i class="fa-solid fa-info-circle mr-2"></i>Como Funciona</h3>
+                        <p class="text-xs text-ios-textMuted text-left space-y-2 px-2 leading-relaxed">
+                            <b class="text-ios-orange block mb-2">Mês Atual:</b> Divide o consumo pelo n.º de dias úteis <span class="text-ios-blue">que passaram</span>, depois multiplica pelos dias úteis totais do mês.<br>
+                            <b class="text-ios-green block mt-4 mb-2">Daq a 30 dias:</b> Pega o consumo total dos <span class="text-ios-blue">últimos 60 dias</span> (aprox. 44 dias úteis), acha a média diária e projeta para os dias informados.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card p-0 bg-transparent border-none">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-4 p-1">
+                        <h2 class="title-md mb-0 text-white">Projeção por Insumo</h2>
+                        <input type="text" id="search-projection" placeholder="Filtrar Insumo..." class="form-input w-full md:w-64 bg-ios-input border border-ios-border">
+                    </div>
+                    <div class="table-container shadow-sm border border-ios-border">
+                        <table class="base-table w-full">
+                            <thead class="base-thead">
+                                <tr>
+                                    <th class="base-th">Insumo</th>
+                                    <th class="base-th text-right">Físico Atual</th>
+                                    <th class="base-th text-right text-ios-orange" title="Expectativa desde o início do período até o final">Projetado (Total)</th>
+                                    <th class="base-th text-right text-ios-green" title="O quanto ainda vai consumir neste período">A Consumir (Restante)</th>
+                                    <th class="base-th text-center">Situação (Físico vs Restante)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projection-table-body" class="divide-y divide-ios-border"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -659,6 +721,7 @@ function applyRoleRestrictions() {
         if(item.dataset.target === 'consulta') shouldShow = true;
         if(item.dataset.target === 'inventory' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'dashboard' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
+        if(item.dataset.target === 'projection' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'purchasing' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'barcodes' && ['admin','gerente','operador'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'locations' && ['admin','gerente','operador'].includes(currentUserRole)) shouldShow = true;
@@ -706,7 +769,7 @@ let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard'];
+const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard','projection'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -725,6 +788,7 @@ window.navTo=t=>{
     if(t==='traceability') renderTraceability();
     if(t==='production') renderPO();
     if(t==='dashboard') renderDashboard();
+    if(t==='projection') initProjection();
     if(t==='consulta'){id('consulta-input').value='';id('consulta-results').innerHTML=`<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>`;setTimeout(()=>id('consulta-input').focus(),100);}
     if(t==='entry'){createSearchableSelect(id('entry-searchable-container'),localInventory,'Pesquisar...',p=>{document.querySelector('#entry-form input[name="quantity"]').focus();});renderBulkEntry();}
 };
@@ -936,6 +1000,7 @@ async function refreshData(){
             if(t==='purchasing')renderPurchasing();
             if(t==='locations')renderAllLocations();
             if(t==='traceability')renderTraceability();
+            if(t==='projection')renderProjection();
         }
         if(currentHistoryProductId)renderItemDetailsHistory();
     }catch(e){
@@ -2199,6 +2264,128 @@ function renderDashboard() {
     
     id('dash-volume-medio').innerHTML = `${avgVol.toFixed(1)} <span class="text-lg text-ios-textMuted">UN/KG/L</span>`;
     id('dash-validade').innerHTML = `${eb} <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span>`;
+}
+
+// --- PROJEÇÃO PCP ---
+let chartProj = null;
+let currentProjData = [];
+
+function getWorkingDaysPassedAndTotal(year, month) {
+    let passed = 0; let total = 0; const today = new Date();
+    const isCurrentMonth = (today.getFullYear() === year && today.getMonth() === month);
+    const maxDays = new Date(year, month + 1, 0).getDate();
+    for (let d = 1; d <= maxDays; d++) {
+        const day = new Date(year, month, d).getDay();
+        if (day !== 0 && day !== 6) {
+            total++;
+            if (isCurrentMonth && d <= today.getDate()) passed++;
+            else if (!isCurrentMonth) passed++;
+        }
+    }
+    return { passed, total };
+}
+
+function initProjection() {
+    const sel = id('projection-type');
+    if(sel && !sel.value) sel.value = 'end_of_month';
+    const ins = localInventory.filter(i => i.type === 'insumo').sort((a,b)=>a.name.localeCompare(b.name));
+    if(id('projection-chart-item')) id('projection-chart-item').innerHTML = '<option value="">Selecione um insumo...</option>' + ins.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+    renderProjection();
+}
+
+addEvt('btn-calc-projection', 'click', renderProjection);
+addEvt('projection-type', 'change', e => {
+    if(e.target.value === 'end_of_month') {
+        id('projection-working-days-label').innerText = 'Dias Úteis no Mês';
+        id('projection-working-days').value = getWorkingDaysPassedAndTotal(new Date().getFullYear(), new Date().getMonth()).total;
+    } else {
+        id('projection-working-days-label').innerText = 'Dias Úteis (Projeção)';
+        id('projection-working-days').value = 22; 
+    }
+    renderProjection();
+});
+addEvt('search-projection', 'input', () => drawProjectionTable());
+addEvt('projection-chart-item', 'change', renderProjectionChart);
+
+function renderProjection() {
+    const type = id('projection-type')?.value;
+    const configuredDays = parseInt(id('projection-working-days')?.value) || 22;
+    const today = new Date();
+    const { passed } = getWorkingDaysPassedAndTotal(today.getFullYear(), today.getMonth());
+    
+    currentProjData = [];
+    localInventory.filter(i => i.type === 'insumo').forEach(insumo => {
+        let pTotal = 0, pRest = 0;
+        
+        if (type === 'end_of_month') {
+            const startStr = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            const consumed = localHistory.filter(h => h.productId === insumo.id && h.type === 'saída' && h.date >= startStr).reduce((s, h) => s + h.quantity, 0);
+            const daily = passed > 0 ? (consumed / passed) : 0;
+            pTotal = daily * configuredDays;
+            const leftDays = Math.max(0, configuredDays - passed);
+            pRest = daily * leftDays;
+        } else {
+            const date60 = new Date(); date60.setDate(date60.getDate() - 60);
+            const str60 = date60.toISOString().split('T')[0];
+            const consumed60 = localHistory.filter(h => h.productId === insumo.id && h.type === 'saída' && h.date >= str60).reduce((s, h) => s + h.quantity, 0);
+            const daily = consumed60 / 44; // Approx 44 working days in 60 days
+            pTotal = daily * configuredDays;
+            pRest = pTotal; 
+        }
+        
+        currentProjData.push({ name: insumo.name, code: insumo.code, stock: insumo.totalQuantity || 0, pTotal, pRest: Math.max(0, pRest) });
+    });
+    
+    currentProjData.sort((a,b) => b.pRest - a.pRest);
+    drawProjectionTable();
+    renderProjectionChart();
+}
+
+function drawProjectionTable() {
+    const term = (id('search-projection')?.value || '').toLowerCase();
+    const tb = id('projection-table-body');
+    if(!tb) return;
+    const f = currentProjData.filter(d => d.name.toLowerCase().includes(term) || (d.code && d.code.toLowerCase().includes(term)));
+    
+    if(!f.length) { tb.innerHTML = '<tr><td colspan="5" class="text-center text-ios-textMuted py-4">Vazio.</td></tr>'; return; }
+    
+    tb.innerHTML = f.map(d => {
+        const ok = d.stock >= d.pRest && d.pRest > 0;
+        const low = d.stock < d.pRest;
+        const stClass = ok ? 'text-ios-green bg-ios-green/10' : (low ? 'text-ios-red bg-ios-red/10' : 'text-ios-textMuted');
+        const stText = ok ? 'OK - Suficiente' : (low ? 'Falta Estoque' : '-');
+        return `<tr class="base-tr">
+            <td class="base-td text-white text-xs whitespace-normal">${d.name} <div class="text-[9px] text-ios-textMuted mt-1">${d.code||'-'}</div></td>
+            <td class="base-td text-right font-bold text-ios-blue">${d.stock.toFixed(2)}</td>
+            <td class="base-td text-right text-ios-textMuted">${d.pTotal.toFixed(2)}</td>
+            <td class="base-td text-right font-bold text-white">${d.pRest.toFixed(2)}</td>
+            <td class="base-td text-center"><span class="${stClass} font-bold px-2 py-1 rounded text-[10px] break-words block">${stText}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderProjectionChart() {
+    const pId = id('projection-chart-item')?.value;
+    const ctx = id('chart-projection-history');
+    if(chartProj) { chartProj.destroy(); chartProj = null; }
+    if(!pId || !ctx) return;
+    
+    const today = new Date();
+    let cons = [0, 0, 0, 0];
+    
+    localHistory.filter(h => h.productId === pId && h.type === 'saída').forEach(h => {
+        const d = Math.floor((today - new Date(h.date + 'T00:00:00')) / 86400000);
+        if(d >= 0 && d <= 15) cons[3] += h.quantity;
+        else if(d > 15 && d <= 30) cons[2] += h.quantity;
+        else if(d > 30 && d <= 45) cons[1] += h.quantity;
+        else if(d > 45 && d <= 60) cons[0] += h.quantity;
+    });
+    
+    chartProj = new Chart(ctx, {
+        type: 'line',
+        data: { labels: ['46-60 dias', '31-45 dias', '16-30 dias', '0-15 dias'], datasets: [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return 'Consumo: ' + c.raw.toFixed(2) } } } } }
+    });
 }
 
 addEvt('btn-download-db','click',async()=>{show(id('loading-overlay'));try{const dt={inventory:localInventory,batches:localBatches,history:localHistory,recipes:localRecipes,productionOrders:localProductionOrders,locations:localLocations};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(dt)],{type:'application/json'}));a.download=`EstoqueOS_Backup_${new Date().toISOString().split('T')[0]}.json`;a.click();window.showNotif('Backup salvo!');}catch(e){}finally{hide(id('loading-overlay'));}});
