@@ -324,31 +324,20 @@
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col justify-center border-ios-blue/30">
-                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Histórico (últimos 60 dias por quinzena)</h2>
-                        <div class="absolute top-4 right-4 z-50 flex items-center gap-2">
-                            <label class="flex items-center gap-1 text-[10px] text-ios-textMuted cursor-pointer bg-ios-bg p-1 px-2 rounded border border-ios-border">
-                                <input type="checkbox" id="toggle-stock-history" class="accent-ios-blue w-3 h-3"> Saldo Físico
-                            </label>
-                            <div id="projection-searchable-container" class="w-48 text-xs relative"></div>
-                        </div>
-                        <canvas id="chart-projection-history" class="mt-8 w-full h-full p-2"></canvas>
-                    </div>
-                    
-                    <div class="card col-span-1 border border-ios-border text-center py-6 flex flex-col items-center justify-center">
-                        <h3 class="text-ios-blue font-bold text-sm uppercase mb-4"><i class="fa-solid fa-info-circle mr-2"></i>Como Funciona</h3>
-                        <p class="text-xs text-ios-textMuted text-left space-y-2 px-2 leading-relaxed">
-                            <b class="text-ios-orange block mb-2">Mês Atual:</b> Divide o consumo pelo n.º de dias úteis <span class="text-ios-blue">que passaram</span>, depois multiplica pelos dias úteis totais do mês.<br>
-                            <b class="text-ios-green block mt-4 mb-2">Daq a 30 dias:</b> Pega o consumo total dos <span class="text-ios-blue">últimos 60 dias</span> (aprox. 44 dias úteis), acha a média diária e projeta para os dias informados.
+                <div class="mb-8">
+                    <div class="card border border-ios-border text-center py-6 flex flex-col items-center justify-center text-sm">
+                        <h3 class="text-ios-blue font-bold uppercase mb-4"><i class="fa-solid fa-info-circle mr-2"></i>Como Funciona</h3>
+                        <p class="text-xs text-ios-textMuted text-center space-y-2 px-2 leading-relaxed max-w-2xl mx-auto">
+                            <b class="text-ios-orange">Mês Atual:</b> Divide o consumo pelo n.º de dias úteis <span class="text-ios-blue">que passaram</span>, depois multiplica pelos dias úteis totais do mês.<br>
+                            <b class="text-ios-green mt-2 inline-block">Daq a 30 dias:</b> Pega o consumo total dos <span class="text-ios-blue">últimos 60 dias</span> (aprox. 44 dias úteis), acha a média diária e projeta para os dias informados.
                         </p>
                     </div>
                 </div>
 
                 <div class="card p-0 bg-transparent border-none">
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-4 p-1">
-                        <h2 class="title-md mb-0 text-white">Projeção por Insumo</h2>
-                        <input type="text" id="search-projection" placeholder="Filtrar Insumo..." class="form-input w-full md:w-64 bg-ios-input border border-ios-border">
+                        <h2 class="title-md mb-0 text-white">Projeção (Clique no item p/ Gráfico)</h2>
+                        <div id="projection-searchable-container" class="w-full md:w-80 text-xs relative z-30"></div>
                     </div>
                     <div class="table-container shadow-sm border border-ios-border">
                         <table class="base-table w-full">
@@ -363,6 +352,24 @@
                             </thead>
                             <tbody id="projection-table-body" class="divide-y divide-ios-border"></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Gráfico Projeção -->
+            <div id="modal-projection-chart" class="fixed inset-0 bg-black/80 z-50 hidden flex flex-col items-center justify-center p-4">
+                <div class="bg-ios-bg w-full max-w-4xl rounded-xl flex flex-col overflow-hidden shadow-2xl border border-ios-border">
+                    <div class="flex flex-wrap justify-between items-center p-4 border-b border-ios-border bg-ios-card gap-2">
+                        <h3 class="text-white font-bold text-sm md:text-base flex items-center justify-center"><i class="fa-solid fa-chart-line text-ios-green mr-2"></i><span id="projection-chart-title">Evolução Histórica</span></h3>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-1 text-[10px] sm:text-xs text-ios-textMuted cursor-pointer bg-ios-bg p-1.5 px-3 rounded border border-ios-border hover:bg-ios-blue/10">
+                                <input type="checkbox" id="toggle-stock-history" class="accent-ios-blue w-4 h-4"> Histórico de Saldo 
+                            </label>
+                            <button type="button" class="text-ios-textMuted hover:text-white" onclick="id('modal-projection-chart').classList.add('hidden')"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                        </div>
+                    </div>
+                    <div class="p-4 relative h-[60vh] sm:h-[400px] w-full">
+                        <canvas id="chart-projection-history"></canvas>
                     </div>
                 </div>
             </div>
@@ -2292,7 +2299,12 @@ function initProjection() {
     const sel = id('projection-type');
     if(sel && !sel.value) sel.value = 'end_of_month';
     const ins = localInventory.filter(i => i.type === 'insumo').sort((a,b)=>a.name.localeCompare(b.name));
-    createSearchableSelect(id('projection-searchable-container'), ins, 'Buscar Insumo...', p => renderProjectionChart(p.id));
+    createSearchableSelect(id('projection-searchable-container'), ins, 'Buscar Insumo na tabela...', () => drawProjectionTable());
+    const inp = document.querySelector('#projection-searchable-container input');
+    if(inp) {
+        addEvt(inp, 'input', () => drawProjectionTable());
+        inp.classList.add('w-full', 'bg-ios-input');
+    }
     renderProjection();
 }
 
@@ -2307,18 +2319,14 @@ addEvt('projection-type', 'change', e => {
     }
     renderProjection();
 });
-addEvt('search-projection', 'input', () => drawProjectionTable());
 addEvt('projection-table-body', 'click', e => {
     const tr = e.target.closest('tr');
-    if(tr && tr.dataset.id) {
-        const pId = tr.dataset.id;
-        const p = localInventory.find(x => x.id === pId);
-        const srchInp = document.querySelector('#projection-searchable-container input');
-        if(srchInp && p) { srchInp.value = p.name; srchInp.dataset.selectedId = p.id; }
-        renderProjectionChart(pId);
-    }
+    if(tr && tr.dataset.id) renderProjectionChart(tr.dataset.id);
 });
-addEvt('toggle-stock-history', 'change', () => renderProjectionChart());
+addEvt('toggle-stock-history', 'change', () => {
+    const cId = id('modal-projection-chart')?.dataset.itemId;
+    if(cId) renderProjectionChart(cId);
+});
 
 function renderProjection() {
     const type = id('projection-type')?.value;
@@ -2355,10 +2363,15 @@ function renderProjection() {
 }
 
 function drawProjectionTable() {
-    const term = (id('search-projection')?.value || '').toLowerCase();
+    const inp = document.querySelector('#projection-searchable-container input');
+    const term = (inp?.value || '').toLowerCase();
+    const selId = inp?.dataset?.selectedId;
     const tb = id('projection-table-body');
     if(!tb) return;
-    const f = currentProjData.filter(d => d.name.toLowerCase().includes(term) || (d.code && d.code.toLowerCase().includes(term)));
+    
+    let f = currentProjData;
+    if(selId) f = f.filter(d => d.id === selId);
+    else if(term) f = f.filter(d => d.name.toLowerCase().includes(term) || (d.code && d.code.toLowerCase().includes(term)));
     
     if(!f.length) { tb.innerHTML = '<tr><td colspan="5" class="text-center text-ios-textMuted py-4">Vazio.</td></tr>'; return; }
     
@@ -2378,47 +2391,54 @@ function drawProjectionTable() {
 }
 
 function renderProjectionChart(pId) {
-    if(!pId) pId = document.querySelector('#projection-searchable-container input')?.dataset?.selectedId;
+    if(!pId) return;
+    
+    const mod = id('modal-projection-chart');
+    if(mod) {
+        mod.classList.remove('hidden');
+        mod.dataset.itemId = pId;
+        const p = localInventory.find(x => x.id === pId);
+        id('projection-chart-title').innerText = p ? p.name : 'Histórico Consumo';
+    }
+    
     const ctx = id('chart-projection-history');
     if(chartProj) { chartProj.destroy(); chartProj = null; }
-    if(!pId || !ctx) return;
+    if(!ctx) return;
     
     const today = new Date();
-    let cons = [0, 0, 0, 0];
-    let netChange = [0, 0, 0, 0];
+    const BINS = 9;
+    let cons = new Array(BINS).fill(0);
+    let netChange = new Array(BINS).fill(0);
     
     localHistory.filter(h => h.productId === pId).forEach(h => {
         const d = Math.floor((today - new Date(h.date + 'T00:00:00')) / 86400000);
+        if(d < 0 || d >= BINS * 7) return;
+        
+        let revIndex = (BINS - 1) - Math.floor(d / 7);
         let m = 0;
         if(h.type.includes('entrada') || h.type === 'ajuste') m = 1;
         else if (h.type === 'saída' || h.type === 'requisição') {
             m = -1;
-            if(d >= 0 && d <= 15) cons[3] += h.quantity;
-            else if(d > 15 && d <= 30) cons[2] += h.quantity;
-            else if(d > 30 && d <= 45) cons[1] += h.quantity;
-            else if(d > 45 && d <= 60) cons[0] += h.quantity;
+            cons[revIndex] += h.quantity;
         }
-        let c = h.quantity * m;
-        if(d >= 0 && d <= 15) netChange[3] += c;
-        else if(d > 15 && d <= 30) netChange[2] += c;
-        else if(d > 30 && d <= 45) netChange[1] += c;
-        else if(d > 45 && d <= 60) netChange[0] += c;
+        netChange[revIndex] += (h.quantity * m);
     });
     
     const p = localInventory.find(x => x.id === pId);
-    let s = [0, 0, 0, 0];
-    s[3] = p ? (p.totalQuantity || 0) : 0;
-    s[2] = s[3] - netChange[3];
-    s[1] = s[2] - netChange[2];
-    s[0] = s[1] - netChange[1];
+    let s = new Array(BINS).fill(0);
+    s[BINS - 1] = p ? (p.totalQuantity || 0) : 0;
+    for(let i = BINS - 1; i >= 1; i--) s[i - 1] = s[i] - netChange[i];
     
     const showS = id('toggle-stock-history')?.checked;
     const ds = [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4, yAxisID: 'y' }];
     if(showS) ds.push({ label: 'Saldo no Fim do Per.', data: s, borderColor: '#0a84ff', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, fill: false, pointBackgroundColor: '#0a84ff', pointRadius: 4, yAxisID: 'yStock' });
     
+    let labels = [];
+    for(let i = BINS - 1; i >= 0; i--) labels.push(`${i * 7}-${(i * 7) + 6} d`);
+    
     chartProj = new Chart(ctx, {
         type: 'line',
-        data: { labels: ['46-60 dias', '31-45 dias', '16-30 dias', '0-15 dias'], datasets: ds },
+        data: { labels: labels, datasets: ds },
         options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, yStock: { type: 'linear', display: showS, position: 'right', beginAtZero: true, ticks: { color: '#0a84ff' }, grid: { drawOnChartArea: false } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: showS, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw.toFixed(2); } } } } }
     });
 }
