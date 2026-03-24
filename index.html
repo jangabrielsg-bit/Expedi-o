@@ -348,6 +348,7 @@
                                     <th class="base-th text-right text-ios-orange" title="Expectativa desde o início do período até o final">Projetado (Total)</th>
                                     <th class="base-th text-right text-ios-green" title="O quanto ainda vai consumir neste período">A Consumir (Restante)</th>
                                     <th class="base-th text-center">Situação (Físico vs Restante)</th>
+                                    <th class="base-th text-center w-12"></th>
                                 </tr>
                             </thead>
                             <tbody id="projection-table-body" class="divide-y divide-ios-border"></tbody>
@@ -2320,8 +2321,8 @@ addEvt('projection-type', 'change', e => {
     renderProjection();
 });
 addEvt('projection-table-body', 'click', e => {
-    const tr = e.target.closest('tr');
-    if(tr && tr.dataset.id) renderProjectionChart(tr.dataset.id);
+    const btn = e.target.closest('.btn-chart-proj');
+    if(btn && btn.dataset.id) renderProjectionChart(btn.dataset.id);
 });
 addEvt('toggle-stock-history', 'change', () => {
     const cId = id('modal-projection-chart')?.dataset.itemId;
@@ -2380,12 +2381,13 @@ function drawProjectionTable() {
         const low = d.stock < d.pRest;
         const stClass = ok ? 'text-ios-green bg-ios-green/10' : (low ? 'text-ios-red bg-ios-red/10' : 'text-ios-textMuted');
         const stText = ok ? 'OK - Suficiente' : (low ? 'Falta Estoque' : '-');
-        return `<tr class="base-tr">
+        return `<tr class="base-tr sm:hover:bg-ios-blue/10 active:bg-ios-blue/20 transition-all">
             <td class="base-td text-white text-xs whitespace-normal">${d.name} <div class="text-[9px] text-ios-textMuted mt-1">${d.code||'-'}</div></td>
             <td class="base-td text-right font-bold text-ios-blue">${d.stock.toFixed(2)}</td>
             <td class="base-td text-right text-ios-textMuted">${d.pTotal.toFixed(2)}</td>
             <td class="base-td text-right font-bold text-white">${d.pRest.toFixed(2)}</td>
             <td class="base-td text-center"><span class="${stClass} font-bold px-2 py-1 rounded text-[10px] break-words block">${stText}</span></td>
+            <td class="base-td text-center p-0"><button type="button" class="btn-chart-proj p-3 w-full h-full text-ios-blue hover:text-white transition-colors" data-id="${d.id}" title="Ver Gráfico"><i class="fa-solid fa-chart-line text-lg"></i></button></td>
         </tr>`;
     }).join('');
 }
