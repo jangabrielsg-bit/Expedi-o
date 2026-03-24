@@ -327,9 +327,12 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col justify-center border-ios-blue/30">
                         <h2 class="title-md absolute top-4 left-4 text-white text-sm">Histórico (últimos 60 dias por quinzena)</h2>
-                        <select id="projection-chart-item" class="absolute top-4 right-4 bg-ios-input text-white text-xs p-2 rounded border border-ios-border z-10 w-48 font-bold">
-                            <option value="">Selecione um insumo...</option>
-                        </select>
+                        <div class="absolute top-4 right-4 z-50 flex items-center gap-2">
+                            <label class="flex items-center gap-1 text-[10px] text-ios-textMuted cursor-pointer bg-ios-bg p-1 px-2 rounded border border-ios-border">
+                                <input type="checkbox" id="toggle-stock-history" class="accent-ios-blue w-3 h-3"> Saldo Físico
+                            </label>
+                            <div id="projection-searchable-container" class="w-48 text-xs relative"></div>
+                        </div>
                         <canvas id="chart-projection-history" class="mt-8 w-full h-full p-2"></canvas>
                     </div>
                     
@@ -2289,7 +2292,7 @@ function initProjection() {
     const sel = id('projection-type');
     if(sel && !sel.value) sel.value = 'end_of_month';
     const ins = localInventory.filter(i => i.type === 'insumo').sort((a,b)=>a.name.localeCompare(b.name));
-    if(id('projection-chart-item')) id('projection-chart-item').innerHTML = '<option value="">Selecione um insumo...</option>' + ins.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+    createSearchableSelect(id('projection-searchable-container'), ins, 'Buscar Insumo...', p => renderProjectionChart(p.id));
     renderProjection();
 }
 
@@ -2305,7 +2308,17 @@ addEvt('projection-type', 'change', e => {
     renderProjection();
 });
 addEvt('search-projection', 'input', () => drawProjectionTable());
-addEvt('projection-chart-item', 'change', renderProjectionChart);
+addEvt('projection-table-body', 'click', e => {
+    const tr = e.target.closest('tr');
+    if(tr && tr.dataset.id) {
+        const pId = tr.dataset.id;
+        const p = localInventory.find(x => x.id === pId);
+        const srchInp = document.querySelector('#projection-searchable-container input');
+        if(srchInp && p) { srchInp.value = p.name; srchInp.dataset.selectedId = p.id; }
+        renderProjectionChart(pId);
+    }
+});
+addEvt('toggle-stock-history', 'change', () => renderProjectionChart());
 
 function renderProjection() {
     const type = id('projection-type')?.value;
@@ -2333,7 +2346,7 @@ function renderProjection() {
             pRest = pTotal; 
         }
         
-        currentProjData.push({ name: insumo.name, code: insumo.code, stock: insumo.totalQuantity || 0, pTotal, pRest: Math.max(0, pRest) });
+        currentProjData.push({ id: insumo.id, name: insumo.name, code: insumo.code, stock: insumo.totalQuantity || 0, pTotal, pRest: Math.max(0, pRest) });
     });
     
     currentProjData.sort((a,b) => b.pRest - a.pRest);
@@ -2364,27 +2377,49 @@ function drawProjectionTable() {
     }).join('');
 }
 
-function renderProjectionChart() {
-    const pId = id('projection-chart-item')?.value;
+function renderProjectionChart(pId) {
+    if(!pId) pId = document.querySelector('#projection-searchable-container input')?.dataset?.selectedId;
     const ctx = id('chart-projection-history');
     if(chartProj) { chartProj.destroy(); chartProj = null; }
     if(!pId || !ctx) return;
     
     const today = new Date();
     let cons = [0, 0, 0, 0];
+    let netChange = [0, 0, 0, 0];
     
-    localHistory.filter(h => h.productId === pId && h.type === 'saída').forEach(h => {
+    localHistory.filter(h => h.productId === pId).forEach(h => {
         const d = Math.floor((today - new Date(h.date + 'T00:00:00')) / 86400000);
-        if(d >= 0 && d <= 15) cons[3] += h.quantity;
-        else if(d > 15 && d <= 30) cons[2] += h.quantity;
-        else if(d > 30 && d <= 45) cons[1] += h.quantity;
-        else if(d > 45 && d <= 60) cons[0] += h.quantity;
+        let m = 0;
+        if(h.type.includes('entrada') || h.type === 'ajuste') m = 1;
+        else if (h.type === 'saída' || h.type === 'requisição') {
+            m = -1;
+            if(d >= 0 && d <= 15) cons[3] += h.quantity;
+            else if(d > 15 && d <= 30) cons[2] += h.quantity;
+            else if(d > 30 && d <= 45) cons[1] += h.quantity;
+            else if(d > 45 && d <= 60) cons[0] += h.quantity;
+        }
+        let c = h.quantity * m;
+        if(d >= 0 && d <= 15) netChange[3] += c;
+        else if(d > 15 && d <= 30) netChange[2] += c;
+        else if(d > 30 && d <= 45) netChange[1] += c;
+        else if(d > 45 && d <= 60) netChange[0] += c;
     });
+    
+    const p = localInventory.find(x => x.id === pId);
+    let s = [0, 0, 0, 0];
+    s[3] = p ? (p.totalQuantity || 0) : 0;
+    s[2] = s[3] - netChange[3];
+    s[1] = s[2] - netChange[2];
+    s[0] = s[1] - netChange[1];
+    
+    const showS = id('toggle-stock-history')?.checked;
+    const ds = [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4, yAxisID: 'y' }];
+    if(showS) ds.push({ label: 'Saldo no Fim do Per.', data: s, borderColor: '#0a84ff', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, fill: false, pointBackgroundColor: '#0a84ff', pointRadius: 4, yAxisID: 'yStock' });
     
     chartProj = new Chart(ctx, {
         type: 'line',
-        data: { labels: ['46-60 dias', '31-45 dias', '16-30 dias', '0-15 dias'], datasets: [{ label: 'Consumo (Saídas OP)', data: cons, borderColor: '#30d158', backgroundColor: 'rgba(48, 209, 88, 0.2)', tension: 0.3, fill: true, pointBackgroundColor: '#30d158', pointRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return 'Consumo: ' + c.raw.toFixed(2) } } } } }
+        data: { labels: ['46-60 dias', '31-45 dias', '16-30 dias', '0-15 dias'], datasets: ds },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, yStock: { type: 'linear', display: showS, position: 'right', beginAtZero: true, ticks: { color: '#0a84ff' }, grid: { drawOnChartArea: false } }, x: { ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: showS, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw.toFixed(2); } } } } }
     });
 }
 
