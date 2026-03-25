@@ -149,7 +149,7 @@
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
                     <button type="button" class="menu-window nav-btn" data-target="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada (Massa)</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="locations" data-allow="admin,gerente,operador"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="barcodes" data-allow="admin,gerente,operador"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
@@ -205,7 +205,7 @@
 
             <!-- Entrada Massa -->
             <div id="screen-entry" class="screen-panel hidden">
-                <h1 class="title-lg">Entrada (Massa)</h1>
+                <h1 class="title-lg">Entrada</h1>
                 <div class="card mb-6"><form id="entry-form"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><div class="relative z-50"><label class="form-label">Produto</label><div class="flex gap-2"><div id="entry-searchable-container" class="searchable-container flex-1"></div><button type="button" id="btn-scan-entry-code" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Qtd</label><input type="number" name="quantity" required min="0.01" step="0.01" class="form-input text-ios-blue font-bold"></div><div><button type="submit" class="btn-secondary w-full"><i class="fa-solid fa-plus mr-2"></i>Adicionar Lote</button></div></div></form></div>
                 <div class="card"><div class="flex justify-between items-center mb-4"><h2 class="title-md mb-0">Lista</h2><button type="button" id="btn-save-bulk-entry" class="btn-primary"><i class="fa-solid fa-check-double mr-2"></i>Efetivar Entradas</button></div><div class="table-container overflow-visible"><table class="base-table min-w-full"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Qtd</th><th class="base-th">Lote</th><th class="base-th">Fabricação</th><th class="base-th">Validade</th><th class="base-th">Local</th><th class="base-th text-center col-acoes"><i class="fa-solid fa-trash"></i></th></tr></thead><tbody id="bulk-entry-list" class="divide-y divide-ios-border"></tbody></table></div></div>
             </div>
@@ -262,20 +262,20 @@
             <div id="screen-dashboard" class="screen-panel hidden">
                 <h1 class="title-lg mb-6"><i class="fa-solid fa-chart-pie text-ios-orange mr-3"></i>Visão Global</h1>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="card bg-ios-input/50 text-center py-6">
+                    <div class="card bg-ios-input/50 text-center py-6 cursor-pointer hover:bg-ios-cardHover transition-colors" onclick="showDashboardList('skus')">
                         <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">SKUs Únicos</h3>
                         <p class="text-white text-3xl font-bold font-mono" id="dash-skus">0</p>
                     </div>
-                    <div class="card bg-ios-input/50 text-center py-6">
+                    <div class="card bg-ios-input/50 text-center py-6 cursor-pointer hover:bg-ios-cardHover transition-colors" onclick="showDashboardList('fornecedores')">
                         <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Fornecedores</h3>
                         <p class="text-white text-3xl font-bold font-mono" id="dash-fornecedores">0</p>
                     </div>
-                    <div class="card bg-ios-input/50 text-center py-6">
+                    <div class="card bg-ios-input/50 text-center py-6 cursor-pointer hover:bg-ios-cardHover transition-colors" onclick="showDashboardList('entradas')">
                         <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Média Entradas/Dia</h3>
                         <p class="text-ios-green text-3xl font-bold font-mono" id="dash-entradas-media">0</p>
                         <p class="text-[9px] text-ios-textMuted mt-1">Últimos 30 dias</p>
                     </div>
-                    <div class="card bg-ios-input/50 text-center py-6">
+                    <div class="card bg-ios-input/50 text-center py-6 cursor-pointer hover:bg-ios-cardHover transition-colors" onclick="showDashboardList('ops')">
                         <h3 class="text-ios-textMuted font-bold text-xs uppercase mb-1">Média OPs/Dia</h3>
                         <p class="text-ios-blue text-3xl font-bold font-mono" id="dash-ops-media">0</p>
                         <p class="text-[9px] text-ios-textMuted mt-1">Últimos 30 dias</p>
@@ -313,7 +313,11 @@
                             <label class="form-label">Tipo de Projeção</label>
                             <select id="projection-type" class="form-input">
                                 <option value="end_of_month">Para o final do mês atual</option>
-                                <option value="next_30_days">Para daqui a 30 dias (Base Histórico)</option>
+                                <option value="next_7_days">Para daqui a 7 dias</option>
+                                <option value="next_15_days">Para daqui a 15 dias</option>
+                                <option value="next_30_days">Para daqui a 30 dias</option>
+                                <option value="next_60_days">Para daqui a 60 dias</option>
+                                <option value="custom">Personalizado (Digitar dias ao lado)</option>
                             </select>
                         </div>
                         <div class="w-full sm:w-1/3">
@@ -329,7 +333,7 @@
                         <h3 class="text-ios-blue font-bold uppercase mb-4"><i class="fa-solid fa-info-circle mr-2"></i>Como Funciona</h3>
                         <p class="text-xs text-ios-textMuted text-center space-y-2 px-2 leading-relaxed max-w-2xl mx-auto">
                             <b class="text-ios-orange">Mês Atual:</b> Divide o consumo pelo n.º de dias úteis <span class="text-ios-blue">que passaram</span>, depois multiplica pelos dias úteis totais do mês.<br>
-                            <b class="text-ios-green mt-2 inline-block">Daq a 30 dias:</b> Pega o consumo total dos <span class="text-ios-blue">últimos 60 dias</span> (aprox. 44 dias úteis), acha a média diária e projeta para os dias informados.
+                            <b class="text-ios-green mt-2 inline-block">Daqui a N dias:</b> Pega o consumo total dos <span class="text-ios-blue">últimos 60 dias</span> (aprox. 44 dias úteis), acha a média diária e projeta para os dias informados.
                         </p>
                     </div>
                 </div>
@@ -470,6 +474,8 @@
     <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Cód. Barras (EAN)</label><div class="flex gap-2"><input type="text" id="g-quick-reg-barcode" class="form-input" placeholder="Opcional"><button type="button" id="btn-scan-quick-reg-barcode" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
 
 <datalist id="locations-datalist"></datalist>
+
+    <div id="dashboard-details-modal" class="modal z-[9000]"><div class="modal-content max-w-2xl"><div class="flex justify-between items-center border-b border-ios-border pb-4 mb-4"><h2 id="dash-details-title" class="title-md mb-0 text-ios-blue">Detalhes</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="dashboard-details-modal">&times;</button></div><div id="dash-details-list" class="space-y-2 max-h-[60vh] overflow-y-auto"></div></div></div>
 
 <script type="module">
 // UTILS
@@ -2001,20 +2007,24 @@ addEvt('btn-confirm-production','click',async()=>{
 });
 
 // --- RASTREABILIDADE ---
-addEvt('trace-type-filter', 'change', () => {
-    if(id('trace-type-filter').value === 'req') {
-        id('trace-line-filter').disabled = true;
-    } else {
-        id('trace-line-filter').disabled = false;
-    }
-    renderTraceability();
-});
+const ttf = id('trace-type-filter');
+if (ttf) {
+    addEvt('trace-type-filter', 'change', () => {
+        if(ttf.value === 'req') {
+            id('trace-line-filter').disabled = true;
+        } else {
+            id('trace-line-filter').disabled = false;
+        }
+        renderTraceability();
+    });
+}
 addEvt('trace-date-filter', 'change', renderTraceability);
 addEvt('trace-line-filter', 'change', renderTraceability);
 addEvt('trace-search-filter', 'input', renderTraceability);
 
 function renderTraceability() {
-    const type = id('trace-type-filter').value;
+    const typeFilterEl = id('trace-type-filter');
+    const type = typeFilterEl ? typeFilterEl.value : 'op';
     const date = id('trace-date-filter').value;
     const line = id('trace-line-filter').value;
     const search = (id('trace-search-filter').value || '').toLowerCase();
@@ -2284,6 +2294,42 @@ function renderDashboard() {
     id('dash-validade').innerHTML = `${eb} <span class="text-lg text-ios-textMuted">lotes (< 45 dias)</span>`;
 }
 
+window.showDashboardList = (type) => {
+    const listEl = id('dash-details-list');
+    id('dash-details-title').innerText = type === 'skus' ? 'SKUs Únicos' : (type === 'fornecedores' ? 'Fornecedores' : (type === 'entradas' ? 'Entradas Recentes' : 'OPs Concluídas'));
+    let html = '';
+    if(type === 'skus') {
+        const skus = localInventory.filter(i => i.type !== 'semi_acabado').sort((a,b)=>a.name.localeCompare(b.name));
+        html = skus.map(s => `<div class="bg-ios-cardHover p-3 rounded-lg border border-ios-border flex justify-between"><span>${s.name}</span><span class="text-ios-blue text-xs">${s.code||''}</span></div>`).join('');
+    } else if(type === 'fornecedores') {
+        const sups = [...new Set(localInventory.map(i => i.supplier).filter(Boolean))].sort();
+        html = sups.map(s => `<div class="bg-ios-cardHover p-3 rounded-lg border border-ios-border"><span>${s}</span></div>`).join('');
+    } else if(type === 'entradas') {
+        const mt = new Date(); mt.setDate(mt.getDate() - 30);
+        const mIso = mt.toISOString().split('T')[0];
+        const ent = localHistory.filter(h => h.date >= mIso && h.type.includes('entrada')).sort((a,b)=>new Date(b.date)-new Date(a.date));
+        html = ent.map(e => {
+            const p = localInventory.find(i=>i.id===e.productId);
+            return `<div class="bg-ios-cardHover p-3 rounded-lg border border-ios-border flex justify-between"><span>${p?.name||'?'} <span class="text-ios-green ml-2">+${e.quantity}</span></span><span class="text-ios-textMuted text-xs">${e.date}</span></div>`;
+        }).join('');
+    } else if(type === 'ops') {
+        const mt = new Date(); mt.setDate(mt.getDate() - 30);
+        const mIso = mt.toISOString().split('T')[0];
+        const ops = localProductionOrders.filter(o => (o.date >= mIso || (o.executionDate && o.executionDate >= mIso)) && (o.status === 'concluída' || o.status === 'concluido')).sort((a,b)=>new Date(b.executionDate||b.date)-new Date(a.executionDate||a.date));
+        html = ops.map(o => `<div class="bg-ios-cardHover p-3 rounded-lg border border-ios-border flex justify-between"><span>${o.recipeName} <span class="text-ios-textMuted ml-2">(${o.multiplier}x)</span></span><span class="text-ios-blue text-xs block">${o.executionDate||o.date}</span></div>`).join('');
+    }
+    listEl.innerHTML = html || '<p class="text-ios-textMuted text-center py-4">Nenhum dado encontrado.</p>';
+    show(id('dashboard-details-modal'));
+    document.querySelectorAll('.close-modal').forEach(b => {
+        b.removeEventListener('click', closeModalHandler); 
+        b.addEventListener('click', closeModalHandler);
+    });
+};
+
+function closeModalHandler(e) {
+    hide(id(e.currentTarget.dataset.target));
+}
+
 // --- PROJEÇÃO PCP ---
 let chartProj = null;
 let currentProjData = [];
@@ -2318,12 +2364,16 @@ function initProjection() {
 
 addEvt('btn-calc-projection', 'click', renderProjection);
 addEvt('projection-type', 'change', e => {
-    if(e.target.value === 'end_of_month') {
+    const v = e.target.value;
+    if(v === 'end_of_month') {
         id('projection-working-days-label').innerText = 'Dias Úteis no Mês';
         id('projection-working-days').value = getWorkingDaysPassedAndTotal(new Date().getFullYear(), new Date().getMonth()).total;
     } else {
         id('projection-working-days-label').innerText = 'Dias Úteis (Projeção)';
-        id('projection-working-days').value = 22; 
+        if(v === 'next_7_days') id('projection-working-days').value = 5;
+        else if(v === 'next_15_days') id('projection-working-days').value = 11;
+        else if(v === 'next_30_days') id('projection-working-days').value = 22;
+        else if(v === 'next_60_days') id('projection-working-days').value = 44;
     }
     renderProjection();
 });
