@@ -224,7 +224,7 @@
 
             <!-- Produção OP -->
             <div id="screen-production" class="screen-panel hidden">
-                <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-confirm-production" class="btn-success restrict-ops"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary restrict-ops"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
+                <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-export-po-excel" class="btn-secondary restrict-manager"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar OPs</button><button type="button" id="btn-confirm-production" class="btn-success restrict-ops"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary restrict-ops"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
                 <div class="card mb-5 flex flex-col sm:flex-row gap-4 items-center border-l-4 border-l-ios-blue">
                     <div class="flex items-center gap-2">
                         <label class="text-sm font-medium text-ios-textMuted"><i class="fa-solid fa-filter mr-2"></i>Data OP:</label>
@@ -1080,7 +1080,8 @@ function updateSidebarBadges(){
     const ls=localInventory.filter(i => {
         const info = getStockInfo(i.id);
         const activeMin = Math.max(info.theoretical, info.real);
-        return activeMin > 0 && (i.totalQuantity || 0) <= activeMin;
+        const batchSum = localBatches.filter(b => b.productId === i.id && b.quantity > 0).reduce((acc, b) => acc + b.quantity, 0);
+        return activeMin > 0 && batchSum <= activeMin;
     });
     
     const qD=new Date();
@@ -1100,7 +1101,8 @@ function updateSidebarBadges(){
         lsl.innerHTML=ls.length?ls.map(i=>{
             const info = getStockInfo(i.id);
             const activeMin = Math.max(info.theoretical, info.real);
-            return `<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange flex justify-between items-center cursor-pointer alert-item" data-id="${i.id}"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-[10px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold">${(i.totalQuantity||0).toFixed(2)}</p><p class="text-[9px] text-ios-textMuted">Min: ${activeMin.toFixed(2)}</p></div></li>`
+            const batchSum = localBatches.filter(b => b.productId === i.id && b.quantity > 0).reduce((acc, b) => acc + b.quantity, 0);
+            return `<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange flex justify-between items-center cursor-pointer alert-item" data-id="${i.id}"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-[10px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold">${batchSum.toFixed(2)}</p><p class="text-[9px] text-ios-textMuted">Min: ${activeMin.toFixed(2)}</p></div></li>`
         }).join(''):'<li class="text-center text-ios-textMuted py-4">Tudo OK.</li>';
     }
     
@@ -1879,6 +1881,21 @@ addEvt('po-ingredients-body', 'click', e => {
     }
 });
 
+addEvt('btn-export-po-excel','click',()=>{
+    if(!localProductionOrders.length)return;
+    const d=localProductionOrders.map(o=>({
+        'Status': o.status,
+        'Data': o.date ? new Date(o.date+'T00:00:00').toLocaleDateString('pt-BR') : '-',
+        'Receita': o.recipeName,
+        'Categoria': o.recipeCategory,
+        'Multiplicador': o.multiplier,
+        'Rendimento Previsto': o.quantityProduced || '-',
+        'Lote Gerado': o.outputBatch || '-'
+    }));
+    XLSX.writeFile(XLSX.utils.book_append_sheet(XLSX.utils.book_new(),XLSX.utils.json_to_sheet(d),"OPs"), `OP_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+    window.showNotif('OPs Exportadas para Excel!');
+});
+
 addEvt('btn-new-production-order','click',()=>{
     currentOpSubstitutions = {};
     id('production-order-form').reset();
@@ -1893,7 +1910,8 @@ addEvt('btn-new-production-order','click',()=>{
         }else hide(id('po-output-fields'));
         id('po-quantity').dispatchEvent(new Event('input'));
     });
-    id('po-date').value=addBusinessDays(new Date(),2).toISOString().split('T')[0];
+    const localD = new Date(); localD.setMinutes(localD.getMinutes() - localD.getTimezoneOffset());
+    id('po-date').value = localD.toISOString().slice(0,10);
     hide(id('po-output-fields'));
     show(id('production-order-modal'));
 });
