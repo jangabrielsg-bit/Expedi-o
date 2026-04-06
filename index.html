@@ -384,6 +384,9 @@
                                 <button type="button" id="btn-chart-mode-history" class="text-xs px-3 py-1.5 rounded bg-ios-blue text-white font-bold shadow-sm transition-colors">Passado</button>
                                 <button type="button" id="btn-chart-mode-future" class="text-xs px-3 py-1.5 rounded text-ios-textMuted hover:text-white transition-colors">Esgotamento (Futuro)</button>
                             </div>
+                            <label class="flex items-center gap-1 text-[10px] sm:text-xs text-ios-textMuted cursor-pointer bg-ios-bg p-1.5 px-3 rounded border border-ios-border hover:bg-ios-blue/10" title="Dias produzidos na semana para dividir a média diária">
+                                Dias/Sem: <input type="number" id="projection-days-divisor" value="7" min="1" max="7" class="bg-transparent text-white w-8 text-center border-b border-ios-border ml-1 outline-none" onchange="const s = document.getElementById('projection-range-slider'); if(s && s.noUiSlider) s.noUiSlider.set(s.noUiSlider.get()); else renderProjectionChart(document.getElementById('modal-projection-chart').dataset.itemId);">
+                            </label>
                             <label id="lbl-toggle-stock-history" class="flex items-center gap-1 text-[10px] sm:text-xs text-ios-textMuted cursor-pointer bg-ios-bg p-1.5 px-3 rounded border border-ios-border hover:bg-ios-blue/10">
                                 <input type="checkbox" id="toggle-stock-history" class="accent-ios-blue w-4 h-4"> Histórico de Saldo 
                             </label>
@@ -2585,7 +2588,8 @@ function renderProjectionChart(pId) {
                     let slicedCons = cons.slice(startIdx, endIdx + 1);
                     let totalConsRange = slicedCons.reduce((a,b)=>a+b, 0);
                     let agW_range = totalConsRange / (slicedCons.length || 1);
-                    let agD_range = agW_range / 7;
+                    let divDays = parseFloat(id('projection-days-divisor')?.value) || 7;
+                    let agD_range = agW_range / divDays;
                     
                     if(subL) subL.innerHTML = `Média no Período: <span class="text-ios-blue font-bold px-1">${agD_range.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_range.toFixed(3)}/sem</span>`;
                     
@@ -2603,11 +2607,28 @@ function renderProjectionChart(pId) {
         const sliderCont = id('projection-slider-container');
         if(sliderCont) sliderCont.classList.add('hidden');
         
-        const totalCons = cons.reduce((a,b)=>a+b, 0);
-        const agW_all = totalCons / BINS; const agD_all = totalCons / (BINS * 7);
-        if(subL) subL.innerHTML = `Média: <span class="text-ios-blue font-bold px-1">${agD_all.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_all.toFixed(3)}/sem</span>`;
+        let avgWeekly = 0;
+        let avgDaily = 0;
         
-        const avgWeekly = agW_all;
+        const sliderDiv = id('projection-range-slider');
+        let divDays = parseFloat(id('projection-days-divisor')?.value) || 7;
+        
+        if(sliderDiv && sliderDiv.noUiSlider) {
+            let vals = sliderDiv.noUiSlider.get();
+            let startIdx = parseInt(vals[0]);
+            let endIdx = parseInt(vals[1]);
+            let slicedCons = cons.slice(startIdx, endIdx + 1);
+            let totalConsRange = slicedCons.reduce((a,b)=>a+b, 0);
+            avgWeekly = totalConsRange / (slicedCons.length || 1);
+            avgDaily = avgWeekly / divDays;
+        } else {
+            const totalCons = cons.reduce((a,b)=>a+b, 0);
+            avgWeekly = totalCons / BINS; 
+            avgDaily = avgWeekly / divDays;
+        }
+        
+        if(subL) subL.innerHTML = `Esgotamento baseado na Média: <span class="text-ios-blue font-bold px-1">${avgDaily.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${avgWeekly.toFixed(3)}/sem</span>`;
+        
         let currentStock = p ? (p.totalQuantity || 0) : 0;
         
         let labels = ['Semana Atual'];
