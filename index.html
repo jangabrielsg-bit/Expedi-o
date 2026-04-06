@@ -390,11 +390,11 @@
                             <button type="button" class="text-ios-textMuted hover:text-white ml-auto" onclick="document.getElementById('modal-projection-chart').classList.add('hidden')"><i class="fa-solid fa-xmark text-2xl"></i></button>
                         </div>
                     </div>
-                    <div class="px-8 mt-8 mb-4 w-full hidden" id="projection-slider-container">
-                        <div id="projection-range-slider"></div>
-                    </div>
                     <div class="p-4 relative h-[60vh] sm:h-[400px] w-full">
                         <canvas id="chart-projection-history"></canvas>
+                    </div>
+                    <div class="px-10 mt-2 mb-8 w-full hidden" id="projection-slider-container">
+                        <div id="projection-range-slider"></div>
                     </div>
                 </div>
             </div>
@@ -2564,37 +2564,40 @@ function renderProjectionChart(pId) {
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { color: '#8e8e93' }, grid: { color: '#38383a' } }, yStock: { type: 'linear', display: showS, position: 'right', beginAtZero: true, ticks: { color: '#0a84ff' }, grid: { drawOnChartArea: false } }, x: { min: 0, max: BINS - 1, ticks: { color: '#8e8e93' }, grid: { display: false } } }, plugins: { legend: { display: showS, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw.toFixed(2); } } } } }
         });
 
-        const sliderDiv = id('projection-range-slider');
-        if(!sliderDiv.noUiSlider) {
-            noUiSlider.create(sliderDiv, {
-                start: [0, BINS - 1], connect: true, step: 1, range: { 'min': 0, 'max': BINS - 1 },
-                pips: { mode: 'steps', density: 11, format: { to: v => {
-                    let i = (BINS - 1) - v; 
-                    if(i === 0) return 'Atual'; 
-                    else if(i === 1) return '-1 Sem'; 
-                    return `-${i} Sem`; 
-                }}}
-            });
-        }
-        sliderDiv.noUiSlider.off('update');
-        sliderDiv.noUiSlider.on('update', function(values){
-            let startIdx = parseInt(values[0]);
-            let endIdx = parseInt(values[1]);
-            
-            let slicedCons = cons.slice(startIdx, endIdx + 1);
-            let totalConsRange = slicedCons.reduce((a,b)=>a+b, 0);
-            let agW_range = totalConsRange / (slicedCons.length || 1);
-            let agD_range = agW_range / 7;
-            
-            if(subL) subL.innerHTML = `Média no Período: <span class="text-ios-blue font-bold px-1">${agD_range.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_range.toFixed(3)}/sem</span>`;
-            
-            if(chartProj && chartProj.options.scales.x) {
-                chartProj.options.scales.x.min = startIdx;
-                chartProj.options.scales.x.max = endIdx;
-                chartProj.update();
+        setTimeout(() => {
+            const sliderDiv = id('projection-range-slider');
+            if(!sliderDiv.noUiSlider) {
+                noUiSlider.create(sliderDiv, {
+                    start: [0, BINS - 1], connect: true, step: 1, range: { 'min': 0, 'max': BINS - 1 },
+                    pips: { mode: 'steps', density: 11, format: { to: v => {
+                        let i = (BINS - 1) - v; 
+                        if(i === 0) return 'Atual'; 
+                        else if(i === 1) return '-1 Sem'; 
+                        return `-${i} Sem`; 
+                    }}}
+                });
+                
+                sliderDiv.noUiSlider.on('update', function(values){
+                    let startIdx = parseInt(values[0]);
+                    let endIdx = parseInt(values[1]);
+                    
+                    let slicedCons = cons.slice(startIdx, endIdx + 1);
+                    let totalConsRange = slicedCons.reduce((a,b)=>a+b, 0);
+                    let agW_range = totalConsRange / (slicedCons.length || 1);
+                    let agD_range = agW_range / 7;
+                    
+                    if(subL) subL.innerHTML = `Média no Período: <span class="text-ios-blue font-bold px-1">${agD_range.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_range.toFixed(3)}/sem</span>`;
+                    
+                    if(chartProj && chartProj.options.scales.x) {
+                        chartProj.options.scales.x.min = startIdx;
+                        chartProj.options.scales.x.max = endIdx;
+                        chartProj.update();
+                    }
+                });
             }
-        });
-        sliderDiv.noUiSlider.set([0, BINS - 1]);
+            sliderDiv.noUiSlider.set([0, BINS - 1]);
+        }, 50);
+
     } else {
         hide(id('projection-slider-container'));
         const totalCons = cons.reduce((a,b)=>a+b, 0);
