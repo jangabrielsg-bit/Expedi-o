@@ -2542,7 +2542,8 @@ function renderProjectionChart(pId) {
     const mode = id('modal-projection-chart')?.dataset?.mode || 'history';
     
     if (mode === 'history') {
-        show(id('projection-slider-container'));
+        const sliderCont = id('projection-slider-container');
+        if(sliderCont) sliderCont.classList.remove('hidden');
         let s = new Array(BINS).fill(0);
         s[BINS - 1] = p ? (p.totalQuantity || 0) : 0;
         for(let i = BINS - 1; i >= 1; i--) s[i - 1] = s[i] - netChange[i];
@@ -2596,10 +2597,12 @@ function renderProjectionChart(pId) {
                 });
             }
             sliderDiv.noUiSlider.set([0, BINS - 1]);
-        }, 50);
+        }, 150);
 
     } else {
-        hide(id('projection-slider-container'));
+        const sliderCont = id('projection-slider-container');
+        if(sliderCont) sliderCont.classList.add('hidden');
+        
         const totalCons = cons.reduce((a,b)=>a+b, 0);
         const agW_all = totalCons / BINS; const agD_all = totalCons / (BINS * 7);
         if(subL) subL.innerHTML = `Média: <span class="text-ios-blue font-bold px-1">${agD_all.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_all.toFixed(3)}/sem</span>`;
