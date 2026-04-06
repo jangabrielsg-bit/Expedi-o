@@ -16,6 +16,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -122,20 +123,20 @@
 
         <aside class="hidden md:flex w-20 lg:w-64 bg-[#000000] border-r border-ios-border flex-col py-6 transition-all duration-300 z-40 shrink-0">
             <div class="px-4 mb-8 flex items-center justify-center lg:justify-start cursor-pointer" onclick="navTo('home')"><div class="w-10 h-10 rounded-xl bg-ios-blue flex items-center justify-center text-white font-bold text-xl"><i class="fa-solid fa-layer-group"></i></div><span class="ml-3 font-bold text-xl text-white hidden lg:block tracking-tight">Estoque OS</span></div>
-            <nav class="flex-1 w-full px-3 space-y-2 overflow-y-auto">
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="projection"><i class="fa-solid fa-chart-line w-6 text-center text-lg" style="color:#30d158;"></i><span class="ml-3 hidden lg:block font-medium">Projeção PCP</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
+            <nav id="sidebar-nav" class="flex-1 w-full px-3 space-y-2 overflow-y-auto">
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home" data-id="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard" data-id="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="projection" data-id="projection"><i class="fa-solid fa-chart-line w-6 text-center text-lg" style="color:#30d158;"></i><span class="ml-3 hidden lg:block font-medium">Projeção PCP</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta" data-id="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory" data-id="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes" data-id="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations" data-id="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production" data-id="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability" data-id="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing" data-id="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings" data-id="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
             </nav>
             <div class="mt-auto w-full px-3 pt-4 border-t border-ios-border">
                 <button type="button" id="btn-show-alerts" class="p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative text-left"><i class="fa-solid fa-bell w-6 text-center text-lg text-ios-red"></i><span class="ml-3 hidden lg:block font-medium">Alertas</span><span id="badge-nav-alerts" class="absolute top-3 right-3 bg-ios-red text-white text-[10px] px-2 py-0.5 rounded-full hidden font-bold">0</span></button>
@@ -147,21 +148,21 @@
             <!-- Home -->
             <div id="screen-home" class="screen-panel w-full max-w-6xl mx-auto">
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
-                    <button type="button" class="menu-window nav-btn" data-target="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="locations" data-allow="admin,gerente,operador"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="barcodes" data-allow="admin,gerente,operador"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="purchasing" data-allow="admin,gerente,compras"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="recipes" data-allow="admin,gerente"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="production" data-allow="admin,gerente"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="traceability" data-allow="admin,gerente"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Extratos / Baixas</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="requisitions" data-allow="admin,gerente,operador"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="adjustments" data-allow="admin,gerente"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="users" data-allow="admin"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
+                <div id="home-menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
+                    <button type="button" class="menu-window nav-btn" data-target="consulta" data-id="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="entry" data-id="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="inventory" data-id="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="locations" data-id="locations" data-allow="admin,gerente,operador"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="barcodes" data-id="barcodes" data-allow="admin,gerente,operador"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="purchasing" data-id="purchasing" data-allow="admin,gerente,compras"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="recipes" data-id="recipes" data-allow="admin,gerente"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="production" data-id="production" data-allow="admin,gerente"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="traceability" data-id="traceability" data-allow="admin,gerente"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Extratos / Baixas</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="requisitions" data-id="requisitions" data-allow="admin,gerente,operador"><i class="fa-solid fa-arrow-right-from-bracket" style="color:#ff453a;"></i><span>Baixa Avulsa</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="adjustments" data-id="adjustments" data-allow="admin,gerente"><i class="fa-solid fa-sliders" style="color:#64d2ff;"></i><span>Ajuste Lotes</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="users" data-id="users" data-allow="admin"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="dashboard" data-id="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="projection" data-id="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -2543,7 +2544,11 @@ function renderProjectionChart(pId) {
         if(showS) ds.push({ label: 'Saldo no Fim do Per.', data: s, borderColor: '#0a84ff', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3, fill: false, pointBackgroundColor: '#0a84ff', pointRadius: 4, yAxisID: 'yStock' });
         
         let labels = [];
-        for(let i = BINS - 1; i >= 0; i--) labels.push(`${i * 7}-${(i * 7) + 6} d`);
+        for(let i = BINS - 1; i >= 0; i--) {
+            if (i === 0) labels.push('Sem. Atual');
+            else if (i === 1) labels.push('Sem. Passada');
+            else labels.push(`${i} sem. atrás`);
+        }
         
         chartProj = new Chart(ctx, {
             type: 'line',
