@@ -332,22 +332,36 @@
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
                     <div class="card col-span-1 relative h-80 flex flex-col border-ios-green/30 pt-3 px-3 pb-3">
                         <div class="flex flex-col gap-2 relative z-10">
-                            <h2 class="title-md text-white text-sm text-ios-green mb-0">Consumo - Cód 8110</h2>
-                            <div class="flex gap-2">
-                                <select id="dash-farinha-period" class="form-input py-1 px-2 text-xs flex-1" onchange="renderDashboard()">
-                                    <option value="week">Semana Atual</option>
-                                    <option value="month">Mensal</option>
-                                </select>
-                                <input type="month" id="dash-farinha-month" class="form-input py-1 px-2 text-xs flex-1 hidden" onchange="renderDashboard()">
-                            </div>
+                            <h2 class="title-md text-white text-sm text-ios-green mb-0">Consumo Cód 8110</h2>
+                            <input type="month" id="dash-farinha-month" class="form-input py-1 px-2 text-xs w-full" onchange="renderDashboard()">
                         </div>
                         <div class="flex-1 w-full relative mt-4">
                             <canvas id="chart-farinha" class="w-full h-full pb-2"></canvas>
                         </div>
                     </div>
-                    <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col items-center justify-center border-ios-blue/30">
-                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Top 10 Outros Insumos</h2>
-                        <canvas id="chart-top-insumos" class="mt-8 w-full h-full p-2"></canvas>
+                    <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col border-ios-blue/30 p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="title-md text-white text-sm mb-0">Curva ABC</h2>
+                            <div class="flex items-center gap-2">
+                                <label class="text-[9px] text-ios-textMuted uppercase mb-0">Mês</label>
+                                <input type="month" id="dash-abc-month" class="form-input py-1 px-2 text-xs w-32" onchange="renderDashboard()">
+                            </div>
+                        </div>
+                        <div class="flex-1 overflow-y-auto pr-1">
+                            <table class="w-full text-left text-xs bg-ios-bg border border-ios-border rounded-lg" style="border-collapse: separate; border-spacing: 0;">
+                                <thead class="bg-ios-cardHover text-[9px] text-ios-textMuted uppercase sticky top-0 z-10">
+                                    <tr>
+                                      <th class="p-2 border-b border-ios-border text-center">∆</th>
+                                      <th class="p-2 border-b border-ios-border">Insumo</th>
+                                      <th class="p-2 border-b border-ios-border text-right">Volume</th>
+                                      <th class="p-2 border-b border-ios-border text-right">% Acum.</th>
+                                      <th class="p-2 border-b border-ios-border text-center">Curva</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-abc-list">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="card col-span-1 bg-ios-orange/10 border border-ios-orange/30 text-center py-8 flex flex-col justify-center">
                         <h3 class="text-ios-orange font-bold text-sm uppercase mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Insumos Críticos</h3>
@@ -2373,50 +2387,93 @@ function renderDashboard() {
     let qty8110 = 0; let label8110 = 'Sem Dados';
     
     if (prod8110) {
-        const periodType = id('dash-farinha-period') ? id('dash-farinha-period').value : 'week';
-        if (id('dash-farinha-month')) id('dash-farinha-month').style.display = periodType === 'month' ? 'block' : 'none';
-        
-        let hs = localHistory.filter(h => h.productId === prod8110.id && (h.type === 'saída' || h.type === 'requisição'));
-        
-        if (periodType === 'week') {
-            const now = new Date();
-            const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
-            const startOfWeek = new Date(now);
-            startOfWeek.setDate(now.getDate() - dayOfWeek);
-            startOfWeek.setHours(0,0,0,0);
-            
-            hs = hs.filter(h => new Date(h.date+'T00:00:00') >= startOfWeek);
-            label8110 = 'Semana Atual';
-        } else {
-            let monthVal = id('dash-farinha-month').value;
-            if (!monthVal) {
-                const now = new Date();
-                monthVal = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}`;
-                if (id('dash-farinha-month')) id('dash-farinha-month').value = monthVal;
-            }
-            hs = hs.filter(h => h.date && h.date.startsWith(monthVal));
-            const [y, m] = monthVal.split('-');
-            label8110 = `${m}/${y}`;
+        let monthInp = id('dash-farinha-month');
+        if(!monthInp.value) {
+            const nw = new Date();
+            monthInp.value = `${nw.getFullYear()}-${String(nw.getMonth()+1).padStart(2, '0')}`;
         }
-        qty8110 = hs.reduce((sum, h) => sum + Number(h.quantity), 0);
+        let mVal = monthInp.value;
+        const [y, m] = mVal.split('-');
+        label8110 = `${m}/${y}`;
+        
+        let hs = localHistory.filter(h => h.productId === prod8110.id && (h.type === 'saída' || h.type === 'requisição') && h.date.startsWith(mVal));
+        qty8110 = hs.reduce((s, h) => s + Number(h.quantity), 0);
     }
-
-    const itemsUsage = Object.entries(usage).map(x => ({ id: x[0], qty: x[1], p: localInventory.find(i => i.id === x[0]) })).filter(x => x.p);
-    const outrosInsumos = itemsUsage.filter(x => !prod8110 || x.p.id !== prod8110.id).sort((a,b) => b.qty - a.qty).slice(0, 10).map(x => ({ name: x.p.name.substring(0,15), qty: x.qty }));
-    
-    if(chartInsumos) chartInsumos.destroy();
-    chartInsumos = new Chart(id('chart-top-insumos'), {
-        type: 'bar',
-        data: { labels: outrosInsumos.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: outrosInsumos.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
-    });
     
     if(chartFarinha) chartFarinha.destroy();
     chartFarinha = new Chart(id('chart-farinha'), {
         type: 'bar',
-        data: { labels: [label8110], datasets: [{ label: prod8110 ? prod8110.name : 'Cód 8110', data: [qty8110], backgroundColor: '#30d158', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, display: true, position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8e8e93', font: {size: 9} } }, x: { ticks: { color: '#8e8e93', font: {size: 11} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
+        data: { labels: [label8110], datasets: [{ label: 'Qtd Mês', data: [qty8110], backgroundColor: '#30d158', borderRadius: 4, maxBarThickness: 60 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, display: true, position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8e8e93', font: {size: 9} } }, x: { ticks: { color: '#8e8e93', font: {size: 11, weight:'bold'} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
     });
+
+    let abcMonthInp = id('dash-abc-month');
+    if(!abcMonthInp.value) {
+        const nw = new Date();
+        abcMonthInp.value = `${nw.getFullYear()}-${String(nw.getMonth()+1).padStart(2, '0')}`;
+    }
+    const abcVal = abcMonthInp.value;
+    let prevD = new Date(abcVal+'-01T00:00:00');
+    prevD.setMonth(prevD.getMonth()-1);
+    const abcPrevVal = `${prevD.getFullYear()}-${String(prevD.getMonth()+1).padStart(2,'0')}`;
+    
+    function calcAbc(monthStr) {
+        let items = {}; let total = 0;
+        localHistory.filter(h => (h.type === 'saída' || h.type === 'requisição') && h.date.startsWith(monthStr)).forEach(h => {
+             items[h.productId] = (items[h.productId]||0) + Number(h.quantity);
+             total += Number(h.quantity);
+        });
+        let arr = Object.keys(items).map(k => ({id:k, qty:items[k] })).sort((a,b)=>b.qty-a.qty);
+        let cum=0;
+        arr.forEach(x => {
+             cum += x.qty;
+             let pct = total > 0 ? (cum/total)*100 : 0;
+             x.pct = Math.min(pct, 100);
+             if(x.pct <= 90) x.curve = 'A';
+             else if(x.pct <= 97.5) x.curve = 'B';
+             else x.curve = 'C';
+        });
+        return arr;
+    }
+    
+    const currAbc = calcAbc(abcVal);
+    const prevAbc = calcAbc(abcPrevVal);
+    
+    let abcHtml = '';
+    const curveColors = { 'A': 'bg-ios-green', 'B': 'bg-ios-orange', 'C': 'bg-ios-red' };
+    const curveRanks = { 'A': 3, 'B': 2, 'C': 1 };
+    
+    if(currAbc.length === 0) {
+         abcHtml = `<tr><td colspan="5" class="py-4 text-center text-ios-textMuted">Nenhuma saída de produto no mês.</td></tr>`;
+    } else {
+         currAbc.forEach(x => {
+              const p = localInventory.find(i=>i.id===x.id);
+              if(!p) return;
+              const prevMatch = prevAbc.find(i=>i.id===x.id);
+              let icon = '<span class="text-ios-textMuted text-[10px]">-</span>';
+              
+              if(prevMatch && prevMatch.curve !== x.curve) {
+                   if(curveRanks[x.curve] > curveRanks[prevMatch.curve]) {
+                        icon = '<span title="Subiu de Curva"><i class="fa-solid fa-angles-up text-ios-green mt-1"></i> <span class="text-[12px]">🏎️</span></span>';
+                   } else if(curveRanks[x.curve] < curveRanks[prevMatch.curve]) {
+                        icon = '<span title="Caiu de Curva"><i class="fa-solid fa-angles-down text-ios-red mt-1"></i></span>';
+                   }
+              } else if (!prevMatch) {
+                   icon = '<span title="Novo Mês" class="text-ios-blue text-[8px] tracking-tighter">NEW</span>';
+              }
+              
+              abcHtml += `
+              <tr class="hover:bg-ios-card transition-colors">
+                  <td class="p-2 border-b border-ios-border/30 text-center">${icon}</td>
+                  <td class="p-2 border-b border-ios-border/30 text-white font-medium truncate max-w-[150px]" title="${p.name}">${p.name}</td>
+                  <td class="p-2 border-b border-ios-border/30 text-right"><span class="bg-ios-input px-1 rounded font-mono">${x.qty.toFixed(2)}</span></td>
+                  <td class="p-2 border-b border-ios-border/30 text-right text-ios-textMuted font-mono text-[10px]">${x.pct.toFixed(1)}%</td>
+                  <td class="p-2 border-b border-ios-border/30 text-center"><span class="badge ${curveColors[x.curve]} text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full mx-auto font-bold">${x.curve}</span></td>
+              </tr>`;
+         });
+    }
+    const abcEL = id('dash-abc-list');
+    if (abcEL) abcEL.innerHTML = abcHtml;
 
     // Validations & Validade
     const qD = new Date(); qD.setDate(qD.getDate() + 45);
