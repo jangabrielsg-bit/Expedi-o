@@ -1204,7 +1204,7 @@ function renderInv(){
 }
 
 addEvt('inventory-table-body','click',e=>{const r=e.target.closest('tr');if(r&&r.dataset.id)openDetails(r.dataset.id);});
-addEvt('btn-export-excel','click',()=>{if(!localInventory.length)return;const d=localInventory.map(i=>({'Produto':i.name,'Tipo':typeLabels[i.type]||i.type,'Cód Interno':i.code||'-','Fornecedor':i.supplier||'-','Saldo Físico':i.totalQuantity||0,'Estoque Mínimo':i.minStock||0}));XLSX.writeFile(XLSX.utils.book_append_sheet(XLSX.utils.book_new(),XLSX.utils.json_to_sheet(d),"Estoque"),`Estoque_${new Date().toISOString().split('T')[0]}.xlsx`);window.showNotif('Exportado!');});
+addEvt('btn-export-excel','click',()=>{if(!localInventory.length)return;const d=localInventory.map(i=>({'Produto':i.name,'Tipo':typeLabels[i.type]||i.type,'Cód Interno':i.code||'-','Fornecedor':i.supplier||'-','Saldo Físico':i.totalQuantity||0,'Estoque Mínimo':i.minStock||0}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"Estoque");XLSX.writeFile(wb,`Estoque_${new Date().toISOString().split('T')[0]}.xlsx`);window.showNotif('Exportado!');});
 
 ['hist-filter-start','hist-filter-end','hist-filter-type'].forEach(i=>addEvt(i,'change',renderItemDetailsHistory));
 addEvt('btn-clear-hist-filters','click',()=>{if(id('hist-filter-start'))id('hist-filter-start').value='';if(id('hist-filter-end'))id('hist-filter-end').value='';if(id('hist-filter-type'))id('hist-filter-type').value='';renderItemDetailsHistory();});
@@ -1908,7 +1908,9 @@ addEvt('btn-export-po-excel','click',()=>{
         'Rendimento Previsto': o.quantityProduced || '-',
         'Lote Gerado': o.outputBatch || '-'
     }));
-    XLSX.writeFile(XLSX.utils.book_append_sheet(XLSX.utils.book_new(),XLSX.utils.json_to_sheet(d),"OPs"), `OP_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(d), "OPs");
+    XLSX.writeFile(wb, `OP_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
     window.showNotif('OPs Exportadas para Excel!');
 });
 
