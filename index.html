@@ -102,9 +102,47 @@
         body.role-compras .toggle-release-batch + span {
             margin-left: 0 !important;
         }
+        
+        #sys-watermark {
+            position: fixed;
+            bottom: 80px; /* Acima da navegação mobile */
+            right: 15px;
+            z-index: 2147483647;
+            pointer-events: none;
+            user-select: none;
+            font-size: 11px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.9);
+            transition: all 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            #sys-watermark {
+                bottom: 15px; /* Ajuste para desktop */
+                right: 20px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        @media print {
+            #sys-watermark {
+                display: block !important;
+                color: rgba(0,0,0,0.5) !important;
+                text-shadow: none !important;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
     </style>
 </head>
 <body class="bg-ios-bg text-ios-text font-sans antialiased flex h-screen overflow-hidden w-full relative">
+    
+    <!-- Marca d'água fixa de sistema -->
+    <div id="sys-watermark">Desenvolvido por Jan Gabriel</div>
 
     <div id="loading-overlay" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-black bg-opacity-80 backdrop-blur-md transition-opacity">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-ios-cardHover border-t-ios-blue mb-4"></div>
@@ -291,9 +329,13 @@
                         <p class="text-[9px] text-ios-textMuted mt-1">Últimos 30 dias</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="card col-span-1 relative h-80 flex flex-col items-center justify-center border-ios-green/30">
+                        <h2 class="title-md absolute top-4 left-4 text-white text-sm text-ios-green">Consumo Farinha</h2>
+                        <canvas id="chart-farinha" class="mt-8 w-full h-full p-2"></canvas>
+                    </div>
                     <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col items-center justify-center border-ios-blue/30">
-                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Top 10 Insumos Consumidos</h2>
+                        <h2 class="title-md absolute top-4 left-4 text-white text-sm">Top 10 Outros Insumos</h2>
                         <canvas id="chart-top-insumos" class="mt-8 w-full h-full p-2"></canvas>
                     </div>
                     <div class="card col-span-1 bg-ios-orange/10 border border-ios-orange/30 text-center py-8 flex flex-col justify-center">
@@ -2292,7 +2334,7 @@ addEvt('users-table-body', 'click', async e => {
 });
 
 // DASHBOARD
-let chartInsumos=null;
+let chartInsumos=null; let chartFarinha=null;
 function renderDashboard() {
     if(!id('chart-top-insumos')) return;
 
@@ -2316,15 +2358,22 @@ function renderDashboard() {
     });
     const avgVol = volTotal / 30;
     
-    const top = Object.entries(usage).sort((a,b) => b[1]-a[1]).slice(0, 10).map(x => {
-        const p = localInventory.find(i => i.id === x[0]);
-        return { name: p ? p.name.substring(0,15) : '?', qty: x[1] };
-    });
+    const itemsUsage = Object.entries(usage).map(x => ({ id: x[0], qty: x[1], p: localInventory.find(i => i.id === x[0]) })).filter(x => x.p);
+    
+    const todasFarinhas = itemsUsage.filter(x => x.p.name.toLowerCase().includes('farinha')).sort((a,b) => b.qty - a.qty).map(x => ({ name: x.p.name.substring(0,20), qty: x.qty }));
+    const outrosInsumos = itemsUsage.filter(x => !x.p.name.toLowerCase().includes('farinha')).sort((a,b) => b.qty - a.qty).slice(0, 10).map(x => ({ name: x.p.name.substring(0,15), qty: x.qty }));
     
     if(chartInsumos) chartInsumos.destroy();
     chartInsumos = new Chart(id('chart-top-insumos'), {
         type: 'bar',
-        data: { labels: top.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: top.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
+        data: { labels: outrosInsumos.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: outrosInsumos.map(x=>x.qty), backgroundColor: '#0a84ff', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
+    });
+    
+    if(chartFarinha) chartFarinha.destroy();
+    chartFarinha = new Chart(id('chart-farinha'), {
+        type: 'bar',
+        data: { labels: todasFarinhas.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: todasFarinhas.map(x=>x.qty), backgroundColor: '#30d158', borderRadius: 4 }] },
         options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
     });
 
