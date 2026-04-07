@@ -107,7 +107,7 @@
             position: fixed;
             bottom: 80px; /* Acima da navegação mobile */
             right: 15px;
-            z-index: 2147483647;
+            z-index: 2147483647 !important;
             pointer-events: none;
             user-select: none;
             font-size: 11px;
@@ -330,9 +330,20 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="card col-span-1 relative h-80 flex flex-col items-center justify-center border-ios-green/30">
-                        <h2 class="title-md absolute top-4 left-4 text-white text-sm text-ios-green">Consumo Farinha</h2>
-                        <canvas id="chart-farinha" class="mt-8 w-full h-full p-2"></canvas>
+                    <div class="card col-span-1 relative h-80 flex flex-col border-ios-green/30 pt-3 px-3 pb-3">
+                        <div class="flex flex-col gap-2 relative z-10">
+                            <h2 class="title-md text-white text-sm text-ios-green mb-0">Consumo - Cód 8110</h2>
+                            <div class="flex gap-2">
+                                <select id="dash-farinha-period" class="form-input py-1 px-2 text-xs flex-1" onchange="renderDashboard()">
+                                    <option value="week">Semana Atual</option>
+                                    <option value="month">Mensal</option>
+                                </select>
+                                <input type="month" id="dash-farinha-month" class="form-input py-1 px-2 text-xs flex-1 hidden" onchange="renderDashboard()">
+                            </div>
+                        </div>
+                        <div class="flex-1 w-full relative mt-4">
+                            <canvas id="chart-farinha" class="w-full h-full pb-2"></canvas>
+                        </div>
                     </div>
                     <div class="card col-span-1 lg:col-span-2 relative h-80 flex flex-col items-center justify-center border-ios-blue/30">
                         <h2 class="title-md absolute top-4 left-4 text-white text-sm">Top 10 Outros Insumos</h2>
@@ -539,7 +550,7 @@
 // WATERMARK PLUGIN (CHART.JS)
 Chart.register({
     id: 'customWatermark',
-    beforeDraw: (chart) => {
+    afterDraw: (chart) => {
         const { ctx, chartArea } = chart;
         if (!chartArea) return;
         ctx.save();
@@ -2358,10 +2369,40 @@ function renderDashboard() {
     });
     const avgVol = volTotal / 30;
     
-    const itemsUsage = Object.entries(usage).map(x => ({ id: x[0], qty: x[1], p: localInventory.find(i => i.id === x[0]) })).filter(x => x.p);
+    const prod8110 = localInventory.find(i => String(i.code).trim() === '8110');
+    let qty8110 = 0; let label8110 = 'Sem Dados';
     
-    const todasFarinhas = itemsUsage.filter(x => x.p.name.toLowerCase().includes('farinha')).sort((a,b) => b.qty - a.qty).map(x => ({ name: x.p.name.substring(0,20), qty: x.qty }));
-    const outrosInsumos = itemsUsage.filter(x => !x.p.name.toLowerCase().includes('farinha')).sort((a,b) => b.qty - a.qty).slice(0, 10).map(x => ({ name: x.p.name.substring(0,15), qty: x.qty }));
+    if (prod8110) {
+        const periodType = id('dash-farinha-period') ? id('dash-farinha-period').value : 'week';
+        if (id('dash-farinha-month')) id('dash-farinha-month').style.display = periodType === 'month' ? 'block' : 'none';
+        
+        let hs = localHistory.filter(h => h.productId === prod8110.id && (h.type === 'saída' || h.type === 'requisição'));
+        
+        if (periodType === 'week') {
+            const now = new Date();
+            const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - dayOfWeek);
+            startOfWeek.setHours(0,0,0,0);
+            
+            hs = hs.filter(h => new Date(h.date+'T00:00:00') >= startOfWeek);
+            label8110 = 'Semana Atual';
+        } else {
+            let monthVal = id('dash-farinha-month').value;
+            if (!monthVal) {
+                const now = new Date();
+                monthVal = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}`;
+                if (id('dash-farinha-month')) id('dash-farinha-month').value = monthVal;
+            }
+            hs = hs.filter(h => h.date && h.date.startsWith(monthVal));
+            const [y, m] = monthVal.split('-');
+            label8110 = `${m}/${y}`;
+        }
+        qty8110 = hs.reduce((sum, h) => sum + Number(h.quantity), 0);
+    }
+
+    const itemsUsage = Object.entries(usage).map(x => ({ id: x[0], qty: x[1], p: localInventory.find(i => i.id === x[0]) })).filter(x => x.p);
+    const outrosInsumos = itemsUsage.filter(x => !prod8110 || x.p.id !== prod8110.id).sort((a,b) => b.qty - a.qty).slice(0, 10).map(x => ({ name: x.p.name.substring(0,15), qty: x.qty }));
     
     if(chartInsumos) chartInsumos.destroy();
     chartInsumos = new Chart(id('chart-top-insumos'), {
@@ -2373,8 +2414,8 @@ function renderDashboard() {
     if(chartFarinha) chartFarinha.destroy();
     chartFarinha = new Chart(id('chart-farinha'), {
         type: 'bar',
-        data: { labels: todasFarinhas.map(x=>x.name), datasets: [{ label: 'Qtd Consumida (30d)', data: todasFarinhas.map(x=>x.qty), backgroundColor: '#30d158', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#8e8e93', font: {size: 9} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
+        data: { labels: [label8110], datasets: [{ label: prod8110 ? prod8110.name : 'Cód 8110', data: [qty8110], backgroundColor: '#30d158', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, display: true, position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8e8e93', font: {size: 9} } }, x: { ticks: { color: '#8e8e93', font: {size: 11} }, grid: { display: false }, border: {display: false} } }, plugins: { legend: { display: false } } }
     });
 
     // Validations & Validade
