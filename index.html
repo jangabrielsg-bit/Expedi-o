@@ -102,35 +102,9 @@
         body.role-compras .toggle-release-batch + span {
             margin-left: 0 !important;
         }
-        
-        #sys-watermark {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 2147483647;
-            pointer-events: none;
-            user-select: none;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' transform='rotate(-25 175 100)' fill='rgba(255,255,255,0.06)' font-size='16' font-family='sans-serif' font-weight='bold' letter-spacing='2'%3EDESENVOLVIDO POR JAN GABRIEL%3C/text%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-position: center;
-        }
-        
-        @media print {
-            #sys-watermark {
-                display: block !important;
-                background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' transform='rotate(-25 175 100)' fill='rgba(0,0,0,0.1)' font-size='16' font-family='sans-serif' font-weight='bold' letter-spacing='2'%3EDESENVOLVIDO POR JAN GABRIEL%3C/text%3E%3C/svg%3E") !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
     </style>
 </head>
 <body class="bg-ios-bg text-ios-text font-sans antialiased flex h-screen overflow-hidden w-full relative">
-
-    <!-- Marca d'água fixa em toda a tela -->
-    <div id="sys-watermark"></div>
 
     <div id="loading-overlay" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-black bg-opacity-80 backdrop-blur-md transition-opacity">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-ios-cardHover border-t-ios-blue mb-4"></div>
@@ -520,6 +494,22 @@
     <div id="dashboard-details-modal" class="modal z-[9000]"><div class="modal-content max-w-2xl"><div class="flex justify-between items-center border-b border-ios-border pb-4 mb-4"><h2 id="dash-details-title" class="title-md mb-0 text-ios-blue">Detalhes</h2><button type="button" class="text-white text-4xl ml-2 close-modal" data-target="dashboard-details-modal">&times;</button></div><div id="dash-details-list" class="space-y-2 max-h-[60vh] overflow-y-auto"></div></div></div>
 
 <script type="module">
+// WATERMARK PLUGIN (CHART.JS)
+Chart.register({
+    id: 'customWatermark',
+    beforeDraw: (chart) => {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        ctx.save();
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('Desenvolvido por Jan Gabriel', chartArea.right - 5, chartArea.bottom - 5);
+        ctx.restore();
+    }
+});
+
 // UTILS
 const id=n=>document.getElementById(n), show=e=>{if(e){e.style.display='flex';e.classList.remove('hidden');}}, hide=e=>{if(e){e.style.display='none';e.classList.add('hidden');}}, addEvt=(e,t,f)=>{const el=id(e);if(el)el.addEventListener(t,f);};
 window.showNotif=(m,e=false)=>{const el=id('notification-modal');if(!el)return;el.innerHTML=e?`<i class="fa-solid fa-triangle-exclamation mr-2"></i> ${m}`:`<i class="fa-solid fa-check mr-2"></i> ${m}`;el.className=`fixed top-6 left-1/2 transform -translate-x-1/2 z-[9999999] py-3 px-6 rounded-full shadow-2xl font-semibold text-white transition-all text-sm backdrop-blur-md w-max max-w-[90vw] text-center ${e?'bg-ios-red/95':'bg-ios-green/95'}`;show(el);setTimeout(()=>hide(el),4000);};
