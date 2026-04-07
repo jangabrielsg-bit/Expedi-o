@@ -2581,26 +2581,28 @@ function renderProjectionChart(pId) {
                         return `-${i} Sem`; 
                     }}}
                 });
-                
-                sliderDiv.noUiSlider.on('update', function(values){
-                    let startIdx = parseInt(values[0]);
-                    let endIdx = parseInt(values[1]);
-                    
-                    let slicedCons = cons.slice(startIdx, endIdx + 1);
-                    let totalConsRange = slicedCons.reduce((acc, val) => acc + (parseFloat(val) || 0), 0);
-                    let agW_range = totalConsRange / (slicedCons.length || 1);
-                    let divDays = parseFloat(id('projection-days-divisor')?.value) || 7;
-                    let agD_range = agW_range / divDays;
-                    
-                    if(subL) subL.innerHTML = `Média no Período: <span class="text-ios-blue font-bold px-1">${agD_range.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_range.toFixed(3)}/sem</span>`;
-                    
-                    if(chartProj && chartProj.options.scales.x) {
-                        chartProj.options.scales.x.min = startIdx;
-                        chartProj.options.scales.x.max = endIdx;
-                        chartProj.update();
-                    }
-                });
+            } else {
+                sliderDiv.noUiSlider.off('update');
             }
+            
+            sliderDiv.noUiSlider.on('update', function(values){
+                let startIdx = parseInt(values[0]);
+                let endIdx = parseInt(values[1]);
+                
+                let slicedCons = cons.slice(startIdx, endIdx + 1);
+                let totalConsRange = slicedCons.reduce((acc, val) => acc + (parseFloat(val) || 0), 0);
+                let agW_range = totalConsRange / (slicedCons.length || 1);
+                let divDays = parseFloat(id('projection-days-divisor')?.value) || 7;
+                let agD_range = agW_range / divDays;
+                
+                if(subL) subL.innerHTML = `Média no Período: <span class="text-ios-blue font-bold px-1">${agD_range.toFixed(3)}/dia</span> &bull; <span class="text-ios-orange font-bold px-1">${agW_range.toFixed(3)}/sem</span>`;
+                
+                if(chartProj && chartProj.options.scales.x) {
+                    chartProj.options.scales.x.min = startIdx;
+                    chartProj.options.scales.x.max = endIdx;
+                    chartProj.update();
+                }
+            });
             sliderDiv.noUiSlider.set([0, BINS - 1]);
         }, 150);
 
