@@ -198,6 +198,7 @@
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production" data-id="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability" data-id="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="pvps" data-id="pvps"><i class="fa-solid fa-clock w-6 text-center text-lg" style="color:#ff375f;"></i><span class="ml-3 hidden lg:block font-medium">PVPS & Vencimentos</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="prepesagem" data-id="prepesagem"><i class="fa-solid fa-scale-unbalanced w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Pré-Pesagem</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing" data-id="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings" data-id="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
@@ -228,6 +229,7 @@
                     <button type="button" class="menu-window nav-btn" data-target="dashboard" data-id="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="projection" data-id="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="pvps" data-id="pvps" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-clock-rotate-left" style="color:#ff375f;"></i><span>Painel PVPS</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="prepesagem" data-id="prepesagem" data-allow="admin,gerente,operador"><i class="fa-solid fa-scale-unbalanced" style="color:#ff9f0a;"></i><span>Pré-Pesagem</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -314,7 +316,7 @@
                                 <tr>
                                     <th class="base-th">Insumo e Lote Focado</th>
                                     <th class="base-th text-center">Data Validade</th>
-                                    <th class="base-th text-right">Saldo do Lote</th>
+                                    <th class="base-th text-right">Saldo / Acumulado PEPS</th>
                                     <th class="base-th text-right hidden sm:table-cell" title="Média de consumo dos últimos 5 dias úteis">Cons/Dia <i>(5d)</i></th>
                                     <th class="base-th text-right hidden md:table-cell" title="Dias Projetados para consumo total">Projeção Vida</th>
                                     <th class="base-th text-right">Sobra Estim.</th>
@@ -336,6 +338,83 @@
                     <p class="text-sm text-ios-textMuted uppercase font-bold mb-2">Sugestões de OPs (Receitas)</p>
                     <div id="pvps-sim-receitas-list" class="space-y-3 max-h-[35vh] overflow-y-auto"></div>
                     <div class="mt-6 flex justify-end"><button type="button" class="btn-secondary w-full sm:w-auto close-modal" data-target="pvps-simulation-modal">Fechar</button></div>
+                </div>
+            </div>
+
+            <!-- Pré-Pesagem -->
+            <div id="screen-prepesagem" class="screen-panel hidden max-w-6xl mx-auto">
+                <div class="card mb-6 mt-2 relative overflow-hidden p-6 sm:p-8 bg-gradient-to-r from-ios-card to-ios-bg border border-ios-border">
+                    <div class="absolute -right-4 -top-8 text-ios-orange/10 z-0">
+                        <i class="fa-solid fa-scale-balanced text-[120px]"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <h1 class="title-lg mb-1 leading-tight text-white"><i class="fa-solid fa-scale-unbalanced text-ios-orange mr-3"></i>Dashboard Pré-Pesagem</h1>
+                            <p class="text-sm font-normal text-ios-textMuted font-sans max-w-xl">Produtividade de frações e saquinhos.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-6 border-l-4 border-l-ios-blue">
+                    <div class="flex flex-col sm:flex-row gap-4 items-end">
+                        <div class="w-full sm:w-[40%]">
+                            <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>Data OP Efetivada Inicial</label>
+                            <input type="date" id="prepeso-date-start" class="form-input">
+                        </div>
+                        <div class="w-full sm:w-[40%]">
+                            <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>Data OP Efetivada Final</label>
+                            <input type="date" id="prepeso-date-end" class="form-input">
+                        </div>
+                        <button type="button" id="btn-calc-prepeso" class="btn-primary shrink-0 w-full sm:w-[20%] py-3"><i class="fa-solid fa-bolt mr-2"></i>Processar</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-blue shadow-lg">
+                        <div class="w-10 h-10 bg-ios-blue/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-cubes text-ios-blue"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Volume Total Pesado</h3>
+                        <p class="text-white text-3xl font-bold font-mono" id="prepeso-vol-total">0 <span class="text-[10px] font-sans text-ios-textMuted">UN/KG/L</span></p>
+                    </div>
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-green shadow-lg">
+                        <div class="w-10 h-10 bg-ios-green/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-weight-scale text-ios-green"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Item Mais Pesado (Volume)</h3>
+                        <p class="text-ios-green text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vol-name">-</p>
+                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vol-val">0 UN/KG/L</p>
+                    </div>
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-orange shadow-lg">
+                        <div class="w-10 h-10 bg-ios-orange/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-hashtag text-ios-orange"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Total Requisições (Vezes/Saquinhos)</h3>
+                        <p class="text-ios-orange text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vezes-name">-</p>
+                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vezes-val">0 Vezes</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
+                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-blue mr-2"></i>Volumes por Linha/Categoria</h2>
+                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
+                             <canvas id="chart-prepesas" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                    <div class="card col-span-1 lg:col-span-2 border border-ios-border flex flex-col">
+                        <div class="flex justify-between items-center mb-4 border-b border-ios-border/50 pb-3">
+                            <h2 class="title-md text-sm mb-0"><i class="fa-solid fa-list-check text-ios-green mr-2"></i>Memória de Pesagens</h2>
+                            <button type="button" id="btn-export-prepeso" class="btn-secondary text-[10px] py-1.5 px-3"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar (.xlsx)</button>
+                        </div>
+                        <div class="table-container max-h-[380px] overflow-y-auto">
+                            <table class="base-table w-full">
+                                <thead class="base-thead sticky top-0 z-10 shadow-sm border-b border-ios-border bg-ios-card">
+                                    <tr>
+                                        <th class="base-th text-left p-3">Insumo Utilizado</th>
+                                        <th class="base-th text-center p-3">Linha OP</th>
+                                        <th class="base-th text-right p-3">Volume Movimentado</th>
+                                        <th class="base-th text-right text-ios-orange p-3" title="Quantas vezes o multiplicador foi requisitado (saquinhos avulsos)">Vezes Pesado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prepeso-table-body" class="divide-y divide-ios-border/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -3050,7 +3129,7 @@ function renderPvps() {
             else if (batchLeftover > 0) statusBadge = `<span class="badge bg-ios-red/20 text-ios-red text-[10px] font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Risco Rápido</span>`;
             else statusBadge = `<span class="badge bg-ios-green/20 text-ios-green text-[10px]">OK (${daysToExpiry}d)</span>`;
             
-            pvpsRows.push({ product: p, batch: b, dailyAvg, daysToExpiry, daysToDeplete, batchLeftover, statusBadge });
+            pvpsRows.push({ product: p, batch: b, dailyAvg, daysToExpiry, daysToDeplete, batchLeftover, requiredRunoff, statusBadge });
         });
     });
 
@@ -3059,7 +3138,7 @@ function renderPvps() {
         return `<tr class="border-b border-ios-border ${trClass} transition-colors">
             <td class="base-td"><p class="text-white font-medium text-sm">${r.product.name}</p><p class="text-ios-blue text-xs font-mono mt-1"><i class="fa-solid fa-box mr-1"></i>${r.batch.code}</p></td>
             <td class="base-td text-center text-xs text-ios-textMuted">${new Date(r.batch.expiryDate+'T00:00:00').toLocaleDateString()}</td>
-            <td class="base-td text-right font-bold text-white text-sm">${r.batch.quantity.toFixed(2)}</td>
+            <td class="base-td text-right"><span class="font-bold text-white text-sm block">${r.batch.quantity.toFixed(2)}</span><span class="text-[9px] text-ios-orange block mt-1" title="Volume total que precisará sair antes dele na fila de validade">Acum: ${r.requiredRunoff.toFixed(2)}</span></td>
             <td class="base-td text-right hidden sm:table-cell text-xs text-ios-textMuted">${r.dailyAvg.toFixed(2)}</td>
             <td class="base-td text-right hidden md:table-cell text-xs ${r.daysToDeplete > 9000 ? 'text-ios-textMuted' : 'text-ios-orange'}">${r.daysToDeplete>9000?'∞':r.daysToDeplete.toFixed(0)}</td>
             <td class="base-td text-right font-mono font-bold ${r.batchLeftover>0?'text-ios-red':'text-ios-green'}">${r.batchLeftover.toFixed(2)}</td>
@@ -3129,6 +3208,154 @@ addEvt('btn-export-pvps', 'click', () => {
     XLSX.writeFile(wb, `Analise_PVPS_${new Date().toISOString().split('T')[0]}.xlsx`);
     window.showNotif('Exportado com sucesso!');
 });
+
+
+// --- PRE-PESAGEM LOGIC ---
+let chartPrePesas = null;
+
+function renderPrePesagem() {
+    const sDate = id('prepeso-date-start').value;
+    const eDate = id('prepeso-date-end').value;
+    if(!sDate || !eDate) return window.showNotif('Selecione as datas', true);
+    
+    const ops = localProductionOrders.filter(o => 
+        (o.status === 'concluída' || o.status === 'concluido') &&
+        o.executionDate && o.executionDate >= sDate && o.executionDate <= eDate
+    );
+    
+    let totalVol = 0;
+    let itemsMap = {}; 
+    let lineMap = {}; 
+    
+    ops.forEach(op => {
+        let line = op.recipeCategory || 'Sem Linha';
+        let mult = op.multiplier || 1;
+        
+        if(!op.ingredients) return;
+        op.ingredients.forEach(ing => {
+            const p = localInventory.find(x => x.id === ing.productId);
+            if(!p) return;
+            
+            if(p.type === 'embalagem' || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && p.code.toLowerCase().includes('embalagem'))) return;
+            
+            if(line.toLowerCase() === 'pães congelados' || line.toLowerCase() === 'paes congelados') {
+                if(String(p.code).trim() === '8110') return;
+            }
+            
+            let qty = ing.actualQtyUsed !== undefined ? ing.actualQtyUsed : ing.adjustedQuantity;
+            if(qty <= 0) return;
+            
+            const key = p.id + '_' + line;
+            if(!itemsMap[key]) {
+                itemsMap[key] = { name: p.name, line: line, vol: 0, vezes: 0 };
+            }
+            
+            itemsMap[key].vol += qty;
+            itemsMap[key].vezes += mult;
+            
+            lineMap[line] = (lineMap[line] || 0) + qty;
+            totalVol += qty;
+        });
+    });
+    
+    const volEl = id('prepeso-vol-total');
+    if(volEl) volEl.innerHTML = totalVol.toFixed(2) + ' <span class="text-[10px] font-sans text-ios-textMuted">UN/KG/L</span>';
+    
+    let itemsArr = Object.values(itemsMap);
+    if(itemsArr.length === 0) {
+        if(id('prepeso-top-vol-name')) id('prepeso-top-vol-name').innerText = '-';
+        if(id('prepeso-top-vol-val')) id('prepeso-top-vol-val').innerText = '0 UN/KG/L';
+        if(id('prepeso-top-vezes-name')) id('prepeso-top-vezes-name').innerText = '-';
+        if(id('prepeso-top-vezes-val')) id('prepeso-top-vezes-val').innerText = '0 Vezes';
+        
+        if(chartPrePesas) chartPrePesas.destroy();
+        if(id('prepeso-table-body')) id('prepeso-table-body').innerHTML = '<tr><td colspan="4" class="text-center py-8 text-ios-textMuted text-xs">Nenhum dado encontrado com essas restrições.</td></tr>';
+        return;
+    }
+    
+    let topVol = itemsArr.reduce((a,b) => a.vol > b.vol ? a : b);
+    if(id('prepeso-top-vol-name')) id('prepeso-top-vol-name').innerText = topVol.name;
+    if(id('prepeso-top-vol-val')) id('prepeso-top-vol-val').innerText = topVol.vol.toFixed(2) + ' UN/KG/L';
+    
+    let topVezes = itemsArr.reduce((a,b) => a.vezes > b.vezes ? a : b);
+    if(id('prepeso-top-vezes-name')) id('prepeso-top-vezes-name').innerText = topVezes.name;
+    if(id('prepeso-top-vezes-val')) id('prepeso-top-vezes-val').innerText = topVezes.vezes + ' Vezes';
+    
+    itemsArr.sort((a,b) => b.vol - a.vol);
+    if(id('prepeso-table-body')) id('prepeso-table-body').innerHTML = itemsArr.map(x => `
+        <tr class="hover:bg-ios-cardHover transition">
+            <td class="p-3 text-white font-medium text-[13px] border-b border-ios-border/30">${x.name}</td>
+            <td class="p-3 text-center text-xs text-ios-blue border-b border-ios-border/30"><span class="bg-ios-blue/10 px-2 py-1 rounded inline-block text-[10px] mt-1">${x.line}</span></td>
+            <td class="p-3 text-right font-bold text-white text-sm border-b border-ios-border/30">${x.vol.toFixed(4)}</td>
+            <td class="p-3 text-right font-bold font-mono text-ios-orange text-sm border-b border-ios-border/30">${x.vezes} <span class="text-[9px] font-sans font-normal ml-1">vzs</span></td>
+        </tr>
+    `).join('');
+    
+    const cLabels = Object.keys(lineMap);
+    const cData = Object.values(lineMap);
+    
+    if(chartPrePesas) chartPrePesas.destroy();
+    const ctx = id('chart-prepesas');
+    if(ctx) {
+        chartPrePesas = new Chart(ctx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: cLabels,
+                datasets: [{
+                    data: cData,
+                    backgroundColor: ['#0a84ff', '#30d158', '#ff9f0a', '#ff453a', '#bf5af2', '#64d2ff', '#ffd60a'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#8e8e93', font: {size: 10}, padding: 15 } }
+                },
+                cutout: '65%'
+            }
+        });
+    }
+}
+
+document.querySelectorAll('[data-target="prepesagem"]').forEach(el => {
+    el.addEventListener('click', () => {
+        const sInput = id('prepeso-date-start');
+        const eInput = id('prepeso-date-end');
+        if(sInput && !sInput.value) {
+            const t = new Date();
+            eInput.value = t.toISOString().split('T')[0];
+            t.setDate(t.getDate() - 7);
+            sInput.value = t.toISOString().split('T')[0];
+        }
+        setTimeout(renderPrePesagem, 50);
+    });
+});
+if(id('btn-calc-prepeso')) addEvt('btn-calc-prepeso', 'click', renderPrePesagem);
+
+if(id('btn-export-prepeso')) {
+    addEvt('btn-export-prepeso', 'click', () => {
+        const tb = id('prepeso-table-body');
+        if(!tb || !tb.children.length || tb.innerText.includes('Nenhum dado')) return window.showNotif('Tabela vazia');
+        const data = [];
+        tb.querySelectorAll('tr').forEach(tr => {
+            const tds = tr.querySelectorAll('td');
+            if(tds.length < 4) return;
+            data.push({
+                'Insumo': tds[0].innerText.trim(),
+                'Linha de Produção': tds[1].innerText.trim(),
+                'Volume Movimentado': Number(tds[2].innerText),
+                'Vezes Pesado (Multiplicador)': parseInt(tds[3].innerText)
+            });
+        });
+        if(!data.length) return;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Relatório Pré-Pesagem");
+        XLSX.writeFile(wb, `PrePesagem_${id('prepeso-date-start').value}_ate_${id('prepeso-date-end').value}.xlsx`);
+        window.showNotif('Relatório Exportado!');
+    });
+}
 
 </script>
 </body>
