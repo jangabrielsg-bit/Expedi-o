@@ -1036,7 +1036,7 @@ let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard','projection'];
+const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard','projection','pvps','prepesagem'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -3248,7 +3248,7 @@ function renderPrePesagem() {
             const p = localInventory.find(x => x.id === ing.productId);
             if(!p) return;
             
-            if(p.type === 'embalagem' || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && p.code.toLowerCase().includes('embalagem'))) return;
+            if(p.type === 'embalagem' || (p.name && p.name.toLowerCase().includes('embalagem')) || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && p.code.toLowerCase().includes('embalagem'))) return;
             
             if(line.toLowerCase() === 'pães congelados' || line.toLowerCase() === 'paes congelados') {
                 if(String(p.code).trim() === '8110') return;
