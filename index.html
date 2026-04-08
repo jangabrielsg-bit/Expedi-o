@@ -3099,7 +3099,7 @@ function renderPvps() {
     });
 
     let html = '';
-    const items = localInventory.filter(i => i.type === 'insumo' && (!i.code || i.code.toLowerCase() !== 'embalagem') && (!i.supplier || i.supplier.toLowerCase() !== 'embalagem'));
+    const items = localInventory.filter(i => i.type === 'insumo' && (!i.code || (i.code.toLowerCase() !== 'embalagem' && !i.code.toLowerCase().includes('bobina'))) && (!i.supplier || i.supplier.toLowerCase() !== 'embalagem') && (!i.name || (!i.name.toLowerCase().includes('embalagem') && !i.name.toLowerCase().includes('bobina'))));
     let pvpsRows = [];
 
     items.forEach(p => {
@@ -3248,7 +3248,7 @@ function renderPrePesagem() {
             const p = localInventory.find(x => x.id === ing.productId);
             if(!p) return;
             
-            if(p.type === 'embalagem' || (p.name && p.name.toLowerCase().includes('embalagem')) || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && p.code.toLowerCase().includes('embalagem'))) return;
+            if(p.type === 'embalagem' || (p.name && (p.name.toLowerCase().includes('embalagem') || p.name.toLowerCase().includes('bobina'))) || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && (p.code.toLowerCase().includes('embalagem') || p.code.toLowerCase().includes('bobina')))) return;
             
             if(line.toLowerCase() === 'pães congelados' || line.toLowerCase() === 'paes congelados') {
                 if(String(p.code).trim() === '8110') return;
