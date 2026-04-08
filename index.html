@@ -383,20 +383,29 @@
                     </div>
                     <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-orange shadow-lg">
                         <div class="w-10 h-10 bg-ios-orange/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-hashtag text-ios-orange"></i></div>
-                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Total Requisições (Vezes/Saquinhos)</h3>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Total de Frações Realizadas</h3>
                         <p class="text-ios-orange text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vezes-name">-</p>
-                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vezes-val">0 Vezes</p>
+                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vezes-val">0 Frações/Saquinhos</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
-                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-blue mr-2"></i>Volumes por Linha/Categoria</h2>
+                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-blue mr-2"></i>Volumes (KG/L) por Categoria</h2>
                         <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
-                             <canvas id="chart-prepesas" class="w-full h-full"></canvas>
+                             <canvas id="chart-prepesas-vol" class="w-full h-full"></canvas>
                         </div>
                     </div>
-                    <div class="card col-span-1 lg:col-span-2 border border-ios-border flex flex-col">
+                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
+                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-orange mr-2"></i>Total de Frações por Categoria</h2>
+                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
+                             <canvas id="chart-prepesas-frac" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 mb-8">
+                    <div class="card col-span-1 border border-ios-border flex flex-col">
                         <div class="flex justify-between items-center mb-4 border-b border-ios-border/50 pb-3">
                             <h2 class="title-md text-sm mb-0"><i class="fa-solid fa-list-check text-ios-green mr-2"></i>Memória de Pesagens</h2>
                             <button type="button" id="btn-export-prepeso" class="btn-secondary text-[10px] py-1.5 px-3"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar (.xlsx)</button>
@@ -3212,6 +3221,7 @@ addEvt('btn-export-pvps', 'click', () => {
 
 // --- PRE-PESAGEM LOGIC ---
 let chartPrePesas = null;
+let chartPrePesasFrac = null;
 
 function renderPrePesagem() {
     const sDate = id('prepeso-date-start').value;
@@ -3231,6 +3241,8 @@ function renderPrePesagem() {
         let line = op.recipeCategory || 'Sem Linha';
         let mult = op.multiplier || 1;
         
+        if(line.toLowerCase() === 'pães especiais' || line.toLowerCase() === 'paes especiais') return; // ignora a categoria por completo
+
         if(!op.ingredients) return;
         op.ingredients.forEach(ing => {
             const p = localInventory.find(x => x.id === ing.productId);
@@ -3253,7 +3265,9 @@ function renderPrePesagem() {
             itemsMap[key].vol += qty;
             itemsMap[key].vezes += mult;
             
-            lineMap[line] = (lineMap[line] || 0) + qty;
+            if(!lineMap[line]) lineMap[line] = { vol: 0, frac: 0 };
+            lineMap[line].vol += qty;
+            lineMap[line].frac += mult;
             totalVol += qty;
         });
     });
@@ -3292,18 +3306,45 @@ function renderPrePesagem() {
     `).join('');
     
     const cLabels = Object.keys(lineMap);
-    const cData = Object.values(lineMap);
+    const cDataVol = cLabels.map(l => lineMap[l].vol);
+    const cDataFrac = cLabels.map(l => lineMap[l].frac);
     
+    // Gráfico de Volume
     if(chartPrePesas) chartPrePesas.destroy();
-    const ctx = id('chart-prepesas');
-    if(ctx) {
-        chartPrePesas = new Chart(ctx.getContext('2d'), {
+    const ctxVol = id('chart-prepesas-vol');
+    if(ctxVol) {
+        chartPrePesas = new Chart(ctxVol.getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: cLabels,
                 datasets: [{
-                    data: cData,
+                    data: cDataVol,
                     backgroundColor: ['#0a84ff', '#30d158', '#ff9f0a', '#ff453a', '#bf5af2', '#64d2ff', '#ffd60a'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#8e8e93', font: {size: 10}, padding: 15 } }
+                },
+                cutout: '65%'
+            }
+        });
+    }
+
+    // Gráfico de Frações
+    if(chartPrePesasFrac) chartPrePesasFrac.destroy();
+    const ctxFrac = id('chart-prepesas-frac');
+    if(ctxFrac) {
+        chartPrePesasFrac = new Chart(ctxFrac.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: cLabels,
+                datasets: [{
+                    data: cDataFrac,
+                    backgroundColor: ['#ff9f0a', '#ff453a', '#bf5af2', '#0a84ff', '#30d158', '#64d2ff', '#ffd60a'].reverse(),
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
