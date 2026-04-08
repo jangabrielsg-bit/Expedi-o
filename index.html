@@ -197,6 +197,7 @@
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production" data-id="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability" data-id="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="pvps" data-id="pvps"><i class="fa-solid fa-clock w-6 text-center text-lg" style="color:#ff375f;"></i><span class="ml-3 hidden lg:block font-medium">PVPS & Vencimentos</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing" data-id="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings" data-id="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
@@ -226,6 +227,7 @@
                     <button type="button" class="menu-window nav-btn" data-target="users" data-id="users" data-allow="admin"><i class="fa-solid fa-users" style="color:#30d158;"></i><span>Usuários</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="dashboard" data-id="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="projection" data-id="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="pvps" data-id="pvps" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-clock-rotate-left" style="color:#ff375f;"></i><span>Painel PVPS</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
@@ -299,6 +301,44 @@
                 <div id="production-orders-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
             </div>
             
+            <!-- PVPS -->
+            <div id="screen-pvps" class="screen-panel hidden">
+                <div class="flex justify-between items-center gap-4 mb-6">
+                    <h1 class="title-lg mb-0 text-white leading-tight">Análise PVPS<br><span class="text-sm font-normal text-ios-textMuted mt-1">Primeiro a Vencer, Primeiro a Sair</span></h1>
+                    <button type="button" id="btn-export-pvps" class="btn-secondary h-12 mt-2"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button>
+                </div>
+                <div class="card p-0 bg-transparent border-none">
+                    <div class="table-container">
+                        <table class="base-table">
+                            <thead class="base-thead">
+                                <tr>
+                                    <th class="base-th">Insumo e Lote Focado</th>
+                                    <th class="base-th text-center">Data Validade</th>
+                                    <th class="base-th text-right">Saldo do Lote</th>
+                                    <th class="base-th text-right hidden sm:table-cell" title="Média de consumo dos últimos 5 dias úteis">Cons/Dia <i>(5d)</i></th>
+                                    <th class="base-th text-right hidden md:table-cell" title="Dias Projetados para consumo total">Projeção Vida</th>
+                                    <th class="base-th text-right">Sobra Estim.</th>
+                                    <th class="base-th text-center">Análise de Risco</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pvps-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Simulação PVPS -->
+            <div id="pvps-simulation-modal" class="modal">
+                <div class="modal-content max-w-xl">
+                    <div class="flex justify-between items-center mb-4"><h2 class="title-md mb-0 text-white"><i class="fa-solid fa-hammer mr-2 text-ios-orange"></i>Simulação de Produção</h2><button type="button" class="text-ios-textMuted hover:text-white close-modal" data-target="pvps-simulation-modal"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+                    <div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border mb-4"><p class="text-[10px] text-ios-textMuted uppercase font-bold mb-1 border-b border-ios-border/50 pb-2">Informação Base do Lote</p><p id="pvps-sim-item" class="text-white font-bold tracking-tight text-lg mt-2">...</p>
+                    <div class="grid grid-cols-2 gap-4 mt-3"><div><span class="text-[10px] text-ios-textMuted">Lote Vence em</span><p id="pvps-sim-lote-validade" class="text-ios-red font-bold font-mono">...</p></div><div><span class="text-[10px] text-ios-textMuted">Sobra Projetada</span><p id="pvps-sim-sobra" class="text-ios-blue font-bold font-mono text-lg">...</p></div></div></div>
+                    <p class="text-sm text-ios-textMuted uppercase font-bold mb-2">Sugestões de OPs (Receitas)</p>
+                    <div id="pvps-sim-receitas-list" class="space-y-3 max-h-[35vh] overflow-y-auto"></div>
+                    <div class="mt-6 flex justify-end"><button type="button" class="btn-secondary w-full sm:w-auto close-modal" data-target="pvps-simulation-modal">Fechar</button></div>
+                </div>
+            </div>
+
             <!-- Rastreabilidade -->
             <div id="screen-traceability" class="screen-panel hidden">
                 <h1 class="title-lg">Rastreabilidade de Produção</h1>
@@ -2837,6 +2877,61 @@ function renderProjectionChart(pId) {
             for(let i=1; i<=4; i++) { labels.push(`+${i} Semana(s)`); stockData.push(currentStock); consData.push(0); }
         }
         
+        const esgotamentoPlugin = {
+            id: 'esgPlugin',
+            afterDraw: (chart) => {
+                if(!chart.data.datasets.length) return;
+                const dsStock = chart.data.datasets[0].data;
+                const avgData = chart.data.datasets[1].data[0];
+                if(!avgData || dsStock[0] <= avgData) return;
+                
+                let t = (dsStock[0] / avgData) - 1;
+                if(t < 0) return;
+                
+                const meta = chart.getDatasetMeta(0);
+                if (!meta.data.length) return;
+                
+                const leftX = meta.data[0].x;
+                const rightX = meta.data[meta.data.length - 1].x;
+                const totalSteps = Math.max(1, chart.data.labels.length - 1);
+                
+                const ptX = leftX + (rightX - leftX) * (t / totalSteps);
+                const ptY = chart.scales.y.getPixelForValue(avgData);
+                
+                if (ptX < chart.chartArea.left || ptX > chart.chartArea.right || ptY < chart.chartArea.top || ptY > chart.chartArea.bottom) return;
+
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.beginPath();
+                ctx.setLineDash([4, 4]);
+                ctx.moveTo(ptX, chart.chartArea.top);
+                ctx.lineTo(ptX, chart.chartArea.bottom);
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = '#ff453a';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(ptX, ptY, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = '#ff453a';
+                ctx.fill();
+                
+                let days = Math.round(t * 7);
+                let dt = new Date();
+                dt.setDate(dt.getDate() + days);
+                let dtStr = dt.toLocaleDateString('pt-BR');
+                let txt = `Cruza: ${dtStr} (Sobra: ${avgData.toFixed(1)})`;
+                
+                ctx.font = 'bold 10px sans-serif';
+                let textW = ctx.measureText(txt).width;
+                ctx.fillStyle = 'rgba(28, 28, 30, 0.8)';
+                ctx.fillRect(ptX + 4, ptY - 24, textW + 10, 20);
+                
+                ctx.fillStyle = '#ff453a';
+                ctx.fillText(txt, ptX + 8, ptY - 10);
+                ctx.restore();
+            }
+        };
+
         chartProj = new Chart(ctx, {
             type: 'line',
             data: {
@@ -2846,7 +2941,8 @@ function renderProjectionChart(pId) {
                     { label: 'Consumo Médio Projetado', data: consData, borderColor: '#ff9f0a', backgroundColor: 'transparent', borderDash: [5, 5], fill: false, tension: 0, pointRadius: 0 }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: {color: '#8e8e93'}, grid: {color: '#38383a'} }, x: { ticks: {color: '#8e8e93'}, grid: {display: false} } }, plugins: { legend: { display: true, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw.toFixed(2) } } } }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: {color: '#8e8e93'}, grid: {color: '#38383a'} }, x: { ticks: {color: '#8e8e93'}, grid: {display: false} } }, plugins: { legend: { display: true, labels: {color: '#8e8e93'} }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw.toFixed(2) } } } },
+            plugins: [esgotamentoPlugin]
         });
     }
 }
@@ -2895,6 +2991,144 @@ addEvt('btn-upload-json','change',async e=>{
 });
 
 addEvt('btn-clear-db','click',()=>{showConfirmationModal('Cuidado!','APAGA TUDO!',async()=>{show(id('loading-overlay'));try{const cols=['inventory','batches','history','recipes','productionOrders','locations'];for(let c of cols){const docs=await getDocs(getCol(c));for(let d of docs.docs)await deleteDoc(getDocRef(c,d.id));}await refreshData();window.showNotif('Formatado!');}catch(e){}finally{hide(id('loading-overlay'));}});});
+
+// --- PVPS LOGIC ---
+function renderPvps() {
+    const listEl = id('pvps-table-body');
+    if(!listEl) return;
+    
+    let cutoff = new Date();
+    let daysSubtracted = 0;
+    while(daysSubtracted < 5) {
+        cutoff.setDate(cutoff.getDate() - 1);
+        if(cutoff.getDay() !== 0 && cutoff.getDay() !== 6) daysSubtracted++;
+    }
+    const cutoffStr = cutoff.toISOString().split('T')[0];
+    
+    let consByItem = {};
+    localHistory.filter(h => h.date >= cutoffStr && (h.type === 'saída' || h.type === 'requisição')).forEach(h => {
+        consByItem[h.productId] = (consByItem[h.productId] || 0) + h.quantity;
+    });
+
+    let html = '';
+    const items = localInventory.filter(i => i.type === 'insumo' && (!i.code || i.code.toLowerCase() !== 'embalagem') && (!i.supplier || i.supplier.toLowerCase() !== 'embalagem'));
+    let pvpsRows = [];
+
+    items.forEach(p => {
+        const batches = localBatches.filter(b => b.productId === p.id && b.quantity > 0 && b.expiryDate && b.expiryDate !== '9999-12-31').sort((a,b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+        let dailyAvg = (consByItem[p.id] || 0) / 5;
+        if (batches.length === 0) return;
+
+        batches.forEach(b => {
+            const expDate = new Date(b.expiryDate + 'T00:00:00');
+            const today = new Date();
+            const daysToExpiry = Math.ceil((expDate - today)/(1000*60*60*24));
+            
+            let precedingStock = 0;
+            for(let pb of batches) {
+                if(new Date(pb.expiryDate) <= expDate && pb.id !== b.id) precedingStock += pb.quantity;
+            }
+            let thisQty = b.quantity;
+            let requiredRunoff = precedingStock + thisQty;
+
+            let daysToDeplete = dailyAvg > 0 ? requiredRunoff / dailyAvg : 9999;
+            let consumptionCapacity = dailyAvg * daysToExpiry;
+            
+            let batchLeftover = 0;
+            if(consumptionCapacity >= requiredRunoff) {
+                batchLeftover = 0; 
+            } else if (consumptionCapacity <= precedingStock) {
+                batchLeftover = thisQty; 
+            } else {
+                let consumedOfThisBatch = consumptionCapacity - precedingStock;
+                batchLeftover = thisQty - consumedOfThisBatch;
+            }
+            if (daysToExpiry < 0) batchLeftover = thisQty;
+            
+            let statusBadge = '';
+            if (daysToExpiry < 0) statusBadge = '<span class="badge bg-ios-bg border border-ios-red text-ios-red text-[9px]">Vencido</span>';
+            else if (batchLeftover > 0) statusBadge = `<span class="badge bg-ios-red/20 text-ios-red text-[10px] font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Risco Rápido</span>`;
+            else statusBadge = `<span class="badge bg-ios-green/20 text-ios-green text-[10px]">OK (${daysToExpiry}d)</span>`;
+            
+            pvpsRows.push({ product: p, batch: b, dailyAvg, daysToExpiry, daysToDeplete, batchLeftover, statusBadge });
+        });
+    });
+
+    html = pvpsRows.length ? pvpsRows.sort((a,b)=>a.daysToExpiry - b.daysToExpiry).map(r => {
+        const trClass = r.batchLeftover > 0 && r.daysToExpiry >= 0 ? 'bg-ios-red/5' : 'hover:bg-ios-cardHover';
+        return `<tr class="border-b border-ios-border ${trClass} transition-colors">
+            <td class="base-td"><p class="text-white font-medium text-sm">${r.product.name}</p><p class="text-ios-blue text-xs font-mono mt-1"><i class="fa-solid fa-box mr-1"></i>${r.batch.code}</p></td>
+            <td class="base-td text-center text-xs text-ios-textMuted">${new Date(r.batch.expiryDate+'T00:00:00').toLocaleDateString()}</td>
+            <td class="base-td text-right font-bold text-white text-sm">${r.batch.quantity.toFixed(2)}</td>
+            <td class="base-td text-right hidden sm:table-cell text-xs text-ios-textMuted">${r.dailyAvg.toFixed(2)}</td>
+            <td class="base-td text-right hidden md:table-cell text-xs ${r.daysToDeplete > 9000 ? 'text-ios-textMuted' : 'text-ios-orange'}">${r.daysToDeplete>9000?'∞':r.daysToDeplete.toFixed(0)}</td>
+            <td class="base-td text-right font-mono font-bold ${r.batchLeftover>0?'text-ios-red':'text-ios-green'}">${r.batchLeftover.toFixed(2)}</td>
+            <td class="base-td text-center">${r.statusBadge} ${r.batchLeftover>0 && r.daysToExpiry >= 0 ? `<button class="btn-simulate-pvps block mt-3 mx-auto bg-ios-card px-2 py-1.5 text-[9px] rounded text-ios-orange border border-ios-orange/30 w-full hover:bg-ios-orange hover:text-white transition-colors" data-pid="${r.product.id}" data-bcode="${r.batch.code}" data-sobra="${r.batchLeftover}" data-val="${r.batch.expiryDate}"><i class="fa-solid fa-industry mr-1"></i>Simular OPs</button>` : ''}</td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="7" class="text-center text-ios-textMuted py-8">Nenhum lote com validade encontrado.</td></tr>';
+    
+    listEl.innerHTML = html;
+}
+
+document.querySelectorAll('[data-target="pvps"]').forEach(el => {
+    el.addEventListener('click', () => { renderPvps(); });
+});
+
+addEvt('pvps-table-body', 'click', e => {
+    const btn = e.target.closest('.btn-simulate-pvps');
+    if(!btn) return;
+    const pId = btn.dataset.pid;
+    const bcode = btn.dataset.bcode;
+    const sobra = parseFloat(btn.dataset.sobra);
+    const p = localInventory.find(x => x.id === pId);
+    
+    if(id('pvps-sim-item')) id('pvps-sim-item').innerHTML = `${p?.name} <span class="ml-2 text-sm text-ios-textMuted font-normal flex items-center mt-1"><i class="fa-solid fa-box mr-1"></i>Lote: ${bcode}</span>`;
+    if(id('pvps-sim-lote-validade')) id('pvps-sim-lote-validade').innerText = new Date(btn.dataset.val+'T00:00:00').toLocaleDateString();
+    if(id('pvps-sim-sobra')) id('pvps-sim-sobra').innerText = sobra.toFixed(2);
+    
+    let relevantRecipes = localRecipes.filter(r => r.ingredients.some(i => i.productId === pId));
+    let rl = id('pvps-sim-receitas-list');
+    if(!rl) return;
+    
+    if(!relevantRecipes.length) {
+        rl.innerHTML = '<div class="text-ios-textMuted text-xs text-center p-4">Nenhuma ficha técnica vinculada a este insumo.</div>';
+    } else {
+        rl.innerHTML = relevantRecipes.map(r => {
+            let info = r.ingredients.find(x => x.productId === pId);
+            let qtyPerOp = info.quantity;
+            let opsNeeded = Math.ceil(sobra / qtyPerOp);
+            return `<div class="bg-ios-bg border border-ios-border p-3 rounded-lg flex justify-between items-center sm:hover:bg-ios-cardHover transition"><div><h4 class="text-white text-sm font-bold flex items-center"><i class="fa-solid fa-book-bookmark text-ios-orange mr-2"></i>${r.name}</h4><p class="text-[10px] text-ios-textMuted mt-1 ml-5">Consome <b class="text-white">${qtyPerOp}</b> un. por OP</p></div><div class="text-right border-l border-ios-border/50 pl-3"><span class="block text-ios-orange font-bold text-lg">${opsNeeded} OPs</span><span class="text-[9px] text-ios-textMuted leading-tight mt-1">Sugerido para esgotar <br>a sobra do Lote</span></div></div>`;
+        }).join('');
+    }
+    show(id('pvps-simulation-modal'));
+});
+
+addEvt('btn-export-pvps', 'click', () => {
+    const tb = id('pvps-table-body');
+    if(!tb || !tb.children.length) return window.showNotif('Tabela vazia');
+    const data = [];
+    tb.querySelectorAll('tr').forEach(tr => {
+        if(tr.children.length < 7) return;
+        const tds = tr.querySelectorAll('td');
+        let pName = tds[0].querySelector('p.text-white')?.innerText;
+        let pBatch = tds[0].querySelector('p.text-ios-blue')?.innerText;
+        if(!pName) return; // skip if not data row
+        data.push({
+            'Produto': pName,
+            'Lote': pBatch,
+            'Validade': tds[1].innerText,
+            'Saldo Lote': Number(tds[2].innerText),
+            'Consumo/Dia (5d)': Number(tds[3].innerText),
+            'Dias p/ Esgotar': tds[4].innerText,
+            'Sobra Estimada': Number(tds[5].innerText)
+        });
+    });
+    if(!data.length) return;
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Análise PVPS");
+    XLSX.writeFile(wb, `Analise_PVPS_${new Date().toISOString().split('T')[0]}.xlsx`);
+    window.showNotif('Exportado com sucesso!');
+});
 
 </script>
 </body>
