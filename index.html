@@ -52,10 +52,11 @@
             .btn-success { @apply bg-ios-green hover:opacity-90 text-white font-semibold py-3 px-5 rounded-xl transition-all flex items-center justify-center; }
             .table-container { @apply overflow-x-auto rounded-xl border border-ios-border bg-ios-card w-full; }
             .base-table { @apply min-w-full w-full text-sm text-left text-ios-textMuted; }
-            .base-thead { @apply text-xs uppercase bg-ios-cardHover text-gray-400 border-b border-ios-border; }
+            .base-thead { @apply text-xs uppercase bg-ios-cardHover text-gray-400 border-b border-ios-border sticky top-0 z-10 shadow-sm; }
             .base-tr { @apply border-b border-ios-border hover:bg-ios-cardHover transition-colors; }
-            .base-th { @apply px-4 sm:px-5 py-3 sm:py-4 font-semibold whitespace-nowrap; }
+            .base-th { @apply px-4 sm:px-5 py-3 sm:py-4 font-semibold whitespace-nowrap bg-ios-cardHover; }
             .base-td { @apply px-4 sm:px-5 py-3 sm:py-4 whitespace-nowrap sm:whitespace-normal; }
+            .sticky-header-panel { @apply sticky top-0 z-30 pb-4 pt-2 -mt-2 bg-ios-bg/90 backdrop-blur-md mb-6 border-b border-ios-border shadow-sm; }
             .modal-content { @apply bg-ios-card border border-ios-border rounded-3xl shadow-2xl p-4 sm:p-6 w-full transform transition-all max-h-[90vh] overflow-y-auto; }
             .badge { @apply text-xs font-semibold px-2 py-1 rounded-md; }
             .menu-window { @apply flex flex-col items-center justify-center p-4 sm:p-8 bg-ios-card border border-ios-border rounded-3xl shadow-lg hover:bg-ios-cardHover active:scale-95 sm:hover:scale-105 transition-all duration-300 cursor-pointer text-center; }
@@ -280,34 +281,43 @@
 
             <!-- Estoque Geral -->
             <div id="screen-inventory" class="screen-panel hidden">
-                <h1 class="title-lg">Estoque Atual</h1>
-                <div class="card p-0 bg-transparent border-none"><div class="flex flex-wrap gap-2 mb-5 p-1"><input type="text" id="search-inventory" placeholder="Pesquisar..." class="form-input w-full md:w-64"><div class="flex gap-2 w-full md:w-auto"><select id="type-filter" class="form-input text-sm"><option value="">Tipos</option><option value="insumo">Insumos</option><option value="semi_acabado">Semi-acabados</option></select><select id="supplier-filter" class="form-input text-sm"><option value="">Fornecedores</option></select></div><button type="button" id="btn-export-excel" class="btn-secondary w-full md:w-auto md:ml-auto"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button></div><div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th table-header-sortable" data-sort="name">Produto <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell table-header-sortable" data-sort="code">Cód Interno <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell">Tipo</th><th class="base-th hidden md:table-cell table-header-sortable" data-sort="supplier">Fornecedor <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right hidden md:table-cell table-header-sortable" data-sort="minStock">Mínimo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right hidden md:table-cell table-header-sortable" data-sort="maxStock">Máximo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right table-header-sortable" data-sort="totalQuantity">Saldo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th table-header-sortable" data-sort="expiry">Validade <i class="fa-solid fa-sort ml-1"></i></th></tr></thead><tbody id="inventory-table-body"></tbody></table></div></div>
+                <div class="sticky-header-panel pt-4">
+                    <h1 class="title-lg mb-2">Estoque Atual</h1>
+                    <div class="card p-0 bg-transparent border-none"><div class="flex flex-wrap gap-2 p-1"><input type="text" id="search-inventory" placeholder="Pesquisar..." class="form-input w-full md:w-64"><div class="flex gap-2 w-full md:w-auto"><select id="type-filter" class="form-input text-sm"><option value="">Tipos</option><option value="insumo">Insumos</option><option value="semi_acabado">Semi-acabados</option></select><select id="supplier-filter" class="form-input text-sm"><option value="">Fornecedores</option></select></div><button type="button" id="btn-export-excel" class="btn-secondary w-full md:w-auto md:ml-auto"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button></div></div>
+                </div>
+                <div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th table-header-sortable" data-sort="name">Produto <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell table-header-sortable" data-sort="code">Cód Interno <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th hidden sm:table-cell">Tipo</th><th class="base-th hidden md:table-cell table-header-sortable" data-sort="supplier">Fornecedor <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right hidden md:table-cell table-header-sortable" data-sort="minStock">Mínimo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right hidden md:table-cell table-header-sortable" data-sort="maxStock">Máximo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th text-right table-header-sortable" data-sort="totalQuantity">Saldo <i class="fa-solid fa-sort ml-1"></i></th><th class="base-th table-header-sortable" data-sort="expiry">Validade <i class="fa-solid fa-sort ml-1"></i></th></tr></thead><tbody id="inventory-table-body"></tbody></table></div>
             </div>
 
             <!-- Receitas -->
             <div id="screen-recipes" class="screen-panel hidden">
-                <div class="flex justify-between items-center gap-4 mb-6"><h1 class="title-lg mb-0">Fichas Técnicas</h1><div class="flex gap-2"><input type="text" id="search-recipe" placeholder="Buscar..." class="form-input w-full sm:w-64"><button type="button" id="btn-export-recipe-book" class="btn-secondary"><i class="fa-solid fa-file-pdf text-ios-red"></i></button><button type="button" id="btn-new-recipe" class="btn-primary"><i class="fa-solid fa-plus mr-2"></i>Criar</button></div></div>
+                <div class="sticky-header-panel pt-4">
+                    <div class="flex justify-between items-center gap-4"><h1 class="title-lg mb-0 text-white">Fichas Técnicas</h1><div class="flex gap-2"><input type="text" id="search-recipe" placeholder="Buscar..." class="form-input w-full sm:w-64"><button type="button" id="btn-export-recipe-book" class="btn-secondary"><i class="fa-solid fa-file-pdf text-ios-red"></i></button><button type="button" id="btn-new-recipe" class="btn-primary"><i class="fa-solid fa-plus mr-2"></i>Criar</button></div></div>
+                </div>
                 <div class="flex flex-col lg:flex-row gap-6"><div class="w-full lg:w-1/4 card"><h2 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Categorias</h2><ul id="recipe-categories-list" class="flex lg:flex-col gap-2 w-max lg:w-full"></ul></div><div id="recipes-grid" class="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
             </div>
 
             <!-- Produção OP -->
             <div id="screen-production" class="screen-panel hidden">
-                <div class="flex justify-between items-center mb-6"><h1 class="title-lg mb-0">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-export-po-excel" class="btn-secondary restrict-manager"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar OPs</button><button type="button" id="btn-confirm-production" class="btn-success restrict-ops"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary restrict-ops"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
-                <div class="card mb-5 flex flex-col sm:flex-row gap-4 items-center border-l-4 border-l-ios-blue">
-                    <div class="flex items-center gap-2">
-                        <label class="text-sm font-medium text-ios-textMuted"><i class="fa-solid fa-filter mr-2"></i>Data OP:</label>
-                        <input type="date" id="search-po-by-date" class="form-input w-auto py-2">
+                <div class="sticky-header-panel pt-4">
+                    <div class="flex justify-between items-center mb-4"><h1 class="title-lg mb-0 text-white">Ordens de Produção</h1><div class="flex gap-3"><button type="button" id="btn-export-po-excel" class="btn-secondary restrict-manager"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar OPs</button><button type="button" id="btn-confirm-production" class="btn-success restrict-ops"><i class="fa-solid fa-check-double mr-2"></i>Efetivar OPs</button><button type="button" id="btn-new-production-order" class="btn-primary restrict-ops"><i class="fa-solid fa-plus mr-2"></i>Nova OP</button></div></div>
+                    <div class="card mb-0 flex flex-col sm:flex-row gap-4 items-center border-l-4 border-l-ios-blue">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-ios-textMuted"><i class="fa-solid fa-filter mr-2"></i>Data OP:</label>
+                            <input type="date" id="search-po-by-date" class="form-input w-auto py-2">
+                        </div>
+                        <button type="button" id="btn-po-show-all-pending" class="btn-secondary py-2 text-sm"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Todas Pendentes</button>
                     </div>
-                    <button type="button" id="btn-po-show-all-pending" class="btn-secondary py-2 text-sm"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Todas Pendentes</button>
                 </div>
                 <div id="production-orders-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
             </div>
             
             <!-- PVPS -->
             <div id="screen-pvps" class="screen-panel hidden">
-                <div class="flex justify-between items-center gap-4 mb-6">
-                    <h1 class="title-lg mb-0 text-white leading-tight">Análise PVPS<br><span class="text-sm font-normal text-ios-textMuted mt-1">Primeiro a Vencer, Primeiro a Sair</span></h1>
-                    <button type="button" id="btn-export-pvps" class="btn-secondary h-12 mt-2"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button>
+                <div class="sticky-header-panel pt-4">
+                    <div class="flex justify-between items-center gap-4">
+                        <h1 class="title-lg mb-0 text-white leading-tight">Análise PVPS<br><span class="text-sm font-normal text-ios-textMuted mt-1 block">Primeiro a Vencer, Primeiro a Sair</span></h1>
+                        <button type="button" id="btn-export-pvps" class="btn-secondary h-12 shrink-0"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button>
+                    </div>
                 </div>
                 <div class="card p-0 bg-transparent border-none">
                     <div class="table-container">
@@ -343,29 +353,27 @@
 
             <!-- Pré-Pesagem -->
             <div id="screen-prepesagem" class="screen-panel hidden max-w-6xl mx-auto">
-                <div class="card mb-6 mt-2 relative overflow-hidden p-6 sm:p-8 bg-gradient-to-r from-ios-card to-ios-bg border border-ios-border">
-                    <div class="absolute -right-4 -top-8 text-ios-orange/10 z-0">
-                        <i class="fa-solid fa-scale-balanced text-[120px]"></i>
-                    </div>
-                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div>
-                            <h1 class="title-lg mb-1 leading-tight text-white"><i class="fa-solid fa-scale-unbalanced text-ios-orange mr-3"></i>Dashboard Pré-Pesagem</h1>
-                            <p class="text-sm font-normal text-ios-textMuted font-sans max-w-xl">Produtividade de frações e saquinhos.</p>
+                <div class="sticky-header-panel !bg-gradient-to-r !from-ios-card/95 !to-ios-bg/95 pt-4">
+                    <div class="relative overflow-hidden p-2 sm:p-4 mb-2">
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                            <div>
+                                <h1 class="title-lg mb-1 leading-tight text-white"><i class="fa-solid fa-scale-unbalanced text-ios-orange mr-3"></i>Dashboard Pré-Pesagem</h1>
+                                <p class="text-sm font-normal text-ios-textMuted font-sans max-w-xl">Produtividade de frações e saquinhos.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="card mb-6 border-l-4 border-l-ios-blue">
-                    <div class="flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="w-full sm:w-[40%]">
-                            <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>Data OP Efetivada Inicial</label>
-                            <input type="date" id="prepeso-date-start" class="form-input">
+                    <div class="card mb-0 border-l-4 border-l-ios-blue p-4">
+                        <div class="flex flex-col sm:flex-row gap-4 items-end">
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>OP Efetivada Inicial</label>
+                                <input type="date" id="prepeso-date-start" class="form-input py-2">
+                            </div>
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>OP Efetivada Final</label>
+                                <input type="date" id="prepeso-date-end" class="form-input py-2">
+                            </div>
+                            <button type="button" id="btn-calc-prepeso" class="btn-primary shrink-0 w-full sm:w-[20%] py-2"><i class="fa-solid fa-bolt mr-2"></i>Processar</button>
                         </div>
-                        <div class="w-full sm:w-[40%]">
-                            <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>Data OP Efetivada Final</label>
-                            <input type="date" id="prepeso-date-end" class="form-input">
-                        </div>
-                        <button type="button" id="btn-calc-prepeso" class="btn-primary shrink-0 w-full sm:w-[20%] py-3"><i class="fa-solid fa-bolt mr-2"></i>Processar</button>
                     </div>
                 </div>
 
@@ -429,11 +437,13 @@
 
             <!-- Rastreabilidade -->
             <div id="screen-traceability" class="screen-panel hidden">
-                <h1 class="title-lg">Rastreabilidade de Produção</h1>
-                <div class="card p-4 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div><label class="form-label">Data de Conclusão</label><input type="date" id="trace-date-filter" class="form-input"></div>
-                    <div><label class="form-label">Linha / Setor</label><select id="trace-line-filter" class="form-input"><option value="">Todas</option></select></div>
-                    <div><label class="form-label">Buscar Insumo ou OP...</label><input type="text" id="trace-search-filter" class="form-input" placeholder="Ex: Farinha..."></div>
+                <div class="sticky-header-panel pt-4">
+                    <h1 class="title-lg mb-4 text-white">Rastreabilidade de Produção</h1>
+                    <div class="card p-4 mb-0 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div><label class="form-label text-xs">Data de Conclusão</label><input type="date" id="trace-date-filter" class="form-input py-2"></div>
+                        <div><label class="form-label text-xs">Linha / Setor</label><select id="trace-line-filter" class="form-input py-2 text-sm"><option value="">Todas</option></select></div>
+                        <div><label class="form-label text-xs">Buscar Insumo ou OP...</label><input type="text" id="trace-search-filter" class="form-input py-2 text-sm" placeholder="Ex: Farinha..."></div>
+                    </div>
                 </div>
                 <div id="traceability-list" class="space-y-4"></div>
             </div>
@@ -905,27 +915,35 @@ onAuthStateChanged(auth, async u => {
         show(id('loading-overlay'));
         
         try {
-            const userDoc = await getDoc(doc(db, 'global_users', u.email || u.uid));
-            if(userDoc.exists()) currentUserRole = userDoc.data().role;
-            else {
-                const allUsers = await getDocs(collection(db, 'global_users'));
-                if (allUsers.empty && u.email) {
-                    await setDoc(doc(db, 'global_users', u.email), { email: u.email, role: 'admin' });
-                    currentUserRole = 'admin';
-                } else if(u.email === 'admin@estoque.com' || (u.email && u.email.toLowerCase() === 'estoque@imaccongelados.com.br') || u.uid === 'admin') currentUserRole = 'admin';
-                else currentUserRole = 'operador';
+            let isMainAdmin = (u.email && u.email.toLowerCase() === 'estoque@imaccongelados.com.br') || u.uid === 'admin';
+            let mainAdminUid = null;
+            
+            const pDoc = await getDoc(doc(db, 'global_settings', 'company_db'));
+            if(pDoc.exists() && pDoc.data().masterUid) {
+                mainAdminUid = pDoc.data().masterUid;
             }
 
-            if (u.email && u.email.toLowerCase() === 'estoque@imaccongelados.com.br') {
-                masterDbUid = u.uid;
-                await setDoc(doc(db, 'global_settings', 'company_db'), { masterUid: u.uid }, {merge: true});
-            } else {
-                const pDoc = await getDoc(doc(db, 'global_settings', 'company_db'));
-                if(pDoc.exists() && pDoc.data().masterUid) {
-                    masterDbUid = pDoc.data().masterUid;
-                } else {
+            const userDoc = await getDoc(doc(db, 'global_users', u.email || u.uid));
+            if(userDoc.exists()) {
+                const uData = userDoc.data();
+                currentUserRole = uData.role || 'operador';
+                masterDbUid = uData.masterDbUid || mainAdminUid || u.uid;
+                
+                if (isMainAdmin) {
                     masterDbUid = u.uid;
+                    currentUserRole = 'admin';
                 }
+            } else {
+                currentUserRole = 'admin';
+                masterDbUid = u.uid;
+                if (isMainAdmin) {
+                    await setDoc(doc(db, 'global_settings', 'company_db'), { masterUid: u.uid }, {merge: true});
+                }
+                await setDoc(doc(db, 'global_users', u.email || u.uid), { 
+                    email: u.email || u.uid, 
+                    role: 'admin', 
+                    masterDbUid: masterDbUid 
+                });
             }
             
             applyRoleRestrictions();
@@ -2482,9 +2500,17 @@ async function fetchUsersList() {
     const tb = id('users-table-body');
     if(!tb) return;
     tb.innerHTML = '';
+    
+    let mainAdminUid = null;
+    const pDoc = await getDoc(doc(db, 'global_settings', 'company_db'));
+    if(pDoc.exists() && pDoc.data().masterUid) mainAdminUid = pDoc.data().masterUid;
+
     snap.forEach(d => {
         const u = d.data();
-        tb.innerHTML += `<tr class="base-tr"><td class="base-td text-white font-bold">${u.email}</td><td class="base-td"><span class="badge ${u.role==='admin'?'bg-ios-red/20 text-ios-red':(u.role==='gerente'?'bg-ios-orange/20 text-ios-orange':'bg-ios-green/20 text-ios-green')} uppercase">${u.role}</span></td><td class="base-td text-center"><button class="text-ios-red btn-del-user p-2" data-email="${u.email}"><i class="fa fa-trash"></i></button></td></tr>`;
+        let uMaster = u.masterDbUid || mainAdminUid;
+        if(uMaster === masterDbUid) {
+            tb.innerHTML += `<tr class="base-tr"><td class="base-td text-white font-bold">${u.email}</td><td class="base-td"><span class="badge ${u.role==='admin'?'bg-ios-red/20 text-ios-red':(u.role==='gerente'?'bg-ios-orange/20 text-ios-orange':'bg-ios-green/20 text-ios-green')} uppercase">${u.role}</span></td><td class="base-td text-center"><button class="text-ios-red btn-del-user p-2" data-email="${u.email}"><i class="fa fa-trash"></i></button></td></tr>`;
+        }
     });
 }
 addEvt('user-role-form', 'submit', async e => {
@@ -2492,7 +2518,7 @@ addEvt('user-role-form', 'submit', async e => {
     if(currentUserRole !== 'admin') return window.showNotif('Apenas admins podem criar usuários', true);
     const email = id('user-role-email').value.toLowerCase().trim();
     const role = id('user-role-type').value;
-    await setDoc(doc(db, 'global_users', email), { email, role });
+    await setDoc(doc(db, 'global_users', email), { email, role, masterDbUid: masterDbUid });
     window.showNotif('Permissão concedida!');
     id('user-role-form').reset();
     fetchUsersList();
