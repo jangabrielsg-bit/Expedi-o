@@ -1340,7 +1340,7 @@ addEvt('home-incoming-orders','click',e=>{
 function updateSidebarBadges(){
     const ls=localInventory.filter(i => {
         const info = getStockInfo(i.id);
-        const activeMin = Math.max(info.theoretical, info.real);
+        const activeMin = info.theoretical || 0;
         const batchSum = localBatches.filter(b => b.productId === i.id && b.quantity > 0).reduce((acc, b) => acc + b.quantity, 0);
         return activeMin > 0 && batchSum <= activeMin;
     });
@@ -1359,12 +1359,26 @@ function updateSidebarBadges(){
     
     const lsl=id('low-stock-list');
     if(lsl){
-        lsl.innerHTML=ls.length?ls.map(i=>{
-            const info = getStockInfo(i.id);
-            const activeMin = Math.max(info.theoretical, info.real);
-            const batchSum = localBatches.filter(b => b.productId === i.id && b.quantity > 0).reduce((acc, b) => acc + b.quantity, 0);
-            return `<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange flex justify-between items-center cursor-pointer alert-item" data-id="${i.id}"><div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-[10px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold">${batchSum.toFixed(2)}</p><p class="text-[9px] text-ios-textMuted">Min: ${activeMin.toFixed(2)}</p></div></li>`
-        }).join(''):'<li class="text-center text-ios-textMuted py-4">Tudo OK.</li>';
+        if(ls.length){
+            const supG = {};
+            ls.forEach(i=>{
+                const s = i.supplier || 'Sem Fornecedor';
+                if(!supG[s]) supG[s] = [];
+                supG[s].push(i);
+            });
+            lsl.innerHTML = Object.keys(supG).map(s => {
+                const items = supG[s];
+                const itemsHtml = items.map(i => {
+                    const info = getStockInfo(i.id);
+                    const activeMin = info.theoretical || 0;
+                    const batchSum = localBatches.filter(b => b.productId === i.id && b.quantity > 0).reduce((acc, b) => acc + b.quantity, 0);
+                    return `<li class="bg-ios-bg p-2 rounded-lg flex justify-between items-center cursor-pointer alert-item hover:bg-ios-blue/10 transition-colors" data-id="${i.id}"><div><h5 class="font-bold text-white text-xs">${i.name}</h5><p class="text-[9px] text-ios-textMuted">${i.code||'-'}</p></div><div class="text-right"><p class="font-mono text-ios-orange font-bold text-xs">${batchSum.toFixed(2)}</p><p class="text-[8px] text-ios-textMuted">Min: ${activeMin.toFixed(2)}</p></div></li>`;
+                }).join('');
+                return `<li class="bg-ios-cardHover p-3 rounded-xl border-l-4 border-l-ios-orange cursor-pointer"><div class="flex justify-between items-center supplier-toggle"><h4 class="font-bold text-white text-sm flex items-center"><i class="fa-solid fa-truck-fast text-ios-textMuted mr-2"></i>${s}</h4><span class="text-xs text-ios-orange bg-ios-orange/10 px-2 py-1 rounded badge font-bold">${items.length} itens <i class="fa-solid fa-chevron-down ml-1 text-[10px]"></i></span></div><ul class="supplier-items hidden mt-3 space-y-2 border-t border-ios-border pt-3">${itemsHtml}</ul></li>`;
+            }).join('');
+        } else {
+            lsl.innerHTML = '<li class="text-center text-ios-textMuted py-4">Tudo OK.</li>';
+        }
     }
     
     const el=id('expiring-list');
@@ -1374,7 +1388,7 @@ function updateSidebarBadges(){
 }
 
 ['btn-show-alerts','btn-show-alerts-mobile'].forEach(b=>addEvt(b,'click',()=>show(id('low-stock-modal'))));
-['low-stock-list','expiring-list'].forEach(l=>addEvt(l,'click',e=>{const i=e.target.closest('.alert-item');if(i){hide(id('low-stock-modal'));window.navTo('inventory');openDetails(i.dataset.id);}}));
+['low-stock-list','expiring-list'].forEach(l=>addEvt(l,'click',e=>{const t=e.target.closest('.supplier-toggle');if(t){const u=t.nextElementSibling;if(u)u.classList.toggle('hidden');return;}const i=e.target.closest('.alert-item');if(i){hide(id('low-stock-modal'));window.navTo('inventory');openDetails(i.dataset.id);}}));
 
 function searchUniversal(q){
     if(!q)return window.showNotif("Vazio",true);
