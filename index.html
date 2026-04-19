@@ -1942,7 +1942,7 @@ addEvt('loc-batches-body','click',async e=>{const bt=e.target.closest('.btn-remo
 function addIngRowReq(c,pI=null,pQ=''){
     if(!c)return;
     const d=document.createElement('div');
-    d.className='flex flex-col gap-2 bg-ios-bg p-3 rounded-xl border border-ios-border';
+    d.className='req-item flex flex-col gap-2 bg-ios-bg p-3 rounded-xl border border-ios-border';
     d.innerHTML=`<div class="flex gap-2 items-center"><div class="searchable-container flex-1"></div><input type="text" class="form-input w-20 py-2 text-center req-code-input text-xs bg-ios-input/50 border-transparent placeholder-ios-textMuted/50 text-ios-textMuted" readonly placeholder="Cód"><input type="number" step="0.0001" value="${pQ}" class="form-input w-20 py-2 text-center req-qty-input font-bold text-sm" required><button type="button" class="text-ios-red p-2 bg-ios-cardHover rounded remove-ing"><i class="fa fa-times"></i></button></div><div class="flex justify-between items-center text-[10px] text-ios-textMuted px-1 req-plan-wrapper hidden mt-1 border-t border-ios-border pt-2 gap-2"><span class="plan-display"></span><button type="button" class="text-ios-blue open-batch-selector bg-ios-card px-2 py-1 rounded shrink-0 whitespace-nowrap border border-ios-border"><i class="fa-solid fa-pen mr-1"></i> Lotes</button></div>`;
     c.appendChild(d);
     const iR=c.id==='ingredients-container',pW=d.querySelector('.req-plan-wrapper'),pD=d.querySelector('.plan-display'),qI=d.querySelector('.req-qty-input'),cI=d.querySelector('.req-code-input');
