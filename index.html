@@ -265,7 +265,7 @@
                 <div class="flex flex-col md:flex-row gap-6 mb-8">
                     <div class="w-full md:w-1/3 card self-start"><h2 class="title-md mb-4 text-lg">Buscar Local</h2><div class="flex gap-2 mb-4"><input type="text" id="location-search-input" class="form-input font-mono" placeholder="Cód..." list="locations-datalist" autocomplete="off"><button type="button" id="btn-scan-location" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div><button type="button" id="btn-search-location" class="btn-secondary w-full">Pesquisar</button></div>
                     <div class="w-full md:w-2/3">
-                        <div id="location-details-panel" class="card hidden mb-6"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><div><h2 class="text-2xl font-bold text-white mb-1" id="loc-detail-name">Nome</h2><div id="loc-detail-code" class="mt-2 text-xl"></div></div><div class="flex gap-2"><button type="button" id="btn-edit-location" class="text-ios-blue bg-ios-blue/10 p-2 rounded-xl"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-location" class="text-ios-red bg-ios-red/10 p-2 rounded-xl"><i class="fa-solid fa-trash"></i></button></div></div><div class="flex justify-between items-center mb-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase">Lotes</h3><button type="button" id="btn-add-batch-to-loc" class="text-ios-green bg-ios-green/10 px-4 py-2 rounded-xl font-bold text-sm"><i class="fa-solid fa-plus mr-1"></i>Alocar Lote</button></div><div class="table-container max-h-64 overflow-y-auto"><table class="base-table"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Lote</th><th class="base-th">Qtd</th><th class="base-th text-center col-acoes">Retirar</th></tr></thead><tbody id="loc-batches-body"></tbody></table></div></div>
+                        <div id="location-details-panel" class="card hidden mb-6"><button type="button" id="btn-back-to-map" class="text-ios-blue text-sm mb-4 inline-block hover:underline"><i class="fa-solid fa-arrow-left mr-2"></i>Voltar ao Mapa</button><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><div><h2 class="text-2xl font-bold text-white mb-1" id="loc-detail-name">Nome</h2><div id="loc-detail-code" class="mt-2 text-xl"></div></div><div class="flex gap-2"><button type="button" id="btn-edit-location" class="text-ios-blue bg-ios-blue/10 p-2 rounded-xl"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-location" class="text-ios-red bg-ios-red/10 p-2 rounded-xl"><i class="fa-solid fa-trash"></i></button></div></div><div class="flex justify-between items-center mb-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase">Lotes</h3><div class="flex gap-2"><button type="button" id="btn-transfer-all-loc" class="text-ios-blue bg-ios-blue/10 px-4 py-2 rounded-xl font-bold text-sm"><i class="fa-solid fa-truck-fast mr-1"></i>Mover Tudo</button><button type="button" id="btn-add-batch-to-loc" class="text-ios-green bg-ios-green/10 px-4 py-2 rounded-xl font-bold text-sm"><i class="fa-solid fa-plus mr-1"></i>Alocar Lote</button></div></div><div class="table-container max-h-64 overflow-y-auto"><table class="base-table"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Lote</th><th class="base-th">Qtd</th><th class="base-th text-center col-acoes">Retirar</th></tr></thead><tbody id="loc-batches-body"></tbody></table></div></div>
                         <div id="location-create-panel" class="card hidden border-ios-orange border-dashed"><h2 class="title-md text-ios-orange mb-4">Novo Local</h2><form id="location-form" class="space-y-4"><div><label class="form-label">Código (RPNA)</label><input type="text" id="loc-form-code" required readonly class="form-input bg-ios-input/50 text-ios-textMuted text-center font-mono text-xl tracking-widest mt-1 placeholder-ios-border" placeholder="--"></div><div class="grid grid-cols-4 gap-2 mb-2"><div><label class="form-label text-[10px] uppercase font-bold text-center w-full">Rua</label><input type="number" id="loc-rua" class="form-input text-center text-white px-1" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-green">Prédio</label><input type="number" id="loc-predio" class="form-input text-center px-1 border-ios-green/30 focus:border-ios-green" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-red">Nível</label><input type="number" id="loc-nivel" class="form-input text-center px-1 border-ios-red/30 focus:border-ios-red" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-blue">Apto</label><input type="number" id="loc-apto" class="form-input text-center px-1 border-ios-blue/30 focus:border-ios-blue" min="0" required placeholder="00"></div></div><div class="hidden"><label class="form-label">Nome</label><input type="text" id="loc-form-name" required class="form-input"></div><div class="flex justify-end gap-3 mt-4 border-t border-ios-border pt-4"><button type="button" id="btn-cancel-loc" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Criar Endereço</button></div></form></div>
                         <div id="location-empty-state" class="card border-dashed"><div class="text-center py-10"><i class="fa-solid fa-map-location-dot text-5xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Busque um local ou clique em um painel abaixo.</p></div><div class="border-t border-ios-border pt-6"><div class="flex justify-between items-end mb-4"><h3 class="text-xs font-semibold text-ios-textMuted uppercase mb-0">Mapa do Almoxarifado (Todos)</h3><div id="map-breadcrumbs" class="hidden"></div></div><div id="warehouse-map-view" class="space-y-4"></div><div id="all-locations-list" class="hidden"></div></div></div>
                     </div>
@@ -273,6 +273,8 @@
             </div>
 
             <!-- Entrada Massa -->
+            <div id="modal-transfer-loc" class="modal"><div class="modal-content max-w-sm"><h2 class="title-md" id="transfer-modal-title">Transferir</h2><p class="text-sm text-ios-textMuted mb-4" id="transfer-modal-desc">Mover conteúdo para outro endereço.</p><form id="transfer-loc-form" class="space-y-4"><input type="hidden" id="transfer-batch-id"><input type="hidden" id="transfer-source-code"><input type="hidden" id="transfer-mode"><div class="relative"><label class="form-label">Endereço Destino (Bipar ou Digitar)</label><div class="flex gap-2"><input type="text" id="transfer-dest-input" class="form-input flex-1 font-mono text-center tracking-widest text-lg" placeholder="Cód..." required autocomplete="off"><button type="button" id="btn-scan-transfer-dest" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div></div><div class="flex justify-end gap-3 mt-4"><button type="button" class="btn-secondary" onclick="hide(document.getElementById('modal-transfer-loc'))">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-truck-fast mr-2"></i>Efetivar</button></div></form></div></div>
+            
             <div id="screen-entry" class="screen-panel hidden">
                 <h1 class="title-lg">Entrada</h1>
                 <div class="card mb-6"><form id="entry-form"><div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><div class="relative z-50"><label class="form-label">Produto</label><div class="flex gap-2"><div id="entry-searchable-container" class="searchable-container flex-1"></div><button type="button" id="btn-scan-entry-code" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Qtd</label><input type="number" name="quantity" required min="0.01" step="0.01" class="form-input text-ios-blue font-bold"></div><div><button type="submit" class="btn-secondary w-full"><i class="fa-solid fa-plus mr-2"></i>Adicionar Lote</button></div></div></form></div>
@@ -1930,7 +1932,7 @@ function searchLocation(c){
         } else {
             id('loc-detail-code').innerHTML = `<span class="text-ios-blue font-mono bg-ios-blue/10 px-3 py-1 rounded-lg border border-ios-blue/30 inline-block">${l.code}</span>`;
         }
-        id('loc-batches-body').innerHTML=localBatches.filter(b=>b.locationCode===c&&b.quantity>0).map(b=>`<tr class="base-tr"><td class="base-td text-white text-xs">${localInventory.find(x=>x.id===b.productId)?.name||'?'}</td><td class="base-td text-xs">${b.code}</td><td class="base-td text-ios-blue font-bold">${b.quantity.toFixed(2)}</td><td class="base-td col-acoes text-center"><button class="btn-remove-batch-loc text-ios-red bg-ios-cardHover p-2 rounded" data-id="${b.id}"><i class="fa-solid fa-minus"></i></button></td></tr>`).join('')||'<tr><td colspan="4" class="text-center text-xs py-4">Vazio</td></tr>';
+        id('loc-batches-body').innerHTML=localBatches.filter(b=>b.locationCode===c&&b.quantity>0).map(b=>`<tr class="base-tr"><td class="base-td text-white text-xs">${localInventory.find(x=>x.id===b.productId)?.name||'?'}</td><td class="base-td text-xs">${b.code}</td><td class="base-td text-ios-blue font-bold">${b.quantity.toFixed(2)}</td><td class="base-td col-acoes text-center flex justify-center gap-2"><button type="button" class="btn-transfer-batch-loc text-ios-blue bg-ios-blue/10 p-2 rounded" data-id="${b.id}" title="Transferir lote de endereço"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button type="button" class="btn-remove-batch-loc text-ios-red bg-ios-cardHover p-2 rounded" data-id="${b.id}" title="Retirar deste lote"><i class="fa-solid fa-minus"></i></button></td></tr>`).join('')||'<tr><td colspan="4" class="text-center text-xs py-4">Vazio</td></tr>';
         id('add-loc-target-code').value=c;
         hide(id('location-empty-state'));
         hide(id('location-create-panel'));
@@ -1993,12 +1995,15 @@ function renderWarehouseMap() {
             nivs.forEach(n => {
                 html += `<div class="flex items-start gap-2 border-t border-ios-border/50 pt-2 first:border-0 first:pt-0">
                     <span class="text-xs font-bold text-ios-red w-16 pt-1"><i class="fa-solid fa-layer-group mr-1 opacity-60"></i>Nív ${n}</span>
-                    <div class="flex flex-wrap gap-2 flex-1">`;
+                    <div class="flex flex-wrap items-center gap-2 flex-1">`;
                 
                 const aptos = Object.keys(tree[r][p][n]).sort();
                 aptos.forEach(a => {
                     const loc = tree[r][p][n][a];
-                    html += `<button type="button" class="bg-ios-blue/10 border border-ios-blue/30 text-ios-blue px-3 py-1.5 rounded-lg text-xs hover:bg-ios-blue/30 transition-colors font-bold location-card-btn font-mono" data-code="${loc.code}" title="${loc.name}">Apt ${a}</button>`;
+                    html += `<button type="button" class="bg-ios-blue/10 border border-ios-blue/30 text-ios-blue w-14 h-12 rounded-lg hover:bg-ios-blue/20 transition-colors location-card-btn flex flex-col items-center justify-center shrink-0 shadow-sm" data-code="${loc.code}" title="${loc.name}">
+                        <span class="text-[9px] uppercase font-semibold opacity-80 mb-0.5">Apt</span>
+                        <span class="text-sm font-bold font-mono leading-none">${a}</span>
+                    </button>`;
                 });
                 
                 html += `</div></div>`;
@@ -2022,6 +2027,12 @@ addEvt('warehouse-map-view','click',e=>{
          id('location-search-input').value=b.dataset.code;
          id('btn-search-location').click();
     }
+});
+
+addEvt('btn-back-to-map','click',()=>{
+    hide(id('location-details-panel'));
+    show(id('location-empty-state'));
+    if(id('location-search-input')) id('location-search-input').value = '';
 });
 
 addEvt('btn-search-location','click',()=>searchLocation(id('location-search-input').value.trim()));
@@ -2048,7 +2059,68 @@ addEvt('btn-edit-location','click',()=>{
 addEvt('edit-location-form','submit',async e=>{e.preventDefault();show(id('loading-overlay'));const oC=id('edit-loc-old-code').value,nC=id('edit-loc-new-code').value,nN=id('edit-loc-new-name').value,l=localLocations.find(x=>x.code===oC);if(l){l.code=nC;l.name=nN;await DB.update('locations',l);if(oC!==nC){for(let b of localBatches.filter(x=>x.locationCode===oC)){b.locationCode=nC;await DB.update('batches',b);}}hide(id('edit-location-modal'));await refreshData();searchLocation(nC);}hide(id('loading-overlay'));});
 addEvt('btn-add-batch-to-loc','click',()=>{createSearchableSelect(id('add-loc-searchable-container'),localInventory,'Produto...',p=>{id('add-loc-batch-select').innerHTML='<option value="">Lote...</option>'+localBatches.filter(b=>b.productId===p.id&&b.quantity>0).map(b=>`<option value="${b.code}">${b.code}</option>`).join('');});show(id('modal-add-loc-batch'));});
 addEvt('add-loc-batch-form','submit',async e=>{e.preventDefault();const b=localBatches.find(x=>x.code===id('add-loc-batch-select').value&&x.quantity>0);if(b){b.locationCode=id('add-loc-target-code').value;await DB.update('batches',b);hide(id('modal-add-loc-batch'));await refreshData();searchLocation(b.locationCode);}});
-addEvt('loc-batches-body','click',async e=>{const bt=e.target.closest('.btn-remove-batch-loc');if(bt){const b=await DB.get('batches',bt.dataset.id);if(b){b.locationCode='';await DB.update('batches',b);await refreshData();searchLocation(id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText);}}});
+addEvt('loc-batches-body','click',async e=>{
+    const trfBtn = e.target.closest('.btn-transfer-batch-loc');
+    if(trfBtn){
+        const batchId = trfBtn.dataset.id;
+        const src = id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText;
+        id('transfer-batch-id').value = batchId;
+        id('transfer-source-code').value = src;
+        id('transfer-mode').value = 'single';
+        id('transfer-modal-title').innerText = 'Transferir Lote Genuíno';
+        id('transfer-modal-desc').innerText = `Movendo o lote para um novo destino.`;
+        id('transfer-dest-input').value = '';
+        show(id('modal-transfer-loc'));
+        return;
+    }
+    const bt=e.target.closest('.btn-remove-batch-loc');
+    if(bt){const b=await DB.get('batches',bt.dataset.id);if(b){b.locationCode='';await DB.update('batches',b);await refreshData();searchLocation(id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText);}}
+});
+
+addEvt('btn-transfer-all-loc','click',()=>{
+    const src = id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText;
+    id('transfer-batch-id').value = '';
+    id('transfer-source-code').value = src;
+    id('transfer-mode').value = 'all';
+    id('transfer-modal-title').innerText = 'Mover Conteúdo do Apto';
+    id('transfer-modal-desc').innerText = `Transferindo todos os insumos estocados em ${src}. Para onde vão?`;
+    id('transfer-dest-input').value = '';
+    show(id('modal-transfer-loc'));
+});
+
+addEvt('transfer-loc-form','submit',async e=>{
+    e.preventDefault();
+    const dest = id('transfer-dest-input').value.trim();
+    if(!localLocations.find(x=>x.code===dest)) {
+        window.showNotif('Endereço de destino inexistente. Cheque se foi cadastrado.', true);
+        return;
+    }
+    const mode = id('transfer-mode').value;
+    const src = id('transfer-source-code').value;
+    show(id('loading-overlay'));
+    
+    if(mode === 'all') {
+        const batchesToMove = localBatches.filter(b=>b.locationCode===src && b.quantity>0);
+        for(let b of batchesToMove) {
+            b.locationCode = dest;
+            await DB.update('batches', b);
+        }
+    } else {
+        const bid = id('transfer-batch-id').value;
+        const b = await DB.get('batches', bid);
+        if(b) {
+            b.locationCode = dest;
+            await DB.update('batches', b);
+        }
+    }
+    
+    hide(id('modal-transfer-loc'));
+    await refreshData();
+    searchLocation(src); 
+    hide(id('loading-overlay'));
+    window.showNotif('Transferência WMS efetuada!');
+});
+addEvt('btn-scan-transfer-dest','click',()=>openScanner(c=>id('transfer-dest-input').value=c));
 
 // RECIPES
 function addIngRowReq(c,pI=null,pQ=''){
