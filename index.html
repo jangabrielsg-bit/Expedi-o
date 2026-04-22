@@ -267,7 +267,7 @@
                     <div class="w-full md:w-2/3">
                         <div id="location-details-panel" class="card hidden mb-6"><div class="flex justify-between items-start mb-6 border-b border-ios-border pb-4"><div><h2 class="text-2xl font-bold text-white mb-1" id="loc-detail-name">Nome</h2><div id="loc-detail-code" class="mt-2 text-xl"></div></div><div class="flex gap-2"><button type="button" id="btn-edit-location" class="text-ios-blue bg-ios-blue/10 p-2 rounded-xl"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-location" class="text-ios-red bg-ios-red/10 p-2 rounded-xl"><i class="fa-solid fa-trash"></i></button></div></div><div class="flex justify-between items-center mb-4"><h3 class="text-sm font-semibold text-ios-textMuted uppercase">Lotes</h3><button type="button" id="btn-add-batch-to-loc" class="text-ios-green bg-ios-green/10 px-4 py-2 rounded-xl font-bold text-sm"><i class="fa-solid fa-plus mr-1"></i>Alocar Lote</button></div><div class="table-container max-h-64 overflow-y-auto"><table class="base-table"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Lote</th><th class="base-th">Qtd</th><th class="base-th text-center col-acoes">Retirar</th></tr></thead><tbody id="loc-batches-body"></tbody></table></div></div>
                         <div id="location-create-panel" class="card hidden border-ios-orange border-dashed"><h2 class="title-md text-ios-orange mb-4">Novo Local</h2><form id="location-form" class="space-y-4"><div><label class="form-label">Código (RPNA)</label><input type="text" id="loc-form-code" required readonly class="form-input bg-ios-input/50 text-ios-textMuted text-center font-mono text-xl tracking-widest mt-1 placeholder-ios-border" placeholder="--"></div><div class="grid grid-cols-4 gap-2 mb-2"><div><label class="form-label text-[10px] uppercase font-bold text-center w-full">Rua</label><input type="number" id="loc-rua" class="form-input text-center text-white px-1" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-green">Prédio</label><input type="number" id="loc-predio" class="form-input text-center px-1 border-ios-green/30 focus:border-ios-green" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-red">Nível</label><input type="number" id="loc-nivel" class="form-input text-center px-1 border-ios-red/30 focus:border-ios-red" min="0" required placeholder="00"></div><div><label class="form-label text-[10px] uppercase font-bold text-center w-full text-ios-blue">Apto</label><input type="number" id="loc-apto" class="form-input text-center px-1 border-ios-blue/30 focus:border-ios-blue" min="0" required placeholder="00"></div></div><div class="hidden"><label class="form-label">Nome</label><input type="text" id="loc-form-name" required class="form-input"></div><div class="flex justify-end gap-3 mt-4 border-t border-ios-border pt-4"><button type="button" id="btn-cancel-loc" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Criar Endereço</button></div></form></div>
-                        <div id="location-empty-state" class="card border-dashed"><div class="text-center py-10"><i class="fa-solid fa-map-location-dot text-5xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Busque um local ou selecione abaixo.</p></div><div class="border-t border-ios-border pt-6"><h3 class="text-xs font-semibold text-ios-textMuted uppercase mb-3">Todos os Endereços</h3><div id="all-locations-list" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div></div></div>
+                        <div id="location-empty-state" class="card border-dashed"><div class="text-center py-10"><i class="fa-solid fa-map-location-dot text-5xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Busque um local ou clique no mapa ilustrativo abaixo.</p></div><div class="border-t border-ios-border pt-6"><div class="flex justify-between items-end mb-4"><h3 class="text-xs font-semibold text-ios-textMuted uppercase mb-0">Mapa Ilustrativo</h3><div id="map-breadcrumbs" class="text-sm font-bold text-ios-blue flex gap-1 flex-wrap"></div></div><div id="warehouse-map-view" class="grid gap-3 grid-cols-2 lg:grid-cols-4"></div><div id="all-locations-list" class="hidden"></div></div></div>
                     </div>
                 </div>
             </div>
@@ -1899,7 +1899,7 @@ const applyRPNA = (pf) => {
     if(!elR||!elP||!elN||!elA) return;
     const r=elR.value.padStart(2,'0'), p=elP.value.padStart(2,'0'), n=elN.value.padStart(2,'0'), a=elA.value.padStart(2,'0');
     if(elR.value && elP.value && elN.value && elA.value) {
-        const cd = `${r}-${p}-${n}-${a}`;
+        const cd = `${r}${p}${n}${a}`;
         const nm = `Rua ${parseInt(r,10)}, Préd. ${parseInt(p,10)}, Nív. ${parseInt(n,10)}, Apt. ${parseInt(a,10)}`;
         if(id(pf+'-form-code')) id(pf+'-form-code').value = cd;
         if(id(pf+'-new-code')) id(pf+'-new-code').value = cd;
@@ -1913,12 +1913,18 @@ const applyRPNA = (pf) => {
 ['loc-rua','loc-predio','loc-nivel','loc-apto'].forEach(el => { const n=id(el); if(n) addEvt(el, 'input', () => applyRPNA('loc')); });
 ['edit-loc-rua','edit-loc-predio','edit-loc-nivel','edit-loc-apto'].forEach(el => { const n=id(el); if(n) addEvt(el, 'input', () => applyRPNA('edit-loc')); });
 
+function extractRPNA(code) {
+    if(code.length===8 && !isNaN(code)) return [code.substring(0,2), code.substring(2,4), code.substring(4,6), code.substring(6,8)];
+    if(code.includes('-') && code.split('-').length===4) return code.split('-');
+    return [];
+}
+
 function searchLocation(c){
     const l=localLocations.find(x=>x.code===c);
     if(l){
         id('loc-detail-name').innerText=l.name;
         id('loc-detail-code').dataset.rawcode = l.code;
-        const pts = l.code.split('-');
+        const pts = extractRPNA(l.code);
         if(pts.length===4) {
             id('loc-detail-code').innerHTML = `<div class="flex gap-1.5 font-bold font-mono tracking-wider"><span class="bg-ios-bg border border-ios-border px-2 py-1 rounded-lg text-white shadow-sm"><span class="text-[10px] text-ios-textMuted mr-1">R</span>${pts[0]}</span><span class="bg-ios-green/10 text-ios-green border border-ios-green/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-green/60 mr-1">P</span>${pts[1]}</span><span class="bg-ios-red/10 text-ios-red border border-ios-red/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-red/60 mr-1">N</span>${pts[2]}</span><span class="bg-ios-blue/10 text-ios-blue border border-ios-blue/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-blue/60 mr-1">A</span>${pts[3]}</span></div>`;
         } else {
@@ -1931,7 +1937,7 @@ function searchLocation(c){
         show(id('location-details-panel'));
     }else{
         id('loc-form-code').value=c;
-        const pts = c.split('-');
+        const pts = extractRPNA(c);
         if(pts.length === 4) {
              id('loc-rua').value = parseInt(pts[0],10)||'';
              id('loc-predio').value = parseInt(pts[1],10)||'';
@@ -1948,20 +1954,93 @@ function searchLocation(c){
     }
 }
 
+let wmsMapContext = []; 
+function renderWarehouseMap() {
+    const v = id('warehouse-map-view');
+    const bc = id('map-breadcrumbs');
+    if(!v || !bc) return;
+    
+    bc.innerHTML = ['Visão Geral', ...wmsMapContext].map((x, i) => {
+        let label = typeof x === 'string' && i > 0 ? (i===1?`Rua ${x}`:(i===2?`Prédio ${x}`:(i===3?`Nível ${x}`:''))) : x;
+        return `<button type="button" class="hover:underline text-ios-textMuted hover:text-white" data-level="${i}">${label}</button>`;
+    }).join(' <span class="text-ios-textMuted/50 text-[10px] self-center"><i class="fa-solid fa-chevron-right"></i></span> ');
+
+    const level = wmsMapContext.length;
+    let available = new Set();
+    let exactMatches = [];
+    localLocations.forEach(l => {
+        let code = l.code;
+        const pts = extractRPNA(code);
+        if(!pts || pts.length!==4) return;
+        let r=pts[0], p=pts[1], n=pts[2], a=pts[3];
+        
+        let matchContext = true;
+        if(level > 0 && r !== wmsMapContext[0]) matchContext = false;
+        if(level > 1 && p !== wmsMapContext[1]) matchContext = false;
+        if(level > 2 && n !== wmsMapContext[2]) matchContext = false;
+        
+        if(!matchContext) return;
+        
+        if(level === 0) available.add(r);
+        if(level === 1) available.add(p);
+        if(level === 2) available.add(n);
+        if(level === 3) exactMatches.push({l, a});
+    });
+
+    if(level < 3) {
+        let items = Array.from(available).sort();
+        if(!items.length) {
+            v.innerHTML = '<div class="col-span-full text-ios-textMuted py-4 text-center border border-dashed border-ios-border rounded-xl">Vazio. Adicione endereços para ver no mapa.</div>';
+            return;
+        }
+        let labels = ['Rua', 'Prédio', 'Nível'];
+        let colors = ['border-white', 'border-ios-green', 'border-ios-red'];
+        let textColors = ['text-white', 'text-ios-green', 'text-ios-red'];
+        let wCls = level === 0 ? 'col-span-full md:col-span-2' : '';
+        v.innerHTML = items.map(x => `<button type="button" class="bg-ios-cardHover/50 border border-ios-border px-3 py-6 rounded-xl hover:bg-ios-border transition-colors text-center map-nav-btn ${wCls}" data-val="${x}">
+            <div class="text-[10px] text-ios-textMuted uppercase">${labels[level]}</div>
+            <div class="text-3xl font-bold ${textColors[level]} mt-1 font-mono">${x}</div>
+        </button>`).join('');
+    } else {
+        exactMatches.sort((A,B) => A.a.localeCompare(B.a));
+        if(!exactMatches.length) {
+             v.innerHTML = '<div class="col-span-full text-ios-textMuted py-4 text-center">Nenhum apartamento encontrado.</div>';
+             return;
+        }
+        v.innerHTML = exactMatches.map(E => `<button type="button" class="bg-ios-blue/10 border border-ios-blue/30 px-3 py-4 rounded-xl hover:bg-ios-blue/30 text-center location-card-btn transition-colors relative" data-code="${E.l.code}">
+            <div class="text-[10px] text-ios-textMuted uppercase mb-1">Apto</div>
+            <div class="text-xl font-bold text-ios-blue font-mono">${E.a}</div>
+            <p class="text-[8px] text-ios-textMuted truncate mt-2">${E.l.name}</p>
+        </button>`).join('');
+    }
+}
 function renderAllLocations(){
-    const c=id('all-locations-list');
-    if(!c)return;
-    if(!localLocations.length){c.innerHTML='<div class="col-span-full text-center text-ios-textMuted py-4">Nenhum endereço cadastrado.</div>';return;}
-    c.innerHTML=localLocations.map(l=>`<button type="button" class="bg-ios-cardHover border border-ios-border p-3 rounded-xl hover:bg-ios-blue/10 text-left location-card-btn" data-code="${l.code}"><p class="font-bold text-white text-sm truncate">${l.name}</p><p class="text-[10px] text-ios-blue font-mono mt-1">${l.code}</p></button>`).join('');
+    renderWarehouseMap();
 }
 
-addEvt('all-locations-list','click',e=>{
+addEvt('warehouse-map-view','click',e=>{
+    const btn = e.target.closest('.map-nav-btn');
+    if(btn) {
+        wmsMapContext.push(btn.dataset.val);
+        renderWarehouseMap();
+        return;
+    }
     const b=e.target.closest('.location-card-btn');
     if(b){
-        id('location-search-input').value=b.dataset.code;
-        id('btn-search-location').click();
+         id('location-search-input').value=b.dataset.code;
+         id('btn-search-location').click();
     }
 });
+if(id('map-breadcrumbs')) {
+    addEvt('map-breadcrumbs','click',e=>{
+        if(e.target.tagName==='BUTTON' && e.target.dataset.level) {
+            let lvl = parseInt(e.target.dataset.level);
+            if(lvl === 0) wmsMapContext = [];
+            else wmsMapContext = wmsMapContext.slice(0, lvl);
+            renderWarehouseMap();
+        }
+    });
+}
 
 addEvt('btn-search-location','click',()=>searchLocation(id('location-search-input').value.trim()));
 addEvt('btn-scan-location','click',()=>openScanner(c=>searchLocation(c)));
@@ -1973,7 +2052,7 @@ addEvt('btn-edit-location','click',()=>{
     id('edit-loc-old-code').value=oldCode;
     id('edit-loc-new-code').value=oldCode;
     id('edit-loc-new-name').value=id('loc-detail-name').innerText;
-    const pts = oldCode.split('-');
+    const pts = extractRPNA(oldCode);
     if(pts.length === 4) {
         id('edit-loc-rua').value = parseInt(pts[0],10)||'';
         id('edit-loc-predio').value = parseInt(pts[1],10)||'';
