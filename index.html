@@ -273,7 +273,7 @@
             </div>
 
             <!-- Entrada Massa -->
-            <div id="modal-transfer-loc" class="modal"><div class="modal-content max-w-sm"><h2 class="title-md" id="transfer-modal-title">Transferir</h2><p class="text-sm text-ios-textMuted mb-4" id="transfer-modal-desc">Mover conteúdo para outro endereço.</p><form id="transfer-loc-form" class="space-y-4"><input type="hidden" id="transfer-batch-id"><input type="hidden" id="transfer-source-code"><input type="hidden" id="transfer-mode"><div class="relative"><label class="form-label">Endereço Destino (Bipar ou Digitar)</label><div class="flex gap-2"><input type="text" id="transfer-dest-input" class="form-input flex-1 font-mono text-center tracking-widest text-lg" placeholder="Cód..." required autocomplete="off"><button type="button" id="btn-scan-transfer-dest" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div></div><div class="flex justify-end gap-3 mt-4"><button type="button" class="btn-secondary" onclick="hide(document.getElementById('modal-transfer-loc'))">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-truck-fast mr-2"></i>Efetivar</button></div></form></div></div>
+            <div id="modal-transfer-loc" class="modal"><div class="modal-content max-w-sm"><h2 class="title-md" id="transfer-modal-title">Transferir</h2><p class="text-sm text-ios-textMuted mb-4" id="transfer-modal-desc">Mover conteúdo para outro endereço.</p><form id="transfer-loc-form" class="space-y-4"><input type="hidden" id="transfer-batch-id"><input type="hidden" id="transfer-source-code"><input type="hidden" id="transfer-mode"><div class="relative"><label class="form-label">Endereço Destino (Bipar ou Digitar)</label><div class="flex gap-2"><input type="text" id="transfer-dest-input" class="form-input flex-1 font-mono text-center tracking-widest text-lg" placeholder="Cód..." required autocomplete="off"><button type="button" id="btn-scan-transfer-dest" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div></div><div class="flex justify-end gap-3 mt-4"><button type="button" class="btn-secondary" id="btn-cancel-transfer-loc">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-truck-fast mr-2"></i>Efetivar</button></div></form></div></div>
             
             <div id="screen-entry" class="screen-panel hidden">
                 <h1 class="title-lg">Entrada</h1>
@@ -2121,6 +2121,7 @@ addEvt('transfer-loc-form','submit',async e=>{
     window.showNotif('Transferência WMS efetuada!');
 });
 addEvt('btn-scan-transfer-dest','click',()=>openScanner(c=>id('transfer-dest-input').value=c));
+addEvt('btn-cancel-transfer-loc','click',()=>hide(id('modal-transfer-loc')));
 
 // RECIPES
 function addIngRowReq(c,pI=null,pQ=''){
