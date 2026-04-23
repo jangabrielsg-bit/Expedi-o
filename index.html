@@ -316,9 +316,22 @@
             <!-- PVPS -->
             <div id="screen-pvps" class="screen-panel hidden">
                 <div class="sticky-header-panel pt-4">
-                    <div class="flex justify-between items-center gap-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                         <h1 class="title-lg mb-0 text-white leading-tight">Análise PVPS<br><span class="text-sm font-normal text-ios-textMuted mt-1 block">Primeiro a Vencer, Primeiro a Sair</span></h1>
                         <button type="button" id="btn-export-pvps" class="btn-secondary h-12 shrink-0"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar</button>
+                    </div>
+                    <div class="card mb-4 border-l-4 border-l-ios-blue p-4">
+                        <div class="flex flex-col sm:flex-row gap-4 items-end">
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>Início (Consumo)</label>
+                                <input type="date" id="pvps-date-start" class="form-input py-2">
+                            </div>
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>Fim (Consumo)</label>
+                                <input type="date" id="pvps-date-end" class="form-input py-2">
+                            </div>
+                            <button type="button" id="btn-calc-pvps" class="btn-primary shrink-0 w-full sm:w-[20%] py-2"><i class="fa-solid fa-bolt mr-2"></i>Analisar</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card p-0 bg-transparent border-none">
@@ -329,7 +342,7 @@
                                     <th class="base-th">Insumo e Lote Focado</th>
                                     <th class="base-th text-center">Data Validade</th>
                                     <th class="base-th text-right">Saldo / Acumulado PEPS</th>
-                                    <th class="base-th text-right hidden sm:table-cell" title="Média de consumo dos últimos 5 dias úteis">Cons/Dia <i>(5d)</i></th>
+                                    <th class="base-th text-right hidden sm:table-cell" title="Média de consumo no período">Cons/Dia <i>(Período)</i></th>
                                     <th class="base-th text-right hidden md:table-cell" title="Dias Projetados para consumo total">Projeção Vida</th>
                                     <th class="base-th text-right">Sobra Estim.</th>
                                     <th class="base-th text-center">Análise de Risco</th>
@@ -459,7 +472,51 @@
             <!-- Ajustes -->
             <div id="screen-adjustments" class="screen-panel hidden">
                 <h1 class="title-lg">Ajuste de Lote</h1>
-                <div class="card max-w-2xl mx-auto"><form id="adjustment-form" class="space-y-5"><div class="z-50 relative"><label class="form-label">Buscar Produto</label><div id="adjustment-searchable-container"></div></div><div><label class="form-label">Lote</label><select id="adjustment-batch" required class="form-input"><option value="">Aguardando...</option></select></div><div><label class="form-label">Nova Qtd Real</label><input type="number" id="adjustment-new-quantity" required min="0" step="0.01" class="form-input text-ios-blue font-bold"></div><div><label class="form-label">Motivo</label><input type="text" id="adjustment-reason" required class="form-input"></div><div><label class="form-label">Responsável</label><input type="text" id="adjustment-responsible" required class="form-input"></div><div class="mt-8 flex justify-end"><button type="submit" class="btn-primary">Registrar Ajuste</button></div></form></div>
+                <div class="card max-w-2xl mx-auto">
+                    <div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border mb-6 flex flex-col items-center text-center">
+                        <i class="fa-solid fa-scale-balanced text-3xl text-ios-orange mb-3"></i>
+                        <h2 class="text-white font-bold text-lg mb-1">Painel de Acurácia</h2>
+                        <p class="text-xs text-ios-textMuted max-w-md">Os ajustes impactam diretamente os relatórios financeiros e a contabilidade do estoque. Todo ajuste é registrado com sua assinatura.</p>
+                    </div>
+                    <form id="adjustment-form" class="space-y-5">
+                        <div class="z-50 relative"><label class="form-label">Buscar Produto</label><div id="adjustment-searchable-container"></div></div>
+                        <div><label class="form-label">Lote</label><select id="adjustment-batch" required class="form-input"><option value="">Aguardando...</option></select></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-ios-bg border border-ios-border rounded-xl p-3">
+                                <label class="form-label text-[10px] uppercase font-bold text-ios-textMuted">Saldo Físico Atual</label>
+                                <input type="text" id="adjustment-current-qty" readonly class="form-input bg-transparent border-none text-white font-bold text-xl px-0 cursor-not-allowed" placeholder="0.00">
+                            </div>
+                            <div class="bg-ios-bg border border-ios-blue/30 rounded-xl p-3 relative">
+                                <label class="form-label text-[10px] uppercase font-bold text-ios-blue">Nova Qtd Real (Contada)</label>
+                                <input type="number" id="adjustment-new-quantity" required min="0" step="0.0001" class="form-input bg-transparent border-none text-ios-blue font-bold text-xl px-0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="bg-ios-bg border border-dashed border-ios-border rounded-xl p-3 flex justify-between items-center">
+                            <span class="text-sm font-semibold text-ios-textMuted">Diferença (Delta):</span>
+                            <span id="adjustment-delta-display" class="font-bold text-xl text-white">0.00</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Motivo (Categoria)</label>
+                                <select id="adjustment-reason-category" required class="form-input">
+                                    <option value="">Selecione...</option>
+                                    <option value="Inventário Rotativo">Inventário Rotativo (Contagem)</option>
+                                    <option value="Avaria / Quebra">Avaria / Quebra</option>
+                                    <option value="Validade Expirada">Validade Expirada</option>
+                                    <option value="Diferença de Recebimento">Diferença de Recebimento</option>
+                                    <option value="Consumo Não Registrado">Consumo Não Registrado</option>
+                                    <option value="Erro Sistêmico">Erro Sistêmico / Lançamento</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Detalhes / Justificativa</label>
+                                <input type="text" id="adjustment-reason-details" required class="form-input" placeholder="Explique brevemente...">
+                            </div>
+                        </div>
+                        <div><label class="form-label">Responsável / Autorizador</label><input type="text" id="adjustment-responsible" required class="form-input" placeholder="Seu nome..."></div>
+                        <div class="mt-8 flex justify-end"><button type="submit" class="btn-primary w-full sm:w-auto"><i class="fa-solid fa-check mr-2"></i>Registrar Ajuste</button></div>
+                    </form>
+                </div>
             </div>
 
             <!-- Dashboard Gráfico -->
@@ -501,6 +558,7 @@
                             <div class="flex items-center gap-2">
                                 <label class="text-[9px] text-ios-textMuted uppercase mb-0">Mês</label>
                                 <input type="month" id="dash-abc-month" class="form-input py-1 px-2 text-xs w-32" onchange="renderDashboard()">
+                                <button type="button" id="btn-export-abc" class="btn-secondary text-[10px] py-1 px-2 shrink-0"><i class="fa-solid fa-file-excel mr-1 text-ios-green"></i>Exportar</button>
                             </div>
                         </div>
                         <div class="flex-1 overflow-y-auto pr-1 table-container">
@@ -781,7 +839,7 @@ id('btn-install-pwa')?.addEventListener('click',async()=>{if(dP){dP.prompt();con
 // FIREBASE
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut,signInAnonymously,signInWithCustomToken}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import{getFirestore,collection,doc,addDoc,setDoc,getDoc,getDocs,deleteDoc,onSnapshot,enableIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import{getFirestore,collection,doc,addDoc,setDoc,getDoc,getDocs,deleteDoc,onSnapshot,enableIndexedDbPersistence,query,where}from"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const isCanvas = typeof __firebase_config !== 'undefined';
 const fC = isCanvas ? JSON.parse(__firebase_config) : {
@@ -839,9 +897,9 @@ const DB = {
         const s = await getDoc(getDocRef(c, i));
         return s.exists() ? s.data() : null;
     },
-    getAll: async (c) => {
+    getAll: async (c, constraints = []) => {
         if(!auth.currentUser) throw new Error("Auth missing");
-        const q = await getDocs(getCol(c));
+        const q = await getDocs(constraints.length ? query(getCol(c), ...constraints) : getCol(c));
         return q.docs.map(x => x.data());
     }
 };
@@ -1067,7 +1125,7 @@ window.navTo=t=>{
     document.querySelector(`.nav-item-mobile[data-target="${t}"]`)?.classList.remove('text-ios-textMuted');
     id('screen-'+t)?.classList.remove('hidden');
     
-    if(t==='adjustments') createSearchableSelect(id('adjustment-searchable-container'),localInventory,'Buscar...',p=>{const b=id('adjustment-batch');if(b)b.innerHTML='<option value="">Lote...</option>'+localBatches.filter(x=>x.productId===p.id&&x.quantity>0).map(x=>`<option value="${x.id}">${x.code}</option>`).join('');});
+    if(t==='adjustments') createSearchableSelect(id('adjustment-searchable-container'),localInventory,'Buscar...',p=>{const b=id('adjustment-batch');if(b){b.innerHTML='<option value="">Lote...</option>'+localBatches.filter(x=>x.productId===p.id&&x.quantity>0).map(x=>`<option value="${x.id}">${x.code}</option>`).join('');b.value='';}if(id('adjustment-current-qty'))id('adjustment-current-qty').value='';if(id('adjustment-new-quantity'))id('adjustment-new-quantity').value='';if(id('adjustment-delta-display')){id('adjustment-delta-display').innerText='0.00';id('adjustment-delta-display').className='font-bold text-xl text-white';}});
     if(t==='requisitions'){const r=id('requisition-items-container');if(r){r.innerHTML='';addIngRowReq(r);}}
     if(t==='purchasing') renderPurchasing(); 
     if(t==='barcodes'){renderBarcodesList();createSearchableSelect(id('barcode-searchable-container'),localInventory,'Produto...');}
@@ -1256,7 +1314,9 @@ function getStockInfo(productId) {
 
 async function refreshData(){
     try{
-        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([DB.getAll('inventory'),DB.getAll('batches'),DB.getAll('history'),DB.getAll('recipes'),DB.getAll('productionOrders'),DB.getAll('locations')]);
+        const dateLimit = new Date(); dateLimit.setDate(dateLimit.getDate() - 30);
+        const limitStr = dateLimit.toISOString().split('T')[0];
+        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([DB.getAll('inventory'),DB.getAll('batches'),DB.getAll('history', [where('date', '>=', limitStr)]),DB.getAll('recipes'),DB.getAll('productionOrders'),DB.getAll('locations')]);
         
         let cI=false;
         for(let i of localInventory){
@@ -2640,7 +2700,109 @@ addEvt('requisition-form','submit',async e=>{e.preventDefault();const c=id('requ
 });
 if(ings.some(x=>!x.productId||x.qty<=0))return;const rS=id('requisition-reason').value,rP=id('requisition-responsible').value;showConfirmationModal('Confirmar?',`Baixar ${ings.length} item(ns)?`,async()=>{show(id('loading-overlay'));try{for(let i of ings){const p=await DB.get('inventory',i.productId);if(!p)continue;for(let x of i.plan){const b=await DB.get('batches',x.batchId);if(b){b.quantity-=x.quantity;await DB.update('batches',b);await DB.add('history',{productId:p.id,batchCode:b.code,type:'requisição',quantity:x.quantity,date:new Date().toISOString().split('T')[0],reason:`${rS} (${rP})`});}}p.totalQuantity-=i.qty;await DB.update('inventory',p);}window.showNotif('Baixado!');id('requisition-form').reset();c.innerHTML='';addIngRowReq(c);await refreshData();}catch(e){}finally{hide(id('loading-overlay'));}});});
 
-addEvt('adjustment-form','submit',async e=>{e.preventDefault();const pId=id('adjustment-searchable-container').querySelector('input').dataset.selectedId,bId=id('adjustment-batch').value,nQ=parseFloat(id('adjustment-new-quantity').value),rS=id('adjustment-reason').value;if(!pId||!bId||isNaN(nQ))return;showConfirmationModal('Ajustar?','Sobrescreve saldo.',async()=>{show(id('loading-overlay'));try{const b=await DB.get('batches',bId),p=await DB.get('inventory',pId);if(b&&p){const df=nQ-b.quantity;b.quantity=nQ;p.totalQuantity+=df;await DB.update('batches',b);await DB.update('inventory',p);await DB.add('history',{productId:p.id,batchCode:b.code,type:'ajuste',quantity:df,date:new Date().toISOString().split('T')[0],reason:`Aj: ${rS}`});window.showNotif('Ajustado!');id('adjustment-form').reset();id('adjustment-searchable-container').querySelector('input').value='';id('adjustment-batch').innerHTML='';await refreshData();}}catch(e){}finally{hide(id('loading-overlay'));}});});
+function updateAdjustmentDelta() {
+    const cQ = parseFloat(id('adjustment-current-qty').value) || 0;
+    const nQ = parseFloat(id('adjustment-new-quantity').value);
+    const dDisp = id('adjustment-delta-display');
+    if(isNaN(nQ)) {
+        dDisp.innerText = '0.00';
+        dDisp.className = 'font-bold text-xl text-white';
+        return;
+    }
+    const delta = nQ - cQ;
+    const sign = delta > 0 ? '+' : '';
+    dDisp.innerText = `${sign}${delta.toFixed(2)}`;
+    if(delta > 0) dDisp.className = 'font-bold text-xl text-ios-green';
+    else if(delta < 0) dDisp.className = 'font-bold text-xl text-ios-red';
+    else dDisp.className = 'font-bold text-xl text-white';
+}
+
+addEvt('adjustment-batch', 'change', e => {
+    const bId = e.target.value;
+    const b = localBatches.find(x => x.id === bId);
+    if(b) {
+        id('adjustment-current-qty').value = b.quantity.toFixed(4);
+        updateAdjustmentDelta();
+    } else {
+        id('adjustment-current-qty').value = '';
+        updateAdjustmentDelta();
+    }
+});
+
+addEvt('adjustment-new-quantity', 'input', updateAdjustmentDelta);
+
+addEvt('adjustment-form','submit',async e=>{
+    e.preventDefault();
+    const pId=id('adjustment-searchable-container').querySelector('input').dataset.selectedId;
+    const bId=id('adjustment-batch').value;
+    const nQ=parseFloat(id('adjustment-new-quantity').value);
+    const rC=id('adjustment-reason-category').value;
+    const rD=id('adjustment-reason-details').value;
+    const rP=id('adjustment-responsible').value;
+    
+    if(!pId||!bId||isNaN(nQ)||!rC||!rD||!rP) return;
+    
+    const cQ = parseFloat(id('adjustment-current-qty').value) || 0;
+    const delta = nQ - cQ;
+    if(Math.abs(delta) < 0.0001) return window.showNotif('Nenhuma alteração detectada.', true);
+
+    const confirmationMsg = `Acurácia: Você está <b>${delta>0?'adicionando':'removendo'} ${Math.abs(delta).toFixed(2)}</b> na quantidade do lote.<br>Esta ação ficará registrada no seu nome. Confirma?`;
+    
+    showConfirmationModal('Ajustar Acurácia de Estoque?', confirmationMsg, async()=>{
+        show(id('loading-overlay'));
+        try {
+            const b=await DB.get('batches',bId);
+            const p=await DB.get('inventory',pId);
+            if(b&&p) {
+                b.quantity=nQ;
+                p.totalQuantity+=delta;
+                await DB.update('batches',b);
+                await DB.update('inventory',p);
+                await DB.add('history',{
+                    productId:p.id,
+                    batchCode:b.code,
+                    type:'ajuste',
+                    quantity:Math.abs(delta),
+                    date:new Date().toISOString().split('T')[0],
+                    reason:`Ajuste (${rC}): ${rD} - Autorizado por ${rP}`
+                });
+                window.showNotif('Acurácia Ajustada!');
+                id('adjustment-form').reset();
+                id('adjustment-searchable-container').querySelector('input').value='';
+                id('adjustment-batch').innerHTML='';
+                id('adjustment-current-qty').value='';
+                updateAdjustmentDelta();
+                await refreshData();
+            }
+        } catch(e) { console.error(e); window.showNotif('Erro no ajuste.', true); } 
+        finally { hide(id('loading-overlay')); }
+    });
+});
+
+addEvt('btn-export-abc', 'click', () => {
+    const listEl = id('dash-abc-list');
+    if(!listEl || !listEl.children.length) return window.showNotif('Curva ABC Vazia', true);
+    
+    const rows = [...listEl.querySelectorAll('tr')];
+    const data = rows.map(r => {
+        const cols = r.querySelectorAll('td');
+        if(cols.length < 5) return null;
+        return {
+            'Insumo': cols[1].innerText,
+            'Volume Consumido': parseFloat(cols[2].innerText),
+            '% Acumulada': cols[3].innerText,
+            'Curva': cols[4].innerText
+        };
+    }).filter(Boolean);
+    
+    if(!data.length) return window.showNotif('Sem dados para exportar', true);
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Curva ABC");
+    const m = id('dash-abc-month') ? id('dash-abc-month').value : new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `Curva_ABC_${m}.xlsx`);
+    window.showNotif('Curva ABC exportada!');
+});
 
 // MUDAR LOTE MANUALMENTE (USADO NA REQUISIÇÃO, OP)
 document.addEventListener('click', e => {
@@ -3310,16 +3472,31 @@ function renderPvps() {
     const listEl = id('pvps-table-body');
     if(!listEl) return;
     
-    let cutoff = new Date();
-    let daysSubtracted = 0;
-    while(daysSubtracted < 5) {
-        cutoff.setDate(cutoff.getDate() - 1);
-        if(cutoff.getDay() !== 0 && cutoff.getDay() !== 6) daysSubtracted++;
+    const sInput = id('pvps-date-start');
+    const eInput = id('pvps-date-end');
+    if(!sInput.value || !eInput.value) {
+        let t = new Date();
+        eInput.value = t.toISOString().split('T')[0];
+        let ds = 0;
+        while(ds < 5) { t.setDate(t.getDate() - 1); if(t.getDay() !== 0 && t.getDay() !== 6) ds++; }
+        sInput.value = t.toISOString().split('T')[0];
     }
-    const cutoffStr = cutoff.toISOString().split('T')[0];
+    
+    const sDate = sInput.value;
+    const eDate = eInput.value;
+    const tStart = new Date(sDate + 'T00:00:00');
+    const tEnd = new Date(eDate + 'T00:00:00');
+    
+    let workingDays = 0;
+    let tempDate = new Date(tStart);
+    while(tempDate <= tEnd) {
+        if(tempDate.getDay() !== 0 && tempDate.getDay() !== 6) workingDays++;
+        tempDate.setDate(tempDate.getDate() + 1);
+    }
+    const divisor = Math.max(1, workingDays);
     
     let consByItem = {};
-    localHistory.filter(h => h.date >= cutoffStr && (h.type === 'saída' || h.type === 'requisição')).forEach(h => {
+    localHistory.filter(h => h.date >= sDate && h.date <= eDate && (h.type === 'saída' || h.type === 'requisição')).forEach(h => {
         consByItem[h.productId] = (consByItem[h.productId] || 0) + h.quantity;
     });
 
@@ -3329,7 +3506,7 @@ function renderPvps() {
 
     items.forEach(p => {
         const batches = localBatches.filter(b => b.productId === p.id && b.quantity > 0 && b.expiryDate && b.expiryDate !== '9999-12-31').sort((a,b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-        let dailyAvg = (consByItem[p.id] || 0) / 5;
+        let dailyAvg = (consByItem[p.id] || 0) / divisor;
         if (batches.length === 0) return;
 
         batches.forEach(b => {
@@ -3386,6 +3563,7 @@ function renderPvps() {
 document.querySelectorAll('[data-target="pvps"]').forEach(el => {
     el.addEventListener('click', () => { renderPvps(); });
 });
+if(id('btn-calc-pvps')) addEvt('btn-calc-pvps', 'click', renderPvps);
 
 addEvt('pvps-table-body', 'click', e => {
     const btn = e.target.closest('.btn-simulate-pvps');
@@ -3431,7 +3609,7 @@ addEvt('btn-export-pvps', 'click', () => {
             'Lote': pBatch,
             'Validade': tds[1].innerText,
             'Saldo Lote': Number(tds[2].innerText),
-            'Consumo/Dia (5d)': Number(tds[3].innerText),
+            'Consumo/Dia (Médio Período)': Number(tds[3].innerText),
             'Dias p/ Esgotar': tds[4].innerText,
             'Sobra Estimada': Number(tds[5].innerText)
         });
