@@ -1369,10 +1369,18 @@ async function refreshData(){
     try{
         const dateLimit = new Date(); dateLimit.setDate(dateLimit.getDate() - 30);
         const limitStr = dateLimit.toISOString().split('T')[0];
-        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([DB.getAll('inventory'),DB.getAll('batches'),DB.getAll('history', [where('date', '>=', limitStr)]),DB.getAll('recipes'),DB.getAll('productionOrders'),DB.getAll('locations')]);
+        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([
+            DB.getAll('inventory'),
+            DB.getAll('batches', [where('quantity', '>', 0)]),
+            DB.getAll('history', [where('date', '>=', limitStr)]),
+            DB.getAll('recipes'),
+            DB.getAll('productionOrders', [where('date', '>=', limitStr)]),
+            DB.getAll('locations')
+        ]);
         
-        let cI=false;
+        let anyInventoryChanged=false;
         for(let i of localInventory){
+            let cI=false;
             if(i.barcode&&!i.barcodes){i.barcodes=[i.barcode];delete i.barcode;cI=true;}
             else if(!i.barcodes){i.barcodes=[];cI=true;}
             
@@ -1381,10 +1389,10 @@ async function refreshData(){
             const bs=localBatches.filter(b=>b.productId===i.id).reduce((s,b)=>s+Math.max(0,b.quantity),0);
             if(Math.abs((i.totalQuantity||0)-bs)>0.001){i.totalQuantity=bs;cI=true;}
             
-            if(cI)await DB.update('inventory',i);
+            if(cI){ await DB.update('inventory',i); anyInventoryChanged=true; }
         }
         
-        if(cI)localInventory=await DB.getAll('inventory');
+        if(anyInventoryChanged)localInventory=await DB.getAll('inventory');
         
         populateFilters();
         renderHome();
