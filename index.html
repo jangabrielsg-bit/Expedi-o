@@ -470,14 +470,22 @@
             </div>
 
             <!-- Ajustes -->
-            <div id="screen-adjustments" class="screen-panel hidden">
-                <h1 class="title-lg">Ajuste de Lote</h1>
-                <div class="card max-w-2xl mx-auto">
-                    <div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border mb-6 flex flex-col items-center text-center">
-                        <i class="fa-solid fa-scale-balanced text-3xl text-ios-orange mb-3"></i>
-                        <h2 class="text-white font-bold text-lg mb-1">Painel de Acurácia</h2>
-                        <p class="text-xs text-ios-textMuted max-w-md">Os ajustes impactam diretamente os relatórios financeiros e a contabilidade do estoque. Todo ajuste é registrado com sua assinatura.</p>
+            <div id="screen-adjustments" class="screen-panel hidden max-w-6xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h1 class="title-lg mb-0"><i class="fa-solid fa-scale-balanced text-ios-orange mr-3"></i>Acurácia e Ajustes</h1>
+                    <div class="flex bg-ios-input/50 p-1 rounded-lg mt-4 sm:mt-0">
+                        <button type="button" class="btn-tab-adj active px-4 py-2 rounded-md text-sm font-bold text-white bg-ios-card shadow-sm transition-all" data-tab="tab-adj-form">Realizar Ajuste</button>
+                        <button type="button" class="btn-tab-adj px-4 py-2 rounded-md text-sm font-bold text-ios-textMuted hover:text-white transition-all" data-tab="tab-adj-report">Relatório de Acurácia</button>
                     </div>
+                </div>
+                
+                <div id="tab-adj-form" class="tab-content-adj block">
+                    <div class="card max-w-2xl mx-auto">
+                        <div class="bg-ios-cardHover p-4 rounded-xl border border-ios-border mb-6 flex flex-col items-center text-center">
+                            <i class="fa-solid fa-scale-balanced text-3xl text-ios-orange mb-3"></i>
+                            <h2 class="text-white font-bold text-lg mb-1">Painel de Ajuste de Lote</h2>
+                            <p class="text-xs text-ios-textMuted max-w-md">Os ajustes impactam diretamente os relatórios financeiros e a contabilidade do estoque. Todo ajuste é registrado com sua assinatura.</p>
+                        </div>
                     <form id="adjustment-form" class="space-y-5">
                         <div class="z-50 relative"><label class="form-label">Buscar Produto</label><div id="adjustment-searchable-container"></div></div>
                         <div><label class="form-label">Lote</label><select id="adjustment-batch" required class="form-input"><option value="">Aguardando...</option></select></div>
@@ -516,6 +524,48 @@
                         <div><label class="form-label">Responsável / Autorizador</label><input type="text" id="adjustment-responsible" required class="form-input" placeholder="Seu nome..."></div>
                         <div class="mt-8 flex justify-end"><button type="submit" class="btn-primary w-full sm:w-auto"><i class="fa-solid fa-check mr-2"></i>Registrar Ajuste</button></div>
                     </form>
+                </div>
+                </div>
+
+                <div id="tab-adj-report" class="tab-content-adj hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-blue shadow-lg">
+                            <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Acurácia Média Global</h3>
+                            <p class="text-white text-3xl font-bold font-mono" id="acc-overall-val">100%</p>
+                        </div>
+                        <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-green shadow-lg flex flex-col justify-center">
+                            <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Maior Divergência Positiva</h3>
+                            <p class="text-ios-green text-sm font-bold truncate max-w-[90%] mx-auto" id="acc-max-pos-name">-</p>
+                            <p class="text-lg font-mono text-ios-green mt-1 font-bold" id="acc-max-pos-val">+0.00</p>
+                        </div>
+                        <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-red shadow-lg flex flex-col justify-center">
+                            <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Maior Divergência Negativa</h3>
+                            <p class="text-ios-red text-sm font-bold truncate max-w-[90%] mx-auto" id="acc-max-neg-name">-</p>
+                            <p class="text-lg font-mono text-ios-red mt-1 font-bold" id="acc-max-neg-val">0.00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-0 bg-transparent border-none">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="title-md mb-0 text-white"><i class="fa-solid fa-list-check text-ios-blue mr-2"></i>Acurácia por Insumo (Mês)</h2>
+                            <button type="button" id="btn-export-accuracy" class="btn-secondary text-[10px] py-1.5 px-3"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar Excel</button>
+                        </div>
+                        <div class="table-container max-h-[500px] overflow-y-auto">
+                            <table class="base-table w-full">
+                                <thead class="base-thead sticky top-0 z-10 bg-ios-card">
+                                    <tr>
+                                        <th class="base-th text-left">Insumo</th>
+                                        <th class="base-th text-right">Saldo Atual</th>
+                                        <th class="base-th text-center" title="Quantidade de ajustes realizados">Qtd Ajustes</th>
+                                        <th class="base-th text-right text-ios-green" title="Soma de tudo que foi adicionado">+ Adicionado</th>
+                                        <th class="base-th text-right text-ios-red" title="Soma de tudo que foi subtraído">- Removido</th>
+                                        <th class="base-th text-center">Acurácia %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accuracy-table-body" class="divide-y divide-ios-border/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1125,7 +1175,10 @@ window.navTo=t=>{
     document.querySelector(`.nav-item-mobile[data-target="${t}"]`)?.classList.remove('text-ios-textMuted');
     id('screen-'+t)?.classList.remove('hidden');
     
-    if(t==='adjustments') createSearchableSelect(id('adjustment-searchable-container'),localInventory,'Buscar...',p=>{const b=id('adjustment-batch');if(b){b.innerHTML='<option value="">Lote...</option>'+localBatches.filter(x=>x.productId===p.id&&x.quantity>0).map(x=>`<option value="${x.id}">${x.code}</option>`).join('');b.value='';}if(id('adjustment-current-qty'))id('adjustment-current-qty').value='';if(id('adjustment-new-quantity'))id('adjustment-new-quantity').value='';if(id('adjustment-delta-display')){id('adjustment-delta-display').innerText='0.00';id('adjustment-delta-display').className='font-bold text-xl text-white';}});
+    if(t==='adjustments') {
+        createSearchableSelect(id('adjustment-searchable-container'),localInventory,'Buscar...',p=>{const b=id('adjustment-batch');if(b){b.innerHTML='<option value="">Lote...</option>'+localBatches.filter(x=>x.productId===p.id&&x.quantity>0).map(x=>`<option value="${x.id}">${x.code}</option>`).join('');b.value='';}if(id('adjustment-current-qty'))id('adjustment-current-qty').value='';if(id('adjustment-new-quantity'))id('adjustment-new-quantity').value='';if(id('adjustment-delta-display')){id('adjustment-delta-display').innerText='0.00';id('adjustment-delta-display').className='font-bold text-xl text-white';}});
+        renderAccuracyReport();
+    }
     if(t==='requisitions'){const r=id('requisition-items-container');if(r){r.innerHTML='';addIngRowReq(r);}}
     if(t==='purchasing') renderPurchasing(); 
     if(t==='barcodes'){renderBarcodesList();createSearchableSelect(id('barcode-searchable-container'),localInventory,'Produto...');}
@@ -2763,6 +2816,7 @@ addEvt('adjustment-form','submit',async e=>{
                     batchCode:b.code,
                     type:'ajuste',
                     quantity:Math.abs(delta),
+                    delta: delta,
                     date:new Date().toISOString().split('T')[0],
                     reason:`Ajuste (${rC}): ${rD} - Autorizado por ${rP}`
                 });
@@ -2778,6 +2832,121 @@ addEvt('adjustment-form','submit',async e=>{
         finally { hide(id('loading-overlay')); }
     });
 });
+
+document.querySelectorAll('.btn-tab-adj').forEach(btn => {
+    btn.addEventListener('click', e => {
+        document.querySelectorAll('.btn-tab-adj').forEach(b => {
+            b.classList.remove('active', 'text-white', 'bg-ios-card', 'shadow-sm');
+            b.classList.add('text-ios-textMuted', 'hover:text-white');
+        });
+        const tg = e.currentTarget;
+        tg.classList.add('active', 'text-white', 'bg-ios-card', 'shadow-sm');
+        tg.classList.remove('text-ios-textMuted', 'hover:text-white');
+        
+        document.querySelectorAll('.tab-content-adj').forEach(c => c.classList.add('hidden'));
+        id(tg.dataset.tab).classList.remove('hidden');
+        
+        if(tg.dataset.tab === 'tab-adj-report') renderAccuracyReport();
+    });
+});
+
+function renderAccuracyReport() {
+    const items = localInventory.filter(i => i.type !== 'produto_final');
+    let totalStockVolume = 0;
+    let totalErrorVolume = 0;
+    let maxPos = { name: '-', val: 0 };
+    let maxNeg = { name: '-', val: 0 };
+    let rows = [];
+    
+    items.forEach(p => {
+        const adjs = localHistory.filter(h => h.productId === p.id && h.type === 'ajuste');
+        let errorSum = 0;
+        let posSum = 0;
+        let negSum = 0;
+        
+        adjs.forEach(h => {
+            let d = h.delta !== undefined ? h.delta : h.quantity; 
+            if(h.delta === undefined && h.reason && h.reason.toLowerCase().includes('adicionando')) d = h.quantity;
+            else if(h.delta === undefined && h.reason && h.reason.toLowerCase().includes('removendo')) d = -h.quantity;
+            
+            errorSum += Math.abs(d);
+            if(d > 0) posSum += d;
+            if(d < 0) negSum += d;
+        });
+        
+        let stock = p.totalQuantity || 0;
+        totalStockVolume += stock;
+        totalErrorVolume += errorSum;
+        
+        let acc = 100;
+        if(stock + errorSum > 0) {
+            acc = Math.max(0, 100 - (errorSum / (stock + errorSum) * 100));
+        }
+        
+        if(posSum > maxPos.val) maxPos = { name: p.name, val: posSum };
+        if(negSum < maxNeg.val) maxNeg = { name: p.name, val: negSum };
+        
+        rows.push({
+            name: p.name, code: p.code || '', stock: stock, error: errorSum, posSum: posSum, negSum: negSum, acc: acc, adjCount: adjs.length
+        });
+    });
+    
+    let overallAcc = 100;
+    if(totalStockVolume + totalErrorVolume > 0) {
+        overallAcc = Math.max(0, 100 - (totalErrorVolume / (totalStockVolume + totalErrorVolume) * 100));
+    }
+    
+    if(id('acc-overall-val')) id('acc-overall-val').innerText = overallAcc.toFixed(1) + '%';
+    if(id('acc-max-pos-name')) id('acc-max-pos-name').innerText = maxPos.name;
+    if(id('acc-max-pos-val')) id('acc-max-pos-val').innerText = '+' + maxPos.val.toFixed(2);
+    if(id('acc-max-neg-name')) id('acc-max-neg-name').innerText = maxNeg.name;
+    if(id('acc-max-neg-val')) id('acc-max-neg-val').innerText = maxNeg.val.toFixed(2);
+    
+    rows.sort((a,b) => a.acc - b.acc); 
+    
+    const tb = id('accuracy-table-body');
+    if(tb) {
+        tb.innerHTML = rows.map(r => `
+            <tr class="hover:bg-ios-cardHover transition-colors border-b border-ios-border/30">
+                <td class="base-td text-white">${r.name} <div class="text-[10px] text-ios-textMuted mt-1">${r.code}</div></td>
+                <td class="base-td text-right font-mono">${r.stock.toFixed(2)}</td>
+                <td class="base-td text-center text-ios-blue">${r.adjCount}</td>
+                <td class="base-td text-right font-mono ${r.posSum > 0 ? 'text-ios-green font-bold' : 'text-ios-textMuted'}">+${r.posSum.toFixed(2)}</td>
+                <td class="base-td text-right font-mono ${r.negSum < 0 ? 'text-ios-red font-bold' : 'text-ios-textMuted'}">${r.negSum.toFixed(2)}</td>
+                <td class="base-td text-center">
+                    <span class="badge ${r.acc >= 95 ? 'bg-ios-green/20 text-ios-green' : (r.acc >= 80 ? 'bg-ios-orange/20 text-ios-orange' : 'bg-ios-red/20 text-ios-red')} font-bold text-[11px] min-w-[50px]">
+                        ${r.acc.toFixed(1)}%
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    }
+}
+
+if(id('btn-export-accuracy')) {
+    addEvt('btn-export-accuracy', 'click', () => {
+        const tb = id('accuracy-table-body');
+        if(!tb || !tb.children.length) return window.showNotif('Tabela vazia');
+        const data = [];
+        tb.querySelectorAll('tr').forEach(tr => {
+            const tds = tr.querySelectorAll('td');
+            if(tds.length < 6) return;
+            data.push({
+                'Insumo': tds[0].innerText.split('\\n')[0].trim(),
+                'Saldo Atual': Number(tds[1].innerText),
+                'Qtd Ajustes': Number(tds[2].innerText),
+                'Divergência Positiva (+)': Number(tds[3].innerText.replace('+', '')),
+                'Divergência Negativa (-)': Number(tds[4].innerText),
+                'Acurácia (%)': tds[5].innerText.replace('%', '').trim()
+            });
+        });
+        if(!data.length) return;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Acurácia");
+        XLSX.writeFile(wb, \`Relatorio_Acuracia_${new Date().toISOString().split('T')[0]}.xlsx\`);
+        window.showNotif('Exportado!');
+    });
+}
 
 addEvt('btn-export-abc', 'click', () => {
     const listEl = id('dash-abc-list');
