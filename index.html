@@ -191,12 +191,16 @@
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home" data-id="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard" data-id="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="projection" data-id="projection"><i class="fa-solid fa-chart-line w-6 text-center text-lg" style="color:#30d158;"></i><span class="ml-3 hidden lg:block font-medium">Projeção PCP</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta" data-id="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory" data-id="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes" data-id="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations" data-id="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production" data-id="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability" data-id="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="pvps" data-id="pvps"><i class="fa-solid fa-clock w-6 text-center text-lg" style="color:#ff375f;"></i><span class="ml-3 hidden lg:block font-medium">PVPS & Vencimentos</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="prepesagem" data-id="prepesagem"><i class="fa-solid fa-scale-unbalanced w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Pré-Pesagem</span></a>
+                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing" data-id="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings" data-id="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
             </nav>
@@ -211,9 +215,12 @@
             <div id="screen-home" class="screen-panel w-full max-w-6xl mx-auto">
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
                 <div id="home-menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
+                    <button type="button" class="menu-window nav-btn" data-target="consulta" data-id="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="entry" data-id="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="inventory" data-id="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="locations" data-id="locations" data-allow="admin,gerente,operador"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="barcodes" data-id="barcodes" data-allow="admin,gerente,operador"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
+                    <button type="button" class="menu-window nav-btn" data-target="purchasing" data-id="purchasing" data-allow="admin,gerente,compras"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="recipes" data-id="recipes" data-allow="admin,gerente"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="production" data-id="production" data-allow="admin,gerente"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="traceability" data-id="traceability" data-allow="admin,gerente"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Extratos / Baixas</span></button>
@@ -223,11 +230,33 @@
                     <button type="button" class="menu-window nav-btn" data-target="dashboard" data-id="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="projection" data-id="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="pvps" data-id="pvps" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-clock-rotate-left" style="color:#ff375f;"></i><span>Painel PVPS</span></button>
-                    </div>
+                    <button type="button" class="menu-window nav-btn" data-target="prepesagem" data-id="prepesagem" data-allow="admin,gerente,operador"><i class="fa-solid fa-scale-unbalanced" style="color:#ff9f0a;"></i><span>Pré-Pesagem</span></button>
+                </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
                     <div id="home-incoming-orders" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
                 </div>
+            </div>
+
+            <!-- Consulta Rápida -->
+            <div id="screen-consulta" class="screen-panel hidden max-w-4xl mx-auto">
+                <h1 class="title-lg">Consulta Rápida</h1>
+                <div class="card mb-6"><div class="flex gap-2 w-full"><input type="text" id="consulta-input" class="form-input flex-1 font-mono text-lg" placeholder="Bipar código..." autocomplete="off"><button type="button" id="btn-consulta-scan" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div><button type="button" id="btn-consulta-search" class="btn-secondary w-full px-8 mt-2">Consultar</button></div>
+                <div id="consulta-results" class="space-y-6"><div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div></div>
+            </div>
+
+            <!-- Cod Barras -->
+            <div id="screen-barcodes" class="screen-panel hidden max-w-4xl mx-auto">
+                <h1 class="title-lg">Cód. Barras</h1>
+                <div class="card mb-8"><form id="barcode-form" class="space-y-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative"><div class="z-50"><label class="form-label">Produto</label><div id="barcode-searchable-container" class="searchable-container"></div></div><div class="z-40"><label class="form-label">Cód Barras</label><div class="flex gap-2"><input type="text" id="barcode-input" required class="form-input font-mono"><button type="button" id="btn-scan-barcode" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div></div></div><div class="flex justify-end pt-4"><button type="submit" class="btn-primary w-full md:w-auto">Vincular Código</button></div></form></div>
+                <div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Cód</th><th class="base-th">EANs</th><th class="base-th text-center col-acoes">Gestão</th></tr></thead><tbody id="barcodes-table-body"></tbody></table></div>
+            </div>
+
+            <!-- Compras -->
+            <div id="screen-purchasing" class="screen-panel hidden">
+                <h1 class="title-lg mb-0 text-ios-blue"><i class="fa-solid fa-cart-shopping mr-3"></i>Compras</h1>
+                <div class="mb-6 mt-4"><input type="text" id="search-purchasing" class="form-input w-full md:w-1/2" placeholder="Buscar fornecedor ou item..."></div>
+                <div id="purchasing-container" class="space-y-6"></div>
             </div>
 
             <!-- Endereçamento -->
@@ -334,6 +363,90 @@
                     <p class="text-sm text-ios-textMuted uppercase font-bold mb-2">Sugestões de OPs (Receitas)</p>
                     <div id="pvps-sim-receitas-list" class="space-y-3 max-h-[35vh] overflow-y-auto"></div>
                     <div class="mt-6 flex justify-end"><button type="button" class="btn-secondary w-full sm:w-auto close-modal" data-target="pvps-simulation-modal">Fechar</button></div>
+                </div>
+            </div>
+
+            <!-- Pré-Pesagem -->
+            <div id="screen-prepesagem" class="screen-panel hidden max-w-6xl mx-auto">
+                <div class="sticky-header-panel !bg-gradient-to-r !from-ios-card/95 !to-ios-bg/95 pt-4">
+                    <div class="relative overflow-hidden p-2 sm:p-4 mb-2">
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                            <div>
+                                <h1 class="title-lg mb-1 leading-tight text-white"><i class="fa-solid fa-scale-unbalanced text-ios-orange mr-3"></i>Dashboard Pré-Pesagem</h1>
+                                <p class="text-sm font-normal text-ios-textMuted font-sans max-w-xl">Produtividade de frações e saquinhos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-0 border-l-4 border-l-ios-blue p-4">
+                        <div class="flex flex-col sm:flex-row gap-4 items-end">
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>OP Efetivada Inicial</label>
+                                <input type="date" id="prepeso-date-start" class="form-input py-2">
+                            </div>
+                            <div class="w-full sm:w-[40%]">
+                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>OP Efetivada Final</label>
+                                <input type="date" id="prepeso-date-end" class="form-input py-2">
+                            </div>
+                            <button type="button" id="btn-calc-prepeso" class="btn-primary shrink-0 w-full sm:w-[20%] py-2"><i class="fa-solid fa-bolt mr-2"></i>Processar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-blue shadow-lg">
+                        <div class="w-10 h-10 bg-ios-blue/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-cubes text-ios-blue"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Volume Total Pesado</h3>
+                        <p class="text-white text-3xl font-bold font-mono" id="prepeso-vol-total">0 <span class="text-[10px] font-sans text-ios-textMuted">UN/KG/L</span></p>
+                    </div>
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-green shadow-lg">
+                        <div class="w-10 h-10 bg-ios-green/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-weight-scale text-ios-green"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Item Mais Pesado (Volume)</h3>
+                        <p class="text-ios-green text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vol-name">-</p>
+                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vol-val">0 UN/KG/L</p>
+                    </div>
+                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-orange shadow-lg">
+                        <div class="w-10 h-10 bg-ios-orange/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-hashtag text-ios-orange"></i></div>
+                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Total de Frações Realizadas</h3>
+                        <p class="text-ios-orange text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vezes-name">-</p>
+                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vezes-val">0 Frações/Saquinhos</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
+                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-blue mr-2"></i>Volumes (KG/L) por Categoria</h2>
+                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
+                             <canvas id="chart-prepesas-vol" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
+                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-orange mr-2"></i>Total de Frações por Categoria</h2>
+                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
+                             <canvas id="chart-prepesas-frac" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 mb-8">
+                    <div class="card col-span-1 border border-ios-border flex flex-col">
+                        <div class="flex justify-between items-center mb-4 border-b border-ios-border/50 pb-3">
+                            <h2 class="title-md text-sm mb-0"><i class="fa-solid fa-list-check text-ios-green mr-2"></i>Memória de Pesagens</h2>
+                            <button type="button" id="btn-export-prepeso" class="btn-secondary text-[10px] py-1.5 px-3"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar (.xlsx)</button>
+                        </div>
+                        <div class="table-container max-h-[380px] overflow-y-auto">
+                            <table class="base-table w-full">
+                                <thead class="base-thead sticky top-0 z-10 shadow-sm border-b border-ios-border bg-ios-card">
+                                    <tr>
+                                        <th class="base-th text-left p-3">Insumo Utilizado</th>
+                                        <th class="base-th text-center p-3">Linha OP</th>
+                                        <th class="base-th text-right p-3">Volume Movimentado</th>
+                                        <th class="base-th text-right text-ios-orange p-3" title="Quantas vezes o multiplicador foi requisitado (saquinhos avulsos)">Vezes Pesado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prepeso-table-body" class="divide-y divide-ios-border/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -677,7 +790,7 @@
             </div>
         </main>
         
-        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/4 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative" data-target="production"><i class="fa-solid fa-hammer text-xl mb-1"></i><span class="text-[10px] font-bold">Produção</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
+        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/4 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center" data-target="consulta"><i class="fa-solid fa-magnifying-glass text-xl mb-1"></i><span class="text-[10px] font-bold">Consulta</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative" data-target="production"><i class="fa-solid fa-hammer text-xl mb-1"></i><span class="text-[10px] font-bold">Produção</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
     </div>
 
     <!-- Modais Flutuantes -->
@@ -695,7 +808,7 @@
 
     <div id="modal-add-loc-batch" class="modal z-[6000]"><div class="modal-content max-w-md"><h2 class="title-md mb-4 text-ios-blue">Alocar Lote</h2><form id="add-loc-batch-form" class="space-y-4"><input type="hidden" id="add-loc-target-code"><div class="z-50 relative"><label class="form-label">Produto</label><div id="add-loc-searchable-container"></div></div><div><label class="form-label">Lote</label><select id="add-loc-batch-select" required class="form-input"><option value="">Aguardando...</option></select></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="modal-add-loc-batch">Cancelar</button><button type="submit" class="btn-primary">Confirmar</button></div></form></div></div>
 
-    <div id="item-details-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 gap-3"><div class="flex-1 w-full"><h2 class="title-md flex items-center mb-1 text-2xl tracking-tight break-words pr-8"><span id="details-product-name"></span></h2><span id="details-product-type-badge" class="badge bg-ios-cardHover text-ios-textMuted border border-ios-border"></span></div><div class="flex items-center gap-2"><button type="button" id="btn-edit-item" class="text-ios-blue bg-ios-blue/10 p-3 rounded-full"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-item" class="text-ios-red bg-ios-red/10 p-3 rounded-full"><i class="fa-solid fa-trash"></i></button><button type="button" class="text-white text-3xl ml-2 close-modal" data-target="item-details-modal">&times;</button></div></div><div id="item-details-view" class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm bg-ios-bg p-5 rounded-2xl mb-6 shadow-inner border border-ios-border"><div class="col-span-1"><span class="text-ios-textMuted block mb-1">Cód. Interno</span><span id="details-product-code" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Fornecedor</span><span id="details-supplier" class="text-white font-medium truncate"></span></div><div class="col-span-2 md:col-span-1"><span class="text-ios-textMuted block mb-1">Estoque Mín.</span><span id="details-min-stock" class="text-ios-orange font-medium"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Prazo Entrega</span><span id="details-lead-time" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-4"><span class="text-ios-textMuted block mb-1">Previsão de Entrega</span><span id="details-expected-delivery" class="text-white font-medium"></span></div><div class="col-span-2 md:col-span-6 bg-ios-cardHover p-3 rounded-xl mt-1"><span class="text-ios-textMuted block mb-1 uppercase font-bold text-[10px]">Saldo Físico Total</span><span id="details-total-quantity" class="text-ios-green font-bold text-3xl"></span></div></div><div id="item-details-edit" class="hidden mb-6 bg-ios-bg p-5 rounded-2xl border border-ios-border shadow-inner"><form id="edit-item-form" class="grid grid-cols-1 md:grid-cols-6 gap-5"><input type="hidden" id="edit-item-id"><div class="md:col-span-6"><label class="form-label">Classificação</label><select id="edit-product-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div class="md:col-span-6"><label class="form-label">Nome</label><input type="text" id="edit-product-name" required class="form-input"></div><div class="md:col-span-3"><label class="form-label">Cód Interno</label><input type="text" id="edit-product-code" class="form-input"></div><div class="md:col-span-3"><label class="form-label">Fornecedor</label><input type="text" id="edit-supplier" class="form-input"></div><div class="md:col-span-2"><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="edit-min-stock" class="form-input text-ios-orange font-bold"></div><div class="md:col-span-6 flex justify-end gap-3 mt-2"><button type="button" id="btn-cancel-edit" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Salvar Edição</button></div></form></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Lotes Físicos</h3><div class="table-container mb-8 max-h-96 overflow-y-auto"><table class="base-table min-w-[400px]"><thead class="base-thead"><tr><th>Lote</th><th>Status</th><th>Local</th><th>Validade</th><th>Volume</th><th class="text-center col-acoes">Ações</th></tr></thead><tbody id="details-batches-table"></tbody></table></div></div><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3 flex justify-between items-center">Extrato<button type="button" id="btn-clear-hist-filters" class="text-xs text-ios-blue hover:text-blue-300 font-normal underline hidden">Limpar Filtros</button></h3><div class="flex gap-2 mb-3 bg-ios-bg p-3 rounded-xl border border-ios-border shadow-inner items-center"><input type="date" id="hist-filter-start" class="form-input py-1 px-2 text-xs"><span class="text-ios-textMuted text-xs">até</span><input type="date" id="hist-filter-end" class="form-input py-1 px-2 text-xs"><select id="hist-filter-type" class="form-input py-1 px-2 text-xs ml-auto"><option value="">Todas</option><option value="entrada">Entradas</option><option value="saída">Saídas (OP)</option><option value="requisição">Baixa Avulsa</option><option value="ajuste">Ajustes</option></select></div><div class="table-container max-h-72 overflow-y-auto bg-ios-bg p-2" id="details-history-container"></div></div></div></div></div>
+    <div id="item-details-modal" class="modal z-[6000]"><div class="modal-content max-w-5xl h-[95vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 gap-3"><div class="flex-1 w-full"><h2 class="title-md flex items-center mb-1 text-2xl tracking-tight break-words pr-8"><span id="details-product-name"></span></h2><span id="details-product-type-badge" class="badge bg-ios-cardHover text-ios-textMuted border border-ios-border"></span></div><div class="flex items-center gap-2"><button type="button" id="btn-edit-item" class="text-ios-blue bg-ios-blue/10 p-3 rounded-full"><i class="fa-solid fa-pen"></i></button><button type="button" id="btn-delete-item" class="text-ios-red bg-ios-red/10 p-3 rounded-full"><i class="fa-solid fa-trash"></i></button><button type="button" class="text-white text-3xl ml-2 close-modal" data-target="item-details-modal">&times;</button></div></div><div id="item-details-view" class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm bg-ios-bg p-5 rounded-2xl mb-6 shadow-inner border border-ios-border"><div class="col-span-1"><span class="text-ios-textMuted block mb-1">Cód. Interno</span><span id="details-product-code" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Fornecedor</span><span id="details-supplier" class="text-white font-medium truncate"></span></div><div class="col-span-2 md:col-span-1"><span class="text-ios-textMuted block mb-1">Estoque Mín.</span><span id="details-min-stock" class="text-ios-orange font-medium"></span></div><div class="col-span-2"><span class="text-ios-textMuted block mb-1">EANs</span><span id="details-product-barcode" class="text-white font-mono break-all text-xs"></span></div><div class="col-span-1 md:col-span-2"><span class="text-ios-textMuted block mb-1">Prazo Entrega</span><span id="details-lead-time" class="text-white font-medium"></span></div><div class="col-span-1 md:col-span-4"><span class="text-ios-textMuted block mb-1">Previsão de Entrega</span><span id="details-expected-delivery" class="text-white font-medium"></span></div><div class="col-span-2 md:col-span-6 bg-ios-cardHover p-3 rounded-xl mt-1"><span class="text-ios-textMuted block mb-1 uppercase font-bold text-[10px]">Saldo Físico Total</span><span id="details-total-quantity" class="text-ios-green font-bold text-3xl"></span></div></div><div id="item-details-edit" class="hidden mb-6 bg-ios-bg p-5 rounded-2xl border border-ios-border shadow-inner"><form id="edit-item-form" class="grid grid-cols-1 md:grid-cols-6 gap-5"><input type="hidden" id="edit-item-id"><div class="md:col-span-6"><label class="form-label">Classificação</label><select id="edit-product-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div class="md:col-span-6"><label class="form-label">Nome</label><input type="text" id="edit-product-name" required class="form-input"></div><div class="md:col-span-3"><label class="form-label">Cód Interno</label><input type="text" id="edit-product-code" class="form-input"></div><div class="md:col-span-3"><label class="form-label">Fornecedor</label><input type="text" id="edit-supplier" class="form-input"></div><div class="md:col-span-2"><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="edit-min-stock" class="form-input text-ios-orange font-bold"></div><div class="md:col-span-4"><label class="form-label">EANs (Separe por vírgula)</label><input type="text" id="edit-product-barcode" class="form-input font-mono"></div><div class="md:col-span-6 flex justify-end gap-3 mt-2"><button type="button" id="btn-cancel-edit" class="btn-secondary">Cancelar</button><button type="submit" class="btn-primary">Salvar Edição</button></div></form></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3">Lotes Físicos</h3><div class="table-container mb-8 max-h-96 overflow-y-auto"><table class="base-table min-w-[400px]"><thead class="base-thead"><tr><th>Lote</th><th>Status</th><th>Local</th><th>Validade</th><th>Volume</th><th class="text-center col-acoes">Ações</th></tr></thead><tbody id="details-batches-table"></tbody></table></div></div><div><h3 class="text-sm font-semibold text-ios-textMuted uppercase mb-3 flex justify-between items-center">Extrato<button type="button" id="btn-clear-hist-filters" class="text-xs text-ios-blue hover:text-blue-300 font-normal underline hidden">Limpar Filtros</button></h3><div class="flex gap-2 mb-3 bg-ios-bg p-3 rounded-xl border border-ios-border shadow-inner items-center"><input type="date" id="hist-filter-start" class="form-input py-1 px-2 text-xs"><span class="text-ios-textMuted text-xs">até</span><input type="date" id="hist-filter-end" class="form-input py-1 px-2 text-xs"><select id="hist-filter-type" class="form-input py-1 px-2 text-xs ml-auto"><option value="">Todas</option><option value="entrada">Entradas</option><option value="saída">Saídas (OP)</option><option value="requisição">Baixa Avulsa</option><option value="ajuste">Ajustes</option></select></div><div class="table-container max-h-72 overflow-y-auto bg-ios-bg p-2" id="details-history-container"></div></div></div></div></div>
 
     <div id="edit-batch-modal" class="modal z-[7000]"><div class="modal-content max-w-sm"><h2 class="title-md mb-4">Editar Lote</h2><form id="edit-batch-form" class="space-y-4"><input type="hidden" id="edit-batch-id"><input type="hidden" id="edit-batch-product-id"><div><label class="form-label">Código Lote</label><input type="text" id="edit-batch-code" required class="form-input"></div><div><label class="form-label">Quantidade</label><input type="number" step="0.001" id="edit-batch-qty" required class="form-input text-ios-blue font-bold"></div><div><label class="form-label">Validade</label><input type="date" id="edit-batch-expiry" class="form-input"></div><div class="flex justify-end gap-2 mt-4"><button type="button" class="btn-secondary close-modal" data-target="edit-batch-modal">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div></form></div></div>
 
@@ -705,7 +818,7 @@
 
     <div id="confirm-action-modal" class="modal z-[9999]"><div class="modal-content max-w-md text-center flex flex-col items-center p-6"><div class="w-16 h-16 rounded-full bg-ios-cardHover border border-ios-border flex items-center justify-center mb-5 shrink-0"><i class="fa-solid fa-circle-question text-3xl text-ios-blue"></i></div><h3 id="confirm-title" class="title-md mb-2 text-xl"></h3><p id="confirm-message" class="text-ios-textMuted text-sm mb-8 leading-relaxed"></p><div class="flex gap-3 w-full justify-center"><button type="button" id="cancel-action-btn" class="btn-secondary w-1/2">Cancelar</button><button type="button" id="confirm-action-btn" class="btn-primary w-1/2">Sim, Continuar</button></div></div></div>
 
-    <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
+    <div id="quick-register-modal" class="modal z-[8000]"><div class="modal-content max-w-lg"><h2 class="title-md mb-2 text-ios-orange"><i class="fa-solid fa-box-open mr-2"></i>Cadastrar Produto</h2><form id="global-quick-register-form" class="space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="sm:col-span-2"><label class="form-label">Nome / Descrição</label><input type="text" id="g-quick-reg-name" required class="form-input"></div><div><label class="form-label">Cód. Interno</label><input type="text" id="g-quick-reg-internal-code" class="form-input" placeholder="Opcional"></div><div><label class="form-label">Cód. Barras (EAN)</label><div class="flex gap-2"><input type="text" id="g-quick-reg-barcode" class="form-input" placeholder="Opcional"><button type="button" id="btn-scan-quick-reg-barcode" class="bg-ios-blue text-white p-3 rounded-xl shrink-0"><i class="fa-solid fa-camera"></i></button></div></div><div><label class="form-label">Classificação</label><select id="g-quick-reg-type" required class="form-input"><option value="insumo">Insumo</option><option value="semi_acabado">Semi-acabado</option></select></div><div><label class="form-label">Fornecedor</label><input type="text" id="g-quick-reg-supplier" class="form-input" list="supplier-datalist" placeholder="Nome do Fornecedor" autocomplete="off"><datalist id="supplier-datalist"></datalist></div><div><label class="form-label">Prazo Entrega</label><input type="number" id="g-quick-reg-lead" min="0" class="form-input" value="0"></div><div><label class="form-label">Estoque Mín. (Teórico)</label><input type="number" step="0.01" id="g-quick-reg-min" min="0" class="form-input" value="0"></div></div><div class="flex justify-end gap-2 pt-4 border-t border-ios-border"><button type="button" class="btn-secondary close-modal" data-target="quick-register-modal">Cancelar</button><button type="submit" class="btn-primary"><i class="fa-solid fa-save mr-2"></i>Salvar e Usar</button></div></form></div></div>
 
 <datalist id="locations-datalist"></datalist>
 
@@ -1000,6 +1113,7 @@ function applyRoleRestrictions() {
         let shouldShow = false;
         
         // Espelhando o controle de quem vê cada tela no menu lateral/inferior
+        if(item.dataset.target === 'consulta') shouldShow = true;
         if(item.dataset.target === 'inventory' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'dashboard' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'projection' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
@@ -1036,37 +1150,6 @@ function setupRealtimeListeners() {
         }
         updateSidebarBadges();
         isInitialLoad = false;
-
-    const dateLimit = new Date(); dateLimit.setDate(dateLimit.getDate() - 30);
-    const limitStr = dateLimit.toISOString().split('T')[0];
-
-    onSnapshot(getCol('inventory'), snap => {
-        localInventory = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        populateFilters();
-        renderInv();
-        renderHome();
-    });
-    
-    onSnapshot(getCol('batches'), snap => {
-        localBatches = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        renderInv();
-    });
-    
-    onSnapshot(getCol('recipes'), snap => {
-        localRecipes = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        renderRecipes();
-    });
-    
-    onSnapshot(getCol('locations'), snap => {
-        localLocations = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        const activeNav = document.querySelector('.nav-item.bg-ios-card');
-        if(activeNav && activeNav.dataset.target === 'locations') renderAllLocations();
-    });
-    
-    onSnapshot(query(getCol('history'), where('date', '>=', limitStr)), snap => {
-        localHistory = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    });
-
     }, (error) => {
         console.error("Realtime listener error:", error);
     });
@@ -1081,7 +1164,7 @@ let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','entry','inventory','recipes','production','requisitions','adjustments','locations','settings','traceability','users','dashboard','projection','pvps'];
+const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard','projection','pvps','prepesagem'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -1097,11 +1180,14 @@ window.navTo=t=>{
         renderAccuracyReport();
     }
     if(t==='requisitions'){const r=id('requisition-items-container');if(r){r.innerHTML='';addIngRowReq(r);}}
+    if(t==='purchasing') renderPurchasing(); 
+    if(t==='barcodes'){renderBarcodesList();createSearchableSelect(id('barcode-searchable-container'),localInventory,'Produto...');}
     if(t==='locations'){renderAllLocations();id('location-search-input').value='';hide(id('location-details-panel'));hide(id('location-create-panel'));show(id('location-empty-state'));}
     if(t==='traceability') renderTraceability();
     if(t==='production') renderPO();
     if(t==='dashboard') renderDashboard();
     if(t==='projection') initProjection();
+    if(t==='consulta'){id('consulta-input').value='';id('consulta-results').innerHTML=`<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>`;setTimeout(()=>id('consulta-input').focus(),100);}
     if(t==='entry'){createSearchableSelect(id('entry-searchable-container'),localInventory,'Pesquisar...',p=>{document.querySelector('#entry-form input[name="quantity"]').focus();});renderBulkEntry();}
 };
 document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.addEventListener('click',e=>{
@@ -1136,7 +1222,7 @@ window.openQuickRegisterModal=(t,cb)=>{
     if(f)f.reset();
     const iE=/^\d{8,14}$/.test(t);
     if(id('g-quick-reg-internal-code'))id('g-quick-reg-internal-code').value=iE?'':t;
-
+    if(id('g-quick-reg-barcode'))id('g-quick-reg-barcode').value=iE?t:'';
     if(id('g-quick-reg-name'))id('g-quick-reg-name').value='';
     const dl=id('supplier-datalist');
     if(dl){const sups=[...new Set(localInventory.map(i=>i.supplier))].filter(Boolean).sort();dl.innerHTML=sups.map(s=>`<option value="${s}">`).join('');}
@@ -1144,7 +1230,11 @@ window.openQuickRegisterModal=(t,cb)=>{
     setTimeout(()=>id('g-quick-reg-name')?.focus(),100);
 };
 
-
+addEvt('btn-scan-quick-reg-barcode','click',()=>openScanner(c=>{
+    const i=id('g-quick-reg-barcode');
+    if(i)i.value=c;
+    window.showNotif('Código EAN lido!');
+}));
 
 addEvt('g-quick-reg-supplier','change',e=>{
     const m=localInventory.find(i=>i.supplier===e.target.value);
@@ -1154,7 +1244,7 @@ addEvt('g-quick-reg-supplier','change',e=>{
 addEvt('global-quick-register-form','submit',async e=>{
     e.preventDefault();
     const intC=id('g-quick-reg-internal-code').value.trim();
-    const barC="";
+    const barC=id('g-quick-reg-barcode').value.trim();
     const n=id('g-quick-reg-name').value.trim();
     const t=id('g-quick-reg-type').value;
     const s=id('g-quick-reg-supplier').value.trim()||'Diversos';
@@ -1276,15 +1366,33 @@ function getStockInfo(productId) {
 }
 
 async function refreshData(){
-    try {
+    try{
+        const dateLimit = new Date(); dateLimit.setDate(dateLimit.getDate() - 30);
+        const limitStr = dateLimit.toISOString().split('T')[0];
+        [localInventory,localBatches,localHistory,localRecipes,localProductionOrders,localLocations]=await Promise.all([
+            DB.getAll('inventory'),
+            DB.getAll('batches', [where('quantity', '>', 0)]),
+            DB.getAll('history', [where('date', '>=', limitStr)]),
+            DB.getAll('recipes'),
+            DB.getAll('productionOrders', [where('date', '>=', limitStr)]),
+            DB.getAll('locations')
+        ]);
+        
         let anyInventoryChanged=false;
         for(let i of localInventory){
             let cI=false;
+            if(i.barcode&&!i.barcodes){i.barcodes=[i.barcode];delete i.barcode;cI=true;}
+            else if(!i.barcodes){i.barcodes=[];cI=true;}
+            
             if(!i.type||i.type==='acabado'){i.type='insumo';cI=true;}
+            
             const bs=localBatches.filter(b=>b.productId===i.id).reduce((s,b)=>s+Math.max(0,b.quantity),0);
             if(Math.abs((i.totalQuantity||0)-bs)>0.001){i.totalQuantity=bs;cI=true;}
+            
             if(cI){ await DB.update('inventory',i); anyInventoryChanged=true; }
         }
+        
+        if(anyInventoryChanged)localInventory=await DB.getAll('inventory');
         
         populateFilters();
         renderHome();
@@ -1296,12 +1404,15 @@ async function refreshData(){
         const aN=document.querySelector('.nav-item.bg-ios-card')||document.querySelector('.nav-item-mobile.text-ios-blue');
         if(aN){
             const t=aN.dataset.target;
+            if(t==='barcodes')renderBarcodesList();
+            if(t==='purchasing')renderPurchasing();
             if(t==='locations')renderAllLocations();
             if(t==='traceability')renderTraceability();
             if(t==='projection')renderProjection();
         }
         if(currentHistoryProductId)renderItemDetailsHistory();
-    } catch(e) {
+    }catch(e){
+        window.showNotif('Erro.',true);
         console.error(e);
     }
 }
@@ -1533,7 +1644,7 @@ function openDetails(pId){
     id('edit-product-type').value=p.type||'insumo';
     id('edit-product-code').value=p.code||'';
     id('edit-supplier').value=p.supplier||'';
-    
+    id('edit-product-barcode').value=p.barcodes?.join(', ')||'';
     id('edit-min-stock').value=p.minStock||0;
     
     const t=id('details-batches-table');
@@ -1611,7 +1722,8 @@ addEvt('edit-item-form','submit',async e=>{
         p.type=id('edit-product-type').value;
         p.code=id('edit-product-code').value;
         p.supplier=id('edit-supplier').value;
-        p.barcodes=[];
+        const b=id('edit-product-barcode').value.trim();
+        p.barcodes=b?b.split(',').map(x=>x.trim()):[];
         p.minStock=parseFloat(id('edit-min-stock').value)||0;
         await DB.update('inventory',p);
         await refreshData();
@@ -1757,6 +1869,748 @@ addEvt('btn-save-bulk-entry','click',async()=>{
 });
 
 // BARCODES
+function renderBarcodesList(){
+    const tb=id('barcodes-table-body');
+    if(!tb)return;
+    const l=localInventory.filter(i=>i.barcodes?.length);
+    if(!l.length){tb.innerHTML='<tr><td colspan="4" class="text-center py-4">Vazio</td></tr>';return;}
+    tb.innerHTML=l.map(i=>i.barcodes.map(b=>`<tr class="base-tr"><td class="base-td text-white text-xs">${i.name}</td><td class="base-td text-xs">${i.code||'-'}</td><td class="base-td text-ios-blue text-xs font-mono">${b}</td><td class="base-td text-center col-acoes"><button class="btn-unlink-barcode text-ios-red bg-ios-red/10 px-2 py-1 rounded" data-pid="${i.id}" data-bcode="${b}"><i class="fa-solid fa-unlink"></i></button></td></tr>`).join('')).join('');
+}
+addEvt('btn-scan-barcode','click',()=>openScanner(c=>id('barcode-input').value=c));
+addEvt('barcode-form','submit',async e=>{
+    e.preventDefault();
+    const i=id('barcode-searchable-container')?.querySelector('input');
+    const pI=i?.dataset?.selectedId;
+    const bC=id('barcode-input').value.trim();
+    if(!pI||!bC)return;
+    const p=await DB.get('inventory',pI);
+    if(p){
+        if(!p.barcodes)p.barcodes=[];
+        if(!p.barcodes.includes(bC)){
+            p.barcodes.push(bC);
+            await DB.update('inventory',p);
+            window.showNotif('Vinculado!');
+        }else window.showNotif('Já existe',true);
+        e.target.reset();
+        i.value='';
+        delete i.dataset.selectedId;
+        refreshData();
+    }
+});
+addEvt('barcodes-table-body','click',async e=>{
+    const b=e.target.closest('.btn-unlink-barcode');
+    if(b){
+        const p=await DB.get('inventory',b.dataset.pid);
+        if(p){
+            p.barcodes=p.barcodes.filter(x=>x!==b.dataset.bcode);
+            await DB.update('inventory',p);
+            window.showNotif('Desvinculado!');
+            refreshData();
+        }
+    }
+});
+
+// PURCHASING
+addEvt('search-purchasing','input',renderPurchasing);
+function renderPurchasing(){
+    const c=id('purchasing-container');
+    if(!c)return;
+    const tr=(id('search-purchasing')?.value||'').toLowerCase();
+    const sp={};
+    localInventory.filter(i=>i.type!=='semi_acabado').forEach(i=>{
+        const s=i.supplier||'Diversos';
+        if(tr&&!s.toLowerCase().includes(tr)&&!i.name.toLowerCase().includes(tr))return;
+        if(!sp[s])sp[s]=[];
+        const info = getStockInfo(i.id);
+        let dl=999;
+        const bl=i.totalQuantity||0;
+        if(info.dailyAvg>0)dl=Math.floor(bl/info.dailyAvg);
+        else if(bl<=info.real&&info.real>0)dl=0;
+        sp[s].push({...i, da: info.dailyAvg, dl, lt: i.leadTime||0, minReal: info.real});
+    });
+    let h='';
+    Object.keys(sp).sort().forEach((s,idx)=>{
+        const it=sp[s].sort((a,b)=>a.dl-b.dl);
+        const cId=`sup-content-${idx}`;
+        h+=`<div class="card p-0 mb-6"><div class="bg-ios-cardHover p-3 flex justify-between items-center cursor-pointer sup-header" data-target="${cId}"><h2 class="font-bold text-white flex items-center"><i class="fa-solid fa-chevron-down text-ios-textMuted mr-3 text-sm accordion-icon"></i><i class="fa-solid fa-truck-field mr-2"></i>${s}</h2><div class="flex gap-2"><button class="btn-place-sup-order text-ios-green bg-ios-green/10 px-2 py-1 rounded text-xs" data-sup="${s}">Reg. Entrega</button><button class="btn-edit-sup text-ios-blue bg-ios-blue/10 px-2 py-1 rounded text-xs" data-sup="${s}">Editar</button></div></div><div id="${cId}" class="p-3 grid gap-3 hidden">`;
+        it.forEach(i=>{
+            const ms=i.minReal||0, bl=i.totalQuantity||0, mT=Math.max(bl,ms*3,1), fP=Math.min(100,(bl/mT)*100), mP=Math.min(100,(ms/mT)*100);
+            let tC='bg-ios-green', sC='text-ios-green';
+            if(bl<=ms){tC='bg-ios-red';sC='text-ios-red';}
+            else if(bl<=ms*1.5){tC='bg-ios-orange';sC='text-ios-orange';}
+            const pO=i.pendingOrder?.active?`<div class="bg-ios-blue/20 text-ios-blue p-1 rounded text-[10px] text-center mt-1">Prev: ${new Date(i.pendingOrder.expectedDate+'T00:00:00').toLocaleDateString()}</div>`:'';
+            h+=`<div class="bg-ios-bg p-3 rounded-xl border border-ios-border flex flex-col md:flex-row gap-2"><div class="flex-1"><div class="flex justify-between"><span class="font-bold text-white text-sm">${i.name}</span><span class="${sC} text-[10px] font-bold">${bl<=ms?'Reserva':'OK'}</span></div><div class="flex justify-between text-[10px] text-ios-textMuted mt-1"><span>Prazo: ${i.lt}d</span><span>Dura: ${i.dl===999?'>99d':i.dl+'d'}</span></div><div class="relative h-4 bg-ios-input rounded mt-2 border border-ios-border overflow-hidden"><div class="absolute bg-ios-red/30 h-full" style="width:${mP}%"></div><div class="absolute ${tC} h-full" style="width:${fP}%"></div><div class="absolute flex justify-between px-2 w-full text-[8px] text-white top-0.5"><span>0</span><span style="position:absolute;left:${mP}%">MÍN</span><span style="position:absolute;right:5px">${bl.toFixed(2)}</span></div></div></div><div class="md:w-32 border-t md:border-t-0 md:border-l pl-2 flex flex-col justify-center"><p class="text-[9px] text-ios-textMuted">Cons: ${i.da.toFixed(2)}/d</p>${pO}</div></div>`;
+        });
+        h+=`</div></div>`;
+    });
+    c.innerHTML=h||'<p class="text-center text-ios-textMuted">Vazio</p>';
+}
+
+addEvt('purchasing-container','click',e=>{
+    const eB=e.target.closest('.btn-edit-sup');
+    if(eB){
+        e.stopPropagation();
+        const s=eB.dataset.sup, i=localInventory.filter(x=>(x.supplier||'Diversos')===s);
+        id('edit-supplier-old-name').value=s;
+        if(id('edit-supplier-new-name'))id('edit-supplier-new-name').value=s;
+        id('edit-supplier-lead').value=i.length?(i[0].leadTime||0):0;
+        show(id('edit-supplier-modal'));
+        return;
+    }
+    const pB=e.target.closest('.btn-place-sup-order');
+    if(pB){
+        e.stopPropagation();
+        const s=pB.dataset.sup, i=localInventory.filter(x=>(x.supplier||'Diversos')===s);
+        const mL=Math.max(...i.map(x=>x.leadTime||0),0);
+        const d=addBusinessDays(new Date(),mL).toISOString().split('T')[0];
+        id('order-supplier-id').value=s;
+        if(id('order-supplier-name'))id('order-supplier-name').innerText=s;
+        id('order-supplier-date').value=d;
+        id('order-supplier-date').dataset.estimated=d;
+        show(id('place-supplier-order-modal'));
+        return;
+    }
+    const h=e.target.closest('.sup-header');
+    if(h){
+        const ct=id(h.dataset.target),ic=h.querySelector('.accordion-icon');
+        if(ct&&ct.classList.contains('hidden')){
+            ct.classList.remove('hidden');
+            if(ic){ic.classList.remove('fa-chevron-down');ic.classList.add('fa-chevron-up');}
+        }else if(ct){
+            ct.classList.add('hidden');
+            if(ic){ic.classList.remove('fa-chevron-up');ic.classList.add('fa-chevron-down');}
+        }
+    }
+});
+
+addEvt('edit-supplier-form','submit',async e=>{
+    e.preventDefault();
+    show(id('loading-overlay'));
+    const oS=id('edit-supplier-old-name').value, nS=id('edit-supplier-new-name').value.trim(), l=parseInt(id('edit-supplier-lead').value)||0;
+    for(let i of localInventory.filter(x=>(x.supplier||'Diversos')===oS)){
+        i.supplier=nS;
+        i.leadTime=l;
+        await DB.update('inventory',i);
+    }
+    hide(id('edit-supplier-modal'));
+    await refreshData();
+    hide(id('loading-overlay'));
+    window.showNotif('Salvo!');
+});
+
+addEvt('place-supplier-order-form','submit',async e=>{
+    e.preventDefault();
+    const s=id('order-supplier-id').value, d=id('order-supplier-date').value, eD=id('order-supplier-date').dataset.estimated;
+    const ex=async()=>{
+        show(id('loading-overlay'));
+        for(let i of localInventory.filter(x=>(x.supplier||'Diversos')===s)){
+            i.pendingOrder={active:true,qty:0,expectedDate:d};
+            await DB.update('inventory',i);
+        }
+        hide(id('place-supplier-order-modal'));
+        await refreshData();
+        hide(id('loading-overlay'));
+        window.showNotif('Registrado!');
+    };
+    if(d<eD)showConfirmationModal('Aviso','Data menor que o prazo padrão. Confirmar?',ex);
+    else ex();
+});
+
+// LOCATIONS
+const applyRPNA = (pf) => {
+    const elR=id(pf+'-rua'), elP=id(pf+'-predio'), elN=id(pf+'-nivel'), elA=id(pf+'-apto');
+    if(!elR||!elP||!elN||!elA) return;
+    const r=elR.value.padStart(2,'0'), p=elP.value.padStart(2,'0'), n=elN.value.padStart(2,'0'), a=elA.value.padStart(2,'0');
+    if(elR.value && elP.value && elN.value && elA.value) {
+        const cd = `${r}${p}${n}${a}`;
+        const nm = `Rua ${parseInt(r,10)}, Préd. ${parseInt(p,10)}, Nív. ${parseInt(n,10)}, Apt. ${parseInt(a,10)}`;
+        if(id(pf+'-form-code')) id(pf+'-form-code').value = cd;
+        if(id(pf+'-new-code')) id(pf+'-new-code').value = cd;
+        if(id(pf+'-form-name')) id(pf+'-form-name').value = nm;
+        if(id(pf+'-new-name')) id(pf+'-new-name').value = nm;
+    } else {
+        if(id(pf+'-form-code')) id(pf+'-form-code').value = '';
+        if(id(pf+'-new-code')) id(pf+'-new-code').value = '';
+    }
+};
+['loc-rua','loc-predio','loc-nivel','loc-apto'].forEach(el => { const n=id(el); if(n) addEvt(el, 'input', () => applyRPNA('loc')); });
+['edit-loc-rua','edit-loc-predio','edit-loc-nivel','edit-loc-apto'].forEach(el => { const n=id(el); if(n) addEvt(el, 'input', () => applyRPNA('edit-loc')); });
+
+function extractRPNA(code) {
+    if(code.length===8 && !isNaN(code)) return [code.substring(0,2), code.substring(2,4), code.substring(4,6), code.substring(6,8)];
+    if(code.includes('-') && code.split('-').length===4) return code.split('-');
+    return [];
+}
+
+function searchLocation(c){
+    const l=localLocations.find(x=>x.code===c);
+    if(l){
+        id('loc-detail-name').innerText=l.name;
+        id('loc-detail-code').dataset.rawcode = l.code;
+        const pts = extractRPNA(l.code);
+        if(pts.length===4) {
+            id('loc-detail-code').innerHTML = `<div class="flex gap-1.5 font-bold font-mono tracking-wider"><span class="bg-ios-bg border border-ios-border px-2 py-1 rounded-lg text-white shadow-sm"><span class="text-[10px] text-ios-textMuted mr-1">R</span>${pts[0]}</span><span class="bg-ios-green/10 text-ios-green border border-ios-green/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-green/60 mr-1">P</span>${pts[1]}</span><span class="bg-ios-red/10 text-ios-red border border-ios-red/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-red/60 mr-1">N</span>${pts[2]}</span><span class="bg-ios-blue/10 text-ios-blue border border-ios-blue/30 px-2 py-1 rounded-lg shadow-sm"><span class="text-[10px] text-ios-blue/60 mr-1">A</span>${pts[3]}</span></div>`;
+        } else {
+            id('loc-detail-code').innerHTML = `<span class="text-ios-blue font-mono bg-ios-blue/10 px-3 py-1 rounded-lg border border-ios-blue/30 inline-block">${l.code}</span>`;
+        }
+        id('loc-batches-body').innerHTML=localBatches.filter(b=>b.locationCode===c&&b.quantity>0).map(b=>`<tr class="base-tr"><td class="base-td text-white text-xs">${localInventory.find(x=>x.id===b.productId)?.name||'?'}</td><td class="base-td text-xs">${b.code}</td><td class="base-td text-ios-blue font-bold">${b.quantity.toFixed(2)}</td><td class="base-td col-acoes text-center flex justify-center gap-2"><button type="button" class="btn-transfer-batch-loc text-ios-blue bg-ios-blue/10 p-2 rounded" data-id="${b.id}" title="Transferir lote de endereço"><i class="fa-solid fa-arrow-right-arrow-left"></i></button><button type="button" class="btn-remove-batch-loc text-ios-red bg-ios-cardHover p-2 rounded" data-id="${b.id}" title="Retirar deste lote"><i class="fa-solid fa-minus"></i></button></td></tr>`).join('')||'<tr><td colspan="4" class="text-center text-xs py-4">Vazio</td></tr>';
+        id('add-loc-target-code').value=c;
+        hide(id('location-empty-state'));
+        hide(id('location-create-panel'));
+        show(id('location-details-panel'));
+    }else{
+        id('loc-form-code').value=c;
+        const pts = extractRPNA(c);
+        if(pts.length === 4) {
+             id('loc-rua').value = parseInt(pts[0],10)||'';
+             id('loc-predio').value = parseInt(pts[1],10)||'';
+             id('loc-nivel').value = parseInt(pts[2],10)||'';
+             id('loc-apto').value = parseInt(pts[3],10)||'';
+        } else {
+             id('loc-rua').value = ''; id('loc-predio').value = ''; id('loc-nivel').value = ''; id('loc-apto').value = '';
+        }
+        applyRPNA('loc');
+        if(!id('loc-form-code').value) id('loc-form-code').value = c;
+        hide(id('location-empty-state'));
+        hide(id('location-details-panel'));
+        show(id('location-create-panel'));
+    }
+}
+
+function renderWarehouseMap() {
+    const v = id('warehouse-map-view');
+    if(!v) return;
+
+    const tree = {};
+    let hasLocs = false;
+    localLocations.forEach(l => {
+        const pts = extractRPNA(l.code);
+        if(!pts || pts.length!==4) return;
+        hasLocs = true;
+        let [r, p, n, a] = pts;
+        if(!tree[r]) tree[r] = {};
+        if(!tree[r][p]) tree[r][p] = {};
+        if(!tree[r][p][n]) tree[r][p][n] = {};
+        tree[r][p][n][a] = l;
+    });
+
+    if(!hasLocs) {
+        v.innerHTML = '<div class="col-span-full text-ios-textMuted py-4 text-center border border-dashed border-ios-border rounded-xl">Nenhum endereço cadastrado nesta estrutura.</div>';
+        return;
+    }
+
+    let html = '';
+    const ruas = Object.keys(tree).sort();
+    ruas.forEach(r => {
+        html += `<div class="bg-ios-bg p-4 rounded-xl border border-ios-border">
+            <h3 class="font-bold text-lg text-white mb-4"><i class="fa-solid fa-road mr-2 text-ios-textMuted"></i>Rua ${r}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+        
+        const preds = Object.keys(tree[r]).sort();
+        preds.forEach(p => {
+            html += `<div class="bg-ios-card p-3 rounded-xl border border-ios-green/30">
+                <h4 class="font-bold text-ios-green mb-3 flex items-center"><i class="fa-solid fa-building mr-2 text-ios-green/60"></i>Prédio ${p}</h4>
+                <div class="space-y-3">`;
+            
+            const nivs = Object.keys(tree[r][p]).sort();
+            nivs.forEach(n => {
+                html += `<div class="flex items-start gap-2 border-t border-ios-border/50 pt-2 first:border-0 first:pt-0">
+                    <span class="text-xs font-bold text-ios-red w-16 pt-1"><i class="fa-solid fa-layer-group mr-1 opacity-60"></i>Nív ${n}</span>
+                    <div class="flex flex-wrap items-center gap-2 flex-1">`;
+                
+                const aptos = Object.keys(tree[r][p][n]).sort();
+                aptos.forEach(a => {
+                    const loc = tree[r][p][n][a];
+                    html += `<button type="button" class="bg-ios-blue/10 border border-ios-blue/30 text-ios-blue w-14 h-12 rounded-lg hover:bg-ios-blue/20 transition-colors location-card-btn flex flex-col items-center justify-center shrink-0 shadow-sm" data-code="${loc.code}" title="${loc.name}">
+                        <span class="text-[9px] uppercase font-semibold opacity-80 mb-0.5">Apt</span>
+                        <span class="text-sm font-bold font-mono leading-none">${a}</span>
+                    </button>`;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            html += `</div></div>`;
+        });
+        
+        html += `</div></div>`;
+    });
+
+    v.innerHTML = html;
+}
+function renderAllLocations(){
+    renderWarehouseMap();
+}
+
+addEvt('warehouse-map-view','click',e=>{
+    const b=e.target.closest('.location-card-btn');
+    if(b){
+         id('location-search-input').value=b.dataset.code;
+         id('btn-search-location').click();
+    }
+});
+
+addEvt('btn-back-to-map','click',()=>{
+    hide(id('location-details-panel'));
+    show(id('location-empty-state'));
+    if(id('location-search-input')) id('location-search-input').value = '';
+});
+
+addEvt('btn-search-location','click',()=>searchLocation(id('location-search-input').value.trim()));
+addEvt('btn-scan-location','click',()=>openScanner(c=>searchLocation(c)));
+addEvt('location-form','submit',async e=>{e.preventDefault();const c=id('loc-form-code').value;await DB.add('locations',{code:c,name:id('loc-form-name').value});await refreshData();searchLocation(c);});
+addEvt('btn-cancel-loc','click',()=>{hide(id('location-create-panel'));show(id('location-empty-state'));});
+addEvt('btn-delete-location','click',()=>{const c=id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText,l=localLocations.find(x=>x.code===c);if(l)showConfirmationModal('Excluir?','Lotes ficarão sem local',async()=>{await DB.remove('locations',l.id);hide(id('location-details-panel'));show(id('location-empty-state'));refreshData();});});
+addEvt('btn-edit-location','click',()=>{
+    const oldCode = id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText;
+    id('edit-loc-old-code').value=oldCode;
+    id('edit-loc-new-code').value=oldCode;
+    id('edit-loc-new-name').value=id('loc-detail-name').innerText;
+    const pts = extractRPNA(oldCode);
+    if(pts.length === 4) {
+        id('edit-loc-rua').value = parseInt(pts[0],10)||'';
+        id('edit-loc-predio').value = parseInt(pts[1],10)||'';
+        id('edit-loc-nivel').value = parseInt(pts[2],10)||'';
+        id('edit-loc-apto').value = parseInt(pts[3],10)||'';
+    } else {
+        id('edit-loc-rua').value = ''; id('edit-loc-predio').value = ''; id('edit-loc-nivel').value = ''; id('edit-loc-apto').value = '';
+    }
+    show(id('edit-location-modal'));
+});
+addEvt('edit-location-form','submit',async e=>{e.preventDefault();show(id('loading-overlay'));const oC=id('edit-loc-old-code').value,nC=id('edit-loc-new-code').value,nN=id('edit-loc-new-name').value,l=localLocations.find(x=>x.code===oC);if(l){l.code=nC;l.name=nN;await DB.update('locations',l);if(oC!==nC){for(let b of localBatches.filter(x=>x.locationCode===oC)){b.locationCode=nC;await DB.update('batches',b);}}hide(id('edit-location-modal'));await refreshData();searchLocation(nC);}hide(id('loading-overlay'));});
+addEvt('btn-add-batch-to-loc','click',()=>{createSearchableSelect(id('add-loc-searchable-container'),localInventory,'Produto...',p=>{id('add-loc-batch-select').innerHTML='<option value="">Lote...</option>'+localBatches.filter(b=>b.productId===p.id&&b.quantity>0).map(b=>`<option value="${b.code}">${b.code}</option>`).join('');});show(id('modal-add-loc-batch'));});
+addEvt('add-loc-batch-form','submit',async e=>{e.preventDefault();const b=localBatches.find(x=>x.code===id('add-loc-batch-select').value&&x.quantity>0);if(b){b.locationCode=id('add-loc-target-code').value;await DB.update('batches',b);hide(id('modal-add-loc-batch'));await refreshData();searchLocation(b.locationCode);}});
+addEvt('loc-batches-body','click',async e=>{
+    const trfBtn = e.target.closest('.btn-transfer-batch-loc');
+    if(trfBtn){
+        const batchId = trfBtn.dataset.id;
+        const src = id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText;
+        id('transfer-batch-id').value = batchId;
+        id('transfer-source-code').value = src;
+        id('transfer-mode').value = 'single';
+        id('transfer-modal-title').innerText = 'Transferir Lote Genuíno';
+        id('transfer-modal-desc').innerText = `Movendo o lote para um novo destino.`;
+        id('transfer-dest-input').value = '';
+        show(id('modal-transfer-loc'));
+        return;
+    }
+    const bt=e.target.closest('.btn-remove-batch-loc');
+    if(bt){const b=await DB.get('batches',bt.dataset.id);if(b){b.locationCode='';await DB.update('batches',b);await refreshData();searchLocation(id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText);}}
+});
+
+addEvt('btn-transfer-all-loc','click',()=>{
+    const src = id('loc-detail-code').dataset.rawcode || id('loc-detail-code').innerText;
+    id('transfer-batch-id').value = '';
+    id('transfer-source-code').value = src;
+    id('transfer-mode').value = 'all';
+    id('transfer-modal-title').innerText = 'Mover Conteúdo do Apto';
+    id('transfer-modal-desc').innerText = `Transferindo todos os insumos estocados em ${src}. Para onde vão?`;
+    id('transfer-dest-input').value = '';
+    show(id('modal-transfer-loc'));
+});
+
+addEvt('transfer-loc-form','submit',async e=>{
+    e.preventDefault();
+    const dest = id('transfer-dest-input').value.trim();
+    if(!localLocations.find(x=>x.code===dest)) {
+        window.showNotif('Endereço de destino inexistente. Cheque se foi cadastrado.', true);
+        return;
+    }
+    const mode = id('transfer-mode').value;
+    const src = id('transfer-source-code').value;
+    show(id('loading-overlay'));
+    
+    if(mode === 'all') {
+        const batchesToMove = localBatches.filter(b=>b.locationCode===src && b.quantity>0);
+        for(let b of batchesToMove) {
+            b.locationCode = dest;
+            await DB.update('batches', b);
+        }
+    } else {
+        const bid = id('transfer-batch-id').value;
+        const b = await DB.get('batches', bid);
+        if(b) {
+            b.locationCode = dest;
+            await DB.update('batches', b);
+        }
+    }
+    
+    hide(id('modal-transfer-loc'));
+    await refreshData();
+    searchLocation(src); 
+    hide(id('loading-overlay'));
+    window.showNotif('Transferência WMS efetuada!');
+});
+addEvt('btn-scan-transfer-dest','click',()=>openScanner(c=>id('transfer-dest-input').value=c));
+addEvt('btn-cancel-transfer-loc','click',()=>hide(id('modal-transfer-loc')));
+
+// RECIPES
+function addIngRowReq(c,pI=null,pQ=''){
+    if(!c)return;
+    const d=document.createElement('div');
+    d.className='req-item flex flex-col gap-2 bg-ios-bg p-3 rounded-xl border border-ios-border';
+    d.innerHTML=`<div class="flex gap-2 items-center"><div class="searchable-container flex-1"></div><input type="text" class="form-input w-20 py-2 text-center req-code-input text-xs bg-ios-input/50 border-transparent placeholder-ios-textMuted/50 text-ios-textMuted" readonly placeholder="Cód"><input type="number" step="0.0001" value="${pQ}" class="form-input w-20 py-2 text-center req-qty-input font-bold text-sm" required><button type="button" class="text-ios-red p-2 bg-ios-cardHover rounded remove-ing"><i class="fa fa-times"></i></button></div><div class="flex justify-between items-center text-[10px] text-ios-textMuted px-1 req-plan-wrapper hidden mt-1 border-t border-ios-border pt-2 gap-2"><span class="plan-display"></span><button type="button" class="text-ios-blue open-batch-selector bg-ios-card px-2 py-1 rounded shrink-0 whitespace-nowrap border border-ios-border"><i class="fa-solid fa-pen mr-1"></i> Lotes</button></div>`;
+    c.appendChild(d);
+    const iR=c.id==='ingredients-container',pW=d.querySelector('.req-plan-wrapper'),pD=d.querySelector('.plan-display'),qI=d.querySelector('.req-qty-input'),cI=d.querySelector('.req-code-input');
+    if(!iR)pW.classList.remove('hidden');
+    if(iR&&cI)cI.classList.add('hidden');
+    const uP=()=>{
+        if(iR)return;
+        const iS=d.querySelector('.searchable-container input'),pi=iS?.dataset.selectedId,q=parseFloat(qI.value);
+        if(pi){
+            const selP=localInventory.find(x=>x.id===pi);
+            if(selP&&cI)cI.value=selP.code||'-';
+        }
+        if(pi&&q>0){
+            const{plan,isSufficient}=getFIFOPlan(pi,q);
+            d.dataset.productId=pi;
+            d.dataset.plan=JSON.stringify(plan).replace(/'/g, "&#39;");
+            pD.innerHTML=isSufficient?'<i class="fa fa-check text-ios-green"></i> '+plan.map(x=>`${x.batchCode}(${x.quantity.toFixed(2)})`).join(', '):'<i class="fa fa-triangle-exclamation text-ios-red"></i> Falta!';
+        }else pD.innerText='Aguardando...';
+    };
+    createSearchableSelect(d.querySelector('.searchable-container'),localInventory,'Buscar...',uP);
+    qI.addEventListener('input',uP);
+    d.querySelector('.remove-ing').addEventListener('click',()=>d.remove());
+    if(pI){
+        const p=localInventory.find(x=>x.id===pI);
+        if(p){const iS=d.querySelector('.searchable-container input');if(iS){iS.value=p.name;iS.dataset.selectedId=p.id;uP();}}
+    }
+}
+addEvt('add-requisition-item-btn','click',()=>addIngRowReq(id('requisition-items-container')));
+
+addEvt('search-recipe','input',renderRecipes);
+function renderRecipes(){
+    const g=id('recipes-grid');if(!g)return;
+    const t=(id('search-recipe')?.value||'').toLowerCase();
+    let f=localRecipes.filter(r=>currentRecipeCategory==='Todos'||r.category===currentRecipeCategory);
+    if(t)f=f.filter(r=>r.name.toLowerCase().includes(t)||r.category.toLowerCase().includes(t));
+    if(id('recipe-categories-list'))id('recipe-categories-list').innerHTML=['Todos',...new Set(localRecipes.map(r=>r.category))].map(c=>`<li><a href="#" class="block p-2 text-xs border border-transparent ${c===currentRecipeCategory?'!border-ios-blue bg-ios-card text-white':'text-ios-textMuted'}" data-cat="${c}">${c}</a></li>`).join('');
+    g.innerHTML=f.map(r=>`<div class="card relative border ${r.isSemi?'border-ios-orange/30':'border-ios-cardHover'}"><div class="absolute top-3 right-3 flex gap-1"><button class="edit-rec-btn text-ios-blue bg-ios-bg p-2 rounded-full border border-ios-border" data-id="${r.id}"><i class="fa fa-pen text-xs"></i></button><button class="del-rec-btn text-ios-red bg-ios-bg p-2 rounded-full border border-ios-border" data-id="${r.id}"><i class="fa fa-trash text-xs"></i></button></div><h3 class="text-white font-bold">${r.name}</h3><span class="text-[10px] px-2 py-1 rounded bg-ios-bg mt-2 inline-block ${r.isSemi?'text-ios-orange':'text-ios-textMuted'}">${r.isSemi?`Semi (Rende ${r.outputYield||1})`:'Acabado'}</span><ul class="mt-4 text-xs text-ios-textMuted space-y-1">${(r.ingredients||[]).map(i=>`<li class="flex justify-between border-b border-ios-border/30 pb-1"><span>${localInventory.find(x=>x.id===i.productId)?.name||'?'}</span><span class="text-ios-blue">${i.quantity}</span></li>`).join('')}</ul></div>`).join('');
+}
+addEvt('recipe-categories-list','click',e=>{if(e.target.tagName==='A'){e.preventDefault();currentRecipeCategory=e.target.dataset.cat;renderRecipes();}});
+addEvt('recipes-grid','click',e=>{
+    const d=e.target.closest('.del-rec-btn');
+    if(d)showConfirmationModal('Apagar?','',async()=>{await DB.remove('recipes',d.dataset.id);refreshData();});
+    const ed=e.target.closest('.edit-rec-btn');
+    if(ed){
+        const r=localRecipes.find(x=>x.id===ed.dataset.id);
+        if(r){
+            id('edit-recipe-id').value=r.id;
+            id('recipe-name').value=r.name;
+            id('recipe-category').value=r.category;
+            id('recipe-is-semi').checked=!!r.isSemi;
+            id('recipe-is-semi').dispatchEvent(new Event('change'));
+            id('recipe-yield').value=r.outputYield||1;
+            id('ingredients-container').innerHTML='';
+            (r.ingredients||[]).forEach(i=>addIngRowReq(id('ingredients-container'),i.productId,i.quantity));
+            show(id('recipe-modal'));
+        }
+    }
+});
+addEvt('recipe-is-semi','change',e=>e.target.checked?show(id('yield-wrapper')):hide(id('yield-wrapper')));
+addEvt('btn-new-recipe','click',()=>{id('recipe-form').reset();id('edit-recipe-id').value='';id('ingredients-container').innerHTML='';id('recipe-is-semi').checked=false;id('recipe-is-semi').dispatchEvent(new Event('change'));addIngRowReq(id('ingredients-container'));show(id('recipe-modal'));});
+addEvt('add-ingredient-btn','click',()=>addIngRowReq(id('ingredients-container')));
+addEvt('recipe-form','submit',async e=>{
+    e.preventDefault();
+    const isS=id('recipe-is-semi').checked,nm=id('recipe-name').value;
+    let oId=null;
+    if(isS){
+        let p=localInventory.find(x=>x.name.toLowerCase()===nm.toLowerCase()&&x.type==='semi_acabado');
+        oId=p?p.id:await DB.add('inventory',{name:nm,type:'semi_acabado',totalQuantity:0,supplier:'Interna'});
+    }
+    const d={
+        name:nm,
+        category:id('recipe-category').value,
+        outputProductId:oId,
+        outputYield:isS?(parseFloat(id('recipe-yield').value)||1):null,
+        isSemi:isS,
+        ingredients:[...id('ingredients-container').children].map(r=>({
+            productId:r.querySelector('input[type="text"]').dataset.selectedId,
+            quantity:parseFloat(r.querySelector('input[type="number"]').value)
+        }))
+    };
+    if(id('edit-recipe-id').value){
+        d.id=id('edit-recipe-id').value;
+        await DB.update('recipes',d);
+    }else{
+        await DB.add('recipes',d);
+    }
+    hide(id('recipe-modal'));
+    refreshData();
+});
+
+// PRODUCTION ORDERS
+let showAllPendingOPs = false;
+addEvt('search-po-by-date','change', () => { showAllPendingOPs = false; renderPO(); });
+addEvt('btn-po-show-all-pending','click', () => { showAllPendingOPs = true; id('search-po-by-date').value = ''; renderPO(); });
+
+function renderPO(){
+    const d=id('search-po-by-date')?.value,c=id('production-orders-list');if(!c)return;
+    let l = [];
+    if(showAllPendingOPs) {
+        l = localProductionOrders.filter(x => x.status === 'pendente').sort((a,b) => new Date(a.date) - new Date(b.date));
+    } else {
+        l = localProductionOrders.filter(x=>x.date===d);
+    }
+    c.innerHTML=l.length?l.map(o=>`
+        <div class="card relative pl-12 border-l-4 ${o.status==='pendente'?'border-l-ios-orange':'border-l-ios-green'}">
+            <div class="absolute left-3 top-5"><input type="checkbox" class="ui-checkbox scale-75 po-select-checkbox" data-id="${o.id}" ${o.status!=='pendente'?'disabled':''}></div>
+            <div class="flex justify-between items-start">
+                <div><h3 class="text-white font-bold text-lg">${o.recipeName} <span class="text-ios-blue">(${o.multiplier}x)</span></h3><p class="text-[10px] text-ios-textMuted">${new Date(o.date+'T00:00:00').toLocaleDateString()}</p></div>
+                <span class="badge ${o.status==='pendente'?'bg-ios-orange/20 text-ios-orange':'bg-ios-green/20 text-ios-green'}">${o.status}</span>
+            </div>
+            <div class="bg-ios-bg rounded p-2 mt-3 text-xs">
+                <p class="text-[10px] text-ios-textMuted uppercase">Insumos (Real)</p>
+                <ul class="space-y-1 mt-1">${o.ingredients.map(i=>{
+                    const pN=localInventory.find(x=>x.id===i.productId)?.name||'?';
+                    let aQ=i.adjustedQuantity; 
+                    let usedPlan = i.consumptionPlan || getFIFOPlan(i.productId, aQ).plan;
+                    let hasPEPSBreakVar = hasPEPSBreak(i.productId, usedPlan);
+
+                    const badgeWarning = hasPEPSBreakVar && o.status==='pendente' ? `<span class="badge bg-ios-red/20 text-ios-red ml-2 text-[8px]"><i class="fa-solid fa-triangle-exclamation"></i> Quebra PVPS</span>` : '';
+
+                    return `<li class="flex justify-between text-gray-300 border-b border-ios-border/50 pb-1 items-center">
+                        <span>${pN} ${badgeWarning}</span>
+                        <span class="font-bold ${aQ!==i.adjustedQuantity?'text-ios-orange':'text-ios-blue'}">${aQ.toFixed(4)}</span>
+                    </li>`;
+                }).join('')}</ul>
+            </div>
+            ${o.status==='pendente'?`<div class="absolute bottom-2 right-2 flex gap-1"><button type="button" class="text-ios-blue p-2 edit-po-btn bg-ios-cardHover rounded" data-id="${o.id}"><i class="fa-solid fa-pen"></i></button><button class="text-ios-red p-2 del-po-btn bg-ios-cardHover rounded" data-id="${o.id}"><i class="fa-solid fa-trash"></i></button></div>`:''}
+        </div>`).join(''):'<div class="col-span-full text-center p-4">Vazio</div>';
+}
+addEvt('production-orders-list','click',e=>{
+    const d=e.target.closest('.del-po-btn');if(d)showConfirmationModal('Excluir OP?','',async()=>{await DB.remove('productionOrders',d.dataset.id);refreshData();});
+    const ed=e.target.closest('.edit-po-btn');
+    if(ed) {
+        const o=localProductionOrders.find(x=>x.id===ed.dataset.id);
+        if(o) {
+            if(id('edit-po-id')) id('edit-po-id').value = o.id;
+            id('po-date').value = o.date;
+            id('po-quantity').value = o.multiplier;
+            id('po-is-extra').checked = !!o.isExtra;
+            if(o.quantityProduced) {
+                show(id('po-output-fields'));
+                id('po-output-batch').value = o.outputBatch;
+                id('po-total-output').value = o.quantityProduced;
+            } else {
+                hide(id('po-output-fields'));
+            }
+            createSearchableSelect(id('po-recipe-searchable-container'),localRecipes,'Receita...',r=>{
+                currentOpSubstitutions = {};
+                if(r.isSemi){
+                    show(id('po-output-fields'));
+                    const d = new Date();
+                    id('po-output-batch').value=`OP${String(d.getDate()).padStart(2,'0')}${String(d.getMonth()+1).padStart(2,'0')}${d.getFullYear().toString().slice(-2)}-${Math.floor(Math.random()*1000).toString().padStart(3,'0')}`;
+                }else hide(id('po-output-fields'));
+                id('po-quantity').dispatchEvent(new Event('input'));
+            });
+            const s=id('po-recipe-searchable-container').querySelector('input');
+            if(s) {
+                s.value = o.recipeName;
+                s.dataset.selectedId = o.recipeId;
+            }
+            currentOpSubstitutions = {};
+            id('po-ingredients-body').innerHTML = (o.ingredients||[]).map(i=>{
+                const p=localInventory.find(x=>x.id===i.productId);
+                const q=i.adjustedQuantity;
+                const pl = i.consumptionPlan || getFIFOPlan(i.productId, q).plan;
+                return `<tr class="base-tr" data-product-id="${i.productId}" data-plan='${JSON.stringify(pl).replace(/'/g, "&#39;")}'>
+                    <td class="base-td text-white text-xs po-ing-name-cell"><div class="flex flex-col gap-1"><span class="whitespace-normal">${p?.name||'?'}</span><button type="button" class="text-ios-orange btn-substitute-ing text-left text-[9px] hover:underline whitespace-nowrap" data-orig="${i.productId}"><i class="fa-solid fa-right-left"></i> Substituir</button></div></td>
+                    <td class="base-td hidden sm:table-cell text-xs">${(p?.totalQuantity||0).toFixed(2)}</td>
+                    <td class="base-td"><input type="number" value="${q.toFixed(4)}" class="form-input py-1 px-1 w-20 text-center text-xs po-ing-qty bg-ios-bg border-ios-border" readonly></td>
+                    <td class="base-td text-[10px] ${pl.length?'text-ios-green':'text-ios-red font-bold'}">
+                        <div class="plan-display">${pl.length?pl.map(x=>x.batchCode).join(','):'PEPS'}</div>
+                        <button type="button" class="text-ios-blue mt-1 open-batch-selector bg-ios-bg p-1 rounded border border-ios-border text-[10px] w-full"><i class="fa-solid fa-pen"></i> Escolher Lotes</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            show(id('production-order-modal'));
+        }
+    }
+});
+
+addEvt('po-quantity','input',()=>{
+    const s=id('po-recipe-searchable-container')?.querySelector('input');
+    if(s?.dataset.selectedId){
+        const r=localRecipes.find(x=>x.id===s.dataset.selectedId),m=parseFloat(id('po-quantity').value)||1;
+        if(r&&r.isSemi)id('po-total-output').value=((r.outputYield||1)*m).toFixed(4);
+        id('po-ingredients-body').innerHTML=(r?.ingredients||[]).map(i=>{
+            const aId=currentOpSubstitutions[i.productId]||i.productId;
+            const p=localInventory.find(x=>x.id===aId),q=i.quantity*m,f=getFIFOPlan(aId,q);
+            const isS=aId!==i.productId;
+            return `<tr class="base-tr" data-product-id="${aId}" data-plan='${JSON.stringify(f.plan).replace(/'/g, "&#39;")}'>
+                <td class="base-td text-white text-xs po-ing-name-cell"><div class="flex flex-col gap-1"><span class="whitespace-normal ${isS?'text-ios-orange':''}">${isS?'<i class="fa-solid fa-right-left mr-1"></i>':''}${p?.name||'?'}</span><button type="button" class="text-ios-orange btn-substitute-ing text-left text-[9px] hover:underline whitespace-nowrap" data-orig="${i.productId}"><i class="fa-solid fa-right-left"></i> Substituir</button></div></td>
+                <td class="base-td hidden sm:table-cell text-xs">${(p?.totalQuantity||0).toFixed(2)}</td>
+                <td class="base-td"><input type="number" value="${q.toFixed(4)}" class="form-input py-1 px-1 w-20 text-center text-xs po-ing-qty bg-ios-bg border-ios-border" readonly></td>
+                <td class="base-td text-[10px] ${f.isSufficient?'text-ios-green':'text-ios-red font-bold'}">
+                    <div class="plan-display">${f.isSufficient?'Lotes OK':'Falta'}</div>
+                    ${f.isSufficient?`<button type="button" class="text-ios-blue mt-1 open-batch-selector bg-ios-bg p-1 rounded border border-ios-border text-[10px] w-full"><i class="fa-solid fa-pen"></i> Escolher Lotes</button>`:''}
+                </td>
+            </tr>`;
+        }).join('');
+    }
+});
+
+addEvt('po-ingredients-body', 'click', e => {
+    const btn = e.target.closest('.btn-substitute-ing');
+    if (btn) {
+        const tr = btn.closest('tr');
+        const origId = btn.dataset.orig;
+        const cell = tr.querySelector('.po-ing-name-cell');
+        cell.innerHTML = '<div class="searchable-container po-sub-container w-full min-w-[120px]"></div>';
+        createSearchableSelect(cell.querySelector('.searchable-container'), localInventory, 'Buscar...', p => {
+            currentOpSubstitutions[origId] = p.id;
+            id('po-quantity').dispatchEvent(new Event('input'));
+        });
+        setTimeout(() => cell.querySelector('input')?.focus(), 100);
+    }
+});
+
+addEvt('btn-export-po-excel','click',()=>{
+    if(!localProductionOrders.length)return;
+    const d=localProductionOrders.map(o=>({
+        'Status': o.status,
+        'Data': o.date ? new Date(o.date+'T00:00:00').toLocaleDateString('pt-BR') : '-',
+        'Receita': o.recipeName,
+        'Categoria': o.recipeCategory,
+        'Multiplicador': o.multiplier,
+        'Rendimento Previsto': o.quantityProduced || '-',
+        'Lote Gerado': o.outputBatch || '-'
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(d), "OPs");
+    XLSX.writeFile(wb, `OP_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+    window.showNotif('OPs Exportadas para Excel!');
+});
+
+addEvt('btn-new-production-order','click',()=>{
+    currentOpSubstitutions = {};
+    id('production-order-form').reset();
+    if(id('edit-po-id')) id('edit-po-id').value = '';
+    id('po-ingredients-body').innerHTML='';
+    createSearchableSelect(id('po-recipe-searchable-container'),localRecipes,'Receita...',r=>{
+        currentOpSubstitutions = {};
+        if(r.isSemi){
+            show(id('po-output-fields'));
+            const d = new Date();
+            id('po-output-batch').value=`OP${String(d.getDate()).padStart(2,'0')}${String(d.getMonth()+1).padStart(2,'0')}${d.getFullYear().toString().slice(-2)}-${Math.floor(Math.random()*1000).toString().padStart(3,'0')}`;
+        }else hide(id('po-output-fields'));
+        id('po-quantity').dispatchEvent(new Event('input'));
+    });
+    const localD = new Date(); localD.setMinutes(localD.getMinutes() - localD.getTimezoneOffset());
+    id('po-date').value = localD.toISOString().slice(0,10);
+    hide(id('po-output-fields'));
+    show(id('production-order-modal'));
+});
+
+addEvt('production-order-form','submit',async e=>{
+    e.preventDefault();
+    const s=id('po-recipe-searchable-container')?.querySelector('input');if(!s?.dataset.selectedId)return;
+    const r=localRecipes.find(x=>x.id===s.dataset.selectedId),m=parseFloat(id('po-quantity').value)||1;
+    const ings=[...id('po-ingredients-body').children].map(tr=>{
+        let plan = [];
+        try { plan = JSON.parse(tr.dataset.plan || '[]'); } catch(err) { console.error(err); }
+        return {
+            productId:tr.dataset.productId,
+            adjustedQuantity:parseFloat(tr.querySelector('.po-ing-qty').value),
+            consumptionPlan:plan
+        };
+    });
+    const poData = {recipeId:r.id,recipeName:r.name,recipeCategory:r.category,date:id('po-date').value,multiplier:m,quantityProduced:r.isSemi?(parseFloat(id('po-total-output').value)||0):null,status:'pendente',outputBatch:r.isSemi?id('po-output-batch').value:null,ingredients:ings,isExtra:id('po-is-extra').checked,picking:{status:'pendente',pickedItems:{}}};
+    const eId = id('edit-po-id')?.value;
+    if(eId) {
+        poData.id = eId;
+        await DB.update('productionOrders', poData);
+    } else {
+        await DB.add('productionOrders', poData);
+    }
+    hide(id('production-order-modal'));
+    refreshData();
+});
+
+addEvt('btn-confirm-production','click',async()=>{
+    const c=document.querySelectorAll('.po-select-checkbox:checked');if(!c.length)return window.showNotif('Selecione OP!',true);
+    const sIds=Array.from(c).map(x=>x.dataset.id),p=localProductionOrders.filter(x=>sIds.includes(x.id)&&x.status==='pendente');if(!p.length)return;
+    showConfirmationModal('Efetivar Baixa',`Gerar baixas para ${p.length} OP(s)? Será debitado o lote escolhido.`,async()=>{
+        show(id('loading-overlay'));
+        try {
+            for(const op of p){
+                for(const ing of op.ingredients){
+                    let actualQty = ing.adjustedQuantity;
+                    
+                    if(actualQty > 0) {
+                        const pr = await DB.get('inventory', ing.productId);
+                        if(!pr) throw new Error(`Produto não encontrado: ID ${ing.productId}`);
+                        if((pr.totalQuantity || 0) < actualQty - 0.001) throw new Error(`Sem saldo suficiente de ${pr.name} (Físico atual: ${(pr.totalQuantity||0).toFixed(2)} | Requer: ${actualQty.toFixed(2)})`);
+                        
+                        let planToUse = (ing.consumptionPlan && ing.consumptionPlan.length > 0) ? JSON.parse(JSON.stringify(ing.consumptionPlan)) : getFIFOPlan(ing.productId, actualQty).plan;
+                        let totalPlan = planToUse.reduce((s,x)=>s+x.quantity, 0);
+                        if(totalPlan < actualQty - 0.001) throw new Error(`Lotes insuficientes ou bloqueados para: ${pr.name}`);
+                    }
+                }
+            }
+
+            for(const op of p){
+                for(const ing of op.ingredients){
+                    let actualQty = ing.adjustedQuantity;
+                    
+                    if(actualQty > 0) {
+                        const pr = await DB.get('inventory', ing.productId);
+                        if(!pr) continue;
+                        
+                        let planToUse = (ing.consumptionPlan && ing.consumptionPlan.length > 0) ? JSON.parse(JSON.stringify(ing.consumptionPlan)) : getFIFOPlan(ing.productId, actualQty).plan;
+                        let totalPlan = planToUse.reduce((s,x)=>s+x.quantity, 0);
+                        
+                        if(actualQty < totalPlan) {
+                            let diff = totalPlan - actualQty;
+                            for(let i=planToUse.length-1; i>=0; i--) {
+                                if(planToUse[i].quantity >= diff) { planToUse[i].quantity -= diff; diff = 0; break; }
+                                else { diff -= planToUse[i].quantity; planToUse[i].quantity = 0; }
+                            }
+                            planToUse = planToUse.filter(x => x.quantity > 0);
+                        } else if(actualQty > totalPlan) {
+                            let extra = actualQty - totalPlan;
+                            let extraPlan = getFIFOPlan(ing.productId, extra).plan;
+                            planToUse = planToUse.concat(extraPlan);
+                        }
+
+                        ing.consumptionPlan = planToUse;
+                        ing.actualQtyUsed = actualQty;
+                        
+                        for(let t of planToUse) {
+                            const b = await DB.get('batches', t.batchId);
+                            if(b) {
+                                b.quantity -= t.quantity;
+                                await DB.update('batches', b);
+                                await DB.add('history',{productId:pr.id,batchCode:b.code,type:'saída',quantity:t.quantity,date:new Date().toISOString().split('T')[0],reason:`OP: ${op.recipeName}`});
+                            }
+                        }
+                        pr.totalQuantity -= actualQty;
+                        await DB.update('inventory', pr);
+                    } else {
+                        ing.actualQtyUsed = 0;
+                        ing.consumptionPlan = [];
+                    }
+                }
+                if(op.quantityProduced>0 && op.outputBatch){
+                    const oP=localInventory.find(x=>x.name===op.recipeName&&x.type==='semi_acabado');
+                    if(oP){
+                        oP.totalQuantity+=op.quantityProduced;
+                        await DB.update('inventory',oP);
+                        await DB.add('batches',{productId:oP.id,code:op.outputBatch,quantity:op.quantityProduced,expiryDate:'',isReleased:true,locationCode:''});
+                        await DB.add('history',{productId:oP.id,batchCode:op.outputBatch,type:'entrada (produção)',quantity:op.quantityProduced,date:new Date().toISOString().split('T')[0],reason:`OP: ${op.recipeName}`});
+                    }
+                }
+                op.status='concluída';
+                op.executionDate = new Date().toISOString().split('T')[0];
+                await DB.update('productionOrders', op);
+            }
+            window.showNotif('Baixas concluídas com sucesso!');
+            await refreshData();
+        } catch(e) { window.showNotif('Erro na efetivação.',true); } finally { hide(id('loading-overlay')); }
+    });
+});
+
 // --- RASTREABILIDADE ---
 const ttf = id('trace-type-filter');
 if (ttf) {
@@ -2944,6 +3798,185 @@ addEvt('btn-export-pvps', 'click', () => {
     window.showNotif('Exportado com sucesso!');
 });
 
+
+// --- PRE-PESAGEM LOGIC ---
+let chartPrePesas = null;
+let chartPrePesasFrac = null;
+
+function renderPrePesagem() {
+    const sDate = id('prepeso-date-start').value;
+    const eDate = id('prepeso-date-end').value;
+    if(!sDate || !eDate) return window.showNotif('Selecione as datas', true);
+    
+    const ops = localProductionOrders.filter(o => 
+        (o.status === 'concluída' || o.status === 'concluido') &&
+        o.executionDate && o.executionDate >= sDate && o.executionDate <= eDate
+    );
+    
+    let totalVol = 0;
+    let itemsMap = {}; 
+    let lineMap = {}; 
+    
+    ops.forEach(op => {
+        let line = op.recipeCategory || 'Sem Linha';
+        let mult = op.multiplier || 1;
+        
+        if(line.toLowerCase() === 'pães especiais' || line.toLowerCase() === 'paes especiais') return; // ignora a categoria por completo
+
+        if(!op.ingredients) return;
+        op.ingredients.forEach(ing => {
+            const p = localInventory.find(x => x.id === ing.productId);
+            if(!p) return;
+            
+            if(p.type === 'embalagem' || (p.name && (p.name.toLowerCase().includes('embalagem') || p.name.toLowerCase().includes('bobina'))) || (p.supplier && p.supplier.toLowerCase().includes('embalagem')) || (p.code && (p.code.toLowerCase().includes('embalagem') || p.code.toLowerCase().includes('bobina')))) return;
+            
+            if(line.toLowerCase() === 'pães congelados' || line.toLowerCase() === 'paes congelados') {
+                if(String(p.code).trim() === '8110') return;
+            }
+            
+            let qty = ing.actualQtyUsed !== undefined ? ing.actualQtyUsed : ing.adjustedQuantity;
+            if(qty <= 0) return;
+            
+            const key = p.id + '_' + line;
+            if(!itemsMap[key]) {
+                itemsMap[key] = { name: p.name, line: line, vol: 0, vezes: 0 };
+            }
+            
+            itemsMap[key].vol += qty;
+            itemsMap[key].vezes += mult;
+            
+            if(!lineMap[line]) lineMap[line] = { vol: 0, frac: 0 };
+            lineMap[line].vol += qty;
+            lineMap[line].frac += mult;
+            totalVol += qty;
+        });
+    });
+    
+    const volEl = id('prepeso-vol-total');
+    if(volEl) volEl.innerHTML = totalVol.toFixed(2) + ' <span class="text-[10px] font-sans text-ios-textMuted">UN/KG/L</span>';
+    
+    let itemsArr = Object.values(itemsMap);
+    if(itemsArr.length === 0) {
+        if(id('prepeso-top-vol-name')) id('prepeso-top-vol-name').innerText = '-';
+        if(id('prepeso-top-vol-val')) id('prepeso-top-vol-val').innerText = '0 UN/KG/L';
+        if(id('prepeso-top-vezes-name')) id('prepeso-top-vezes-name').innerText = '-';
+        if(id('prepeso-top-vezes-val')) id('prepeso-top-vezes-val').innerText = '0 Vezes';
+        
+        if(chartPrePesas) chartPrePesas.destroy();
+        if(id('prepeso-table-body')) id('prepeso-table-body').innerHTML = '<tr><td colspan="4" class="text-center py-8 text-ios-textMuted text-xs">Nenhum dado encontrado com essas restrições.</td></tr>';
+        return;
+    }
+    
+    let topVol = itemsArr.reduce((a,b) => a.vol > b.vol ? a : b);
+    if(id('prepeso-top-vol-name')) id('prepeso-top-vol-name').innerText = topVol.name;
+    if(id('prepeso-top-vol-val')) id('prepeso-top-vol-val').innerText = topVol.vol.toFixed(2) + ' UN/KG/L';
+    
+    let topVezes = itemsArr.reduce((a,b) => a.vezes > b.vezes ? a : b);
+    if(id('prepeso-top-vezes-name')) id('prepeso-top-vezes-name').innerText = topVezes.name;
+    if(id('prepeso-top-vezes-val')) id('prepeso-top-vezes-val').innerText = topVezes.vezes + ' Vezes';
+    
+    itemsArr.sort((a,b) => b.vol - a.vol);
+    if(id('prepeso-table-body')) id('prepeso-table-body').innerHTML = itemsArr.map(x => `
+        <tr class="hover:bg-ios-cardHover transition">
+            <td class="p-3 text-white font-medium text-[13px] border-b border-ios-border/30">${x.name}</td>
+            <td class="p-3 text-center text-xs text-ios-blue border-b border-ios-border/30"><span class="bg-ios-blue/10 px-2 py-1 rounded inline-block text-[10px] mt-1">${x.line}</span></td>
+            <td class="p-3 text-right font-bold text-white text-sm border-b border-ios-border/30">${x.vol.toFixed(4)}</td>
+            <td class="p-3 text-right font-bold font-mono text-ios-orange text-sm border-b border-ios-border/30">${x.vezes} <span class="text-[9px] font-sans font-normal ml-1">vzs</span></td>
+        </tr>
+    `).join('');
+    
+    const cLabels = Object.keys(lineMap);
+    const cDataVol = cLabels.map(l => lineMap[l].vol);
+    const cDataFrac = cLabels.map(l => lineMap[l].frac);
+    
+    // Gráfico de Volume
+    if(chartPrePesas) chartPrePesas.destroy();
+    const ctxVol = id('chart-prepesas-vol');
+    if(ctxVol) {
+        chartPrePesas = new Chart(ctxVol.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: cLabels,
+                datasets: [{
+                    data: cDataVol,
+                    backgroundColor: ['#0a84ff', '#30d158', '#ff9f0a', '#ff453a', '#bf5af2', '#64d2ff', '#ffd60a'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#8e8e93', font: {size: 10}, padding: 15 } }
+                },
+                cutout: '65%'
+            }
+        });
+    }
+
+    // Gráfico de Frações
+    if(chartPrePesasFrac) chartPrePesasFrac.destroy();
+    const ctxFrac = id('chart-prepesas-frac');
+    if(ctxFrac) {
+        chartPrePesasFrac = new Chart(ctxFrac.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: cLabels,
+                datasets: [{
+                    data: cDataFrac,
+                    backgroundColor: ['#ff9f0a', '#ff453a', '#bf5af2', '#0a84ff', '#30d158', '#64d2ff', '#ffd60a'].reverse(),
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#8e8e93', font: {size: 10}, padding: 15 } }
+                },
+                cutout: '65%'
+            }
+        });
+    }
+}
+
+document.querySelectorAll('[data-target="prepesagem"]').forEach(el => {
+    el.addEventListener('click', () => {
+        const sInput = id('prepeso-date-start');
+        const eInput = id('prepeso-date-end');
+        if(sInput && !sInput.value) {
+            const t = new Date();
+            eInput.value = t.toISOString().split('T')[0];
+            t.setDate(t.getDate() - 7);
+            sInput.value = t.toISOString().split('T')[0];
+        }
+        setTimeout(renderPrePesagem, 50);
+    });
+});
+if(id('btn-calc-prepeso')) addEvt('btn-calc-prepeso', 'click', renderPrePesagem);
+
+if(id('btn-export-prepeso')) {
+    addEvt('btn-export-prepeso', 'click', () => {
+        const tb = id('prepeso-table-body');
+        if(!tb || !tb.children.length || tb.innerText.includes('Nenhum dado')) return window.showNotif('Tabela vazia');
+        const data = [];
+        tb.querySelectorAll('tr').forEach(tr => {
+            const tds = tr.querySelectorAll('td');
+            if(tds.length < 4) return;
+            data.push({
+                'Insumo': tds[0].innerText.trim(),
+                'Linha de Produção': tds[1].innerText.trim(),
+                'Volume Movimentado': Number(tds[2].innerText),
+                'Vezes Pesado (Multiplicador)': parseInt(tds[3].innerText)
+            });
+        });
+        if(!data.length) return;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Relatório Pré-Pesagem");
+        XLSX.writeFile(wb, `PrePesagem_${id('prepeso-date-start').value}_ate_${id('prepeso-date-end').value}.xlsx`);
+        window.showNotif('Relatório Exportado!');
+    });
+}
 
 </script>
 </body>
