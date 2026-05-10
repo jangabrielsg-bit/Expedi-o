@@ -191,16 +191,12 @@
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-white bg-ios-card transition-all" data-target="home" data-id="home"><i class="fa-solid fa-house w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Início</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager" data-target="dashboard" data-id="dashboard"><i class="fa-solid fa-chart-pie w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Dashboard</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="projection" data-id="projection"><i class="fa-solid fa-chart-line w-6 text-center text-lg" style="color:#30d158;"></i><span class="ml-3 hidden lg:block font-medium">Projeção PCP</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="consulta" data-id="consulta"><i class="fa-solid fa-magnifying-glass w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Consulta Rápida</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-manager restrict-admin" data-target="inventory" data-id="inventory"><i class="fa-solid fa-boxes-stacked w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Estoque Geral</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="barcodes" data-id="barcodes"><i class="fa-solid fa-barcode w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Cód. Barras</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="locations" data-id="locations"><i class="fa-solid fa-map-location-dot w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Endereçamento</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all relative" data-target="production" data-id="production"><i class="fa-solid fa-hammer w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Produção (OP)</span><span id="badge-nav-prod" class="absolute top-3 right-3 w-2.5 h-2.5 bg-ios-blue rounded-full animate-pulse hidden"></span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="traceability" data-id="traceability"><i class="fa-solid fa-route w-6 text-center text-lg" style="color:#bf5af2;"></i><span class="ml-3 hidden lg:block font-medium">Rastreabilidade</span></a>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="pvps" data-id="pvps"><i class="fa-solid fa-clock w-6 text-center text-lg" style="color:#ff375f;"></i><span class="ml-3 hidden lg:block font-medium">PVPS & Vencimentos</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all restrict-admin restrict-manager restrict-ops" data-target="prepesagem" data-id="prepesagem"><i class="fa-solid fa-scale-unbalanced w-6 text-center text-lg" style="color:#ff9f0a;"></i><span class="ml-3 hidden lg:block font-medium">Pré-Pesagem</span></a>
-                <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="purchasing" data-id="purchasing"><i class="fa-solid fa-cart-shopping w-6 text-center text-lg" style="color:#32ade6;"></i><span class="ml-3 hidden lg:block font-medium">Compras/Pedidos</span></a>
                 <div class="border-t border-ios-border my-2 mx-2"></div>
                 <a href="#" class="nav-item p-3 rounded-xl flex items-center w-full text-ios-textMuted hover:bg-ios-card hover:text-white transition-all" data-target="settings" data-id="settings"><i class="fa-solid fa-database w-6 text-center text-lg"></i><span class="ml-3 hidden lg:block font-medium">Banco de Dados</span></a>
             </nav>
@@ -215,12 +211,9 @@
             <div id="screen-home" class="screen-panel w-full max-w-6xl mx-auto">
                 <h1 class="title-lg mb-6 text-center text-white hidden md:block">Menu Principal</h1>
                 <div id="home-menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
-                    <button type="button" class="menu-window nav-btn" data-target="consulta" data-id="consulta" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-magnifying-glass" style="color:#32ade6;"></i><span>Consulta Rápida</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="entry" data-id="entry" data-allow="admin,gerente"><i class="fa-solid fa-box-open"></i><span>Entrada</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="inventory" data-id="inventory" data-allow="admin,gerente,compras"><i class="fa-solid fa-boxes-stacked" style="color:#30d158;"></i><span>Estoque Atual</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="locations" data-id="locations" data-allow="admin,gerente,operador"><i class="fa-solid fa-map-location-dot" style="color:#5e5ce6;"></i><span>Endereçamento</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="barcodes" data-id="barcodes" data-allow="admin,gerente,operador"><i class="fa-solid fa-barcode" style="color:#bf5af2;"></i><span>Cód. Barras</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="purchasing" data-id="purchasing" data-allow="admin,gerente,compras"><i class="fa-solid fa-cart-shopping" style="color:#32ade6;"></i><span>Compras</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="recipes" data-id="recipes" data-allow="admin,gerente"><i class="fa-solid fa-book-bookmark" style="color:#ff375f;"></i><span>Fichas Técnicas</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="production" data-id="production" data-allow="admin,gerente"><i class="fa-solid fa-hammer" style="color:#ff9f0a;"></i><span>Ordens Prod.</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="traceability" data-id="traceability" data-allow="admin,gerente"><i class="fa-solid fa-route" style="color:#bf5af2;"></i><span>Extratos / Baixas</span></button>
@@ -230,33 +223,11 @@
                     <button type="button" class="menu-window nav-btn" data-target="dashboard" data-id="dashboard" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-pie" style="color:#ff9f0a;"></i><span>Visão Gráfica</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="projection" data-id="projection" data-allow="admin,gerente,compras"><i class="fa-solid fa-chart-line" style="color:#30d158;"></i><span>Projeção PCP</span></button>
                     <button type="button" class="menu-window nav-btn" data-target="pvps" data-id="pvps" data-allow="admin,gerente,operador,compras"><i class="fa-solid fa-clock-rotate-left" style="color:#ff375f;"></i><span>Painel PVPS</span></button>
-                    <button type="button" class="menu-window nav-btn" data-target="prepesagem" data-id="prepesagem" data-allow="admin,gerente,operador"><i class="fa-solid fa-scale-unbalanced" style="color:#ff9f0a;"></i><span>Pré-Pesagem</span></button>
                 </div>
                 <div class="border-t border-ios-border pt-6 sm:pt-8 mb-6">
                     <h2 class="title-md mb-4 text-ios-blue"><i class="fa-solid fa-truck-ramp-box mr-2"></i>📦 Entregas Previstas Hoje</h2>
                     <div id="home-incoming-orders" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
                 </div>
-            </div>
-
-            <!-- Consulta Rápida -->
-            <div id="screen-consulta" class="screen-panel hidden max-w-4xl mx-auto">
-                <h1 class="title-lg">Consulta Rápida</h1>
-                <div class="card mb-6"><div class="flex gap-2 w-full"><input type="text" id="consulta-input" class="form-input flex-1 font-mono text-lg" placeholder="Bipar código..." autocomplete="off"><button type="button" id="btn-consulta-scan" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div><button type="button" id="btn-consulta-search" class="btn-secondary w-full px-8 mt-2">Consultar</button></div>
-                <div id="consulta-results" class="space-y-6"><div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div></div>
-            </div>
-
-            <!-- Cod Barras -->
-            <div id="screen-barcodes" class="screen-panel hidden max-w-4xl mx-auto">
-                <h1 class="title-lg">Cód. Barras</h1>
-                <div class="card mb-8"><form id="barcode-form" class="space-y-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative"><div class="z-50"><label class="form-label">Produto</label><div id="barcode-searchable-container" class="searchable-container"></div></div><div class="z-40"><label class="form-label">Cód Barras</label><div class="flex gap-2"><input type="text" id="barcode-input" required class="form-input font-mono"><button type="button" id="btn-scan-barcode" class="bg-ios-blue text-white p-3 rounded-xl"><i class="fa-solid fa-camera"></i></button></div></div></div><div class="flex justify-end pt-4"><button type="submit" class="btn-primary w-full md:w-auto">Vincular Código</button></div></form></div>
-                <div class="table-container"><table class="base-table"><thead class="base-thead"><tr><th class="base-th">Produto</th><th class="base-th">Cód</th><th class="base-th">EANs</th><th class="base-th text-center col-acoes">Gestão</th></tr></thead><tbody id="barcodes-table-body"></tbody></table></div>
-            </div>
-
-            <!-- Compras -->
-            <div id="screen-purchasing" class="screen-panel hidden">
-                <h1 class="title-lg mb-0 text-ios-blue"><i class="fa-solid fa-cart-shopping mr-3"></i>Compras</h1>
-                <div class="mb-6 mt-4"><input type="text" id="search-purchasing" class="form-input w-full md:w-1/2" placeholder="Buscar fornecedor ou item..."></div>
-                <div id="purchasing-container" class="space-y-6"></div>
             </div>
 
             <!-- Endereçamento -->
@@ -363,90 +334,6 @@
                     <p class="text-sm text-ios-textMuted uppercase font-bold mb-2">Sugestões de OPs (Receitas)</p>
                     <div id="pvps-sim-receitas-list" class="space-y-3 max-h-[35vh] overflow-y-auto"></div>
                     <div class="mt-6 flex justify-end"><button type="button" class="btn-secondary w-full sm:w-auto close-modal" data-target="pvps-simulation-modal">Fechar</button></div>
-                </div>
-            </div>
-
-            <!-- Pré-Pesagem -->
-            <div id="screen-prepesagem" class="screen-panel hidden max-w-6xl mx-auto">
-                <div class="sticky-header-panel !bg-gradient-to-r !from-ios-card/95 !to-ios-bg/95 pt-4">
-                    <div class="relative overflow-hidden p-2 sm:p-4 mb-2">
-                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-                            <div>
-                                <h1 class="title-lg mb-1 leading-tight text-white"><i class="fa-solid fa-scale-unbalanced text-ios-orange mr-3"></i>Dashboard Pré-Pesagem</h1>
-                                <p class="text-sm font-normal text-ios-textMuted font-sans max-w-xl">Produtividade de frações e saquinhos.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card mb-0 border-l-4 border-l-ios-blue p-4">
-                        <div class="flex flex-col sm:flex-row gap-4 items-end">
-                            <div class="w-full sm:w-[40%]">
-                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-minus mr-2"></i>OP Efetivada Inicial</label>
-                                <input type="date" id="prepeso-date-start" class="form-input py-2">
-                            </div>
-                            <div class="w-full sm:w-[40%]">
-                                <label class="form-label text-xs uppercase font-bold"><i class="fa-solid fa-calendar-plus mr-2"></i>OP Efetivada Final</label>
-                                <input type="date" id="prepeso-date-end" class="form-input py-2">
-                            </div>
-                            <button type="button" id="btn-calc-prepeso" class="btn-primary shrink-0 w-full sm:w-[20%] py-2"><i class="fa-solid fa-bolt mr-2"></i>Processar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-blue shadow-lg">
-                        <div class="w-10 h-10 bg-ios-blue/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-cubes text-ios-blue"></i></div>
-                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Volume Total Pesado</h3>
-                        <p class="text-white text-3xl font-bold font-mono" id="prepeso-vol-total">0 <span class="text-[10px] font-sans text-ios-textMuted">UN/KG/L</span></p>
-                    </div>
-                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-green shadow-lg">
-                        <div class="w-10 h-10 bg-ios-green/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-weight-scale text-ios-green"></i></div>
-                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Item Mais Pesado (Volume)</h3>
-                        <p class="text-ios-green text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vol-name">-</p>
-                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vol-val">0 UN/KG/L</p>
-                    </div>
-                    <div class="card bg-ios-input/30 text-center py-6 border-t-4 border-t-ios-orange shadow-lg">
-                        <div class="w-10 h-10 bg-ios-orange/20 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-hashtag text-ios-orange"></i></div>
-                        <h3 class="text-ios-textMuted font-bold text-[10px] uppercase mb-1">Total de Frações Realizadas</h3>
-                        <p class="text-ios-orange text-lg font-bold truncate max-w-[90%] mx-auto" id="prepeso-top-vezes-name">-</p>
-                        <p class="text-[10px] text-ios-textMuted mt-1" id="prepeso-top-vezes-val">0 Frações/Saquinhos</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
-                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-blue mr-2"></i>Volumes (KG/L) por Categoria</h2>
-                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
-                             <canvas id="chart-prepesas-vol" class="w-full h-full"></canvas>
-                        </div>
-                    </div>
-                    <div class="card col-span-1 border border-ios-border flex flex-col justify-center min-h-[300px]">
-                        <h2 class="title-md text-sm text-center mb-4 border-b border-ios-border/50 pb-2"><i class="fa-solid fa-chart-pie text-ios-orange mr-2"></i>Total de Frações por Categoria</h2>
-                        <div class="relative flex-1 w-full flex items-center justify-center p-2" style="min-height:220px;">
-                             <canvas id="chart-prepesas-frac" class="w-full h-full"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-6 mb-8">
-                    <div class="card col-span-1 border border-ios-border flex flex-col">
-                        <div class="flex justify-between items-center mb-4 border-b border-ios-border/50 pb-3">
-                            <h2 class="title-md text-sm mb-0"><i class="fa-solid fa-list-check text-ios-green mr-2"></i>Memória de Pesagens</h2>
-                            <button type="button" id="btn-export-prepeso" class="btn-secondary text-[10px] py-1.5 px-3"><i class="fa-solid fa-file-excel mr-2 text-ios-green"></i>Exportar (.xlsx)</button>
-                        </div>
-                        <div class="table-container max-h-[380px] overflow-y-auto">
-                            <table class="base-table w-full">
-                                <thead class="base-thead sticky top-0 z-10 shadow-sm border-b border-ios-border bg-ios-card">
-                                    <tr>
-                                        <th class="base-th text-left p-3">Insumo Utilizado</th>
-                                        <th class="base-th text-center p-3">Linha OP</th>
-                                        <th class="base-th text-right p-3">Volume Movimentado</th>
-                                        <th class="base-th text-right text-ios-orange p-3" title="Quantas vezes o multiplicador foi requisitado (saquinhos avulsos)">Vezes Pesado</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="prepeso-table-body" class="divide-y divide-ios-border/50"></tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -790,7 +677,7 @@
             </div>
         </main>
         
-        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/4 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center" data-target="consulta"><i class="fa-solid fa-magnifying-glass text-xl mb-1"></i><span class="text-[10px] font-bold">Consulta</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative" data-target="production"><i class="fa-solid fa-hammer text-xl mb-1"></i><span class="text-[10px] font-bold">Produção</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/4 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
+        <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-ios-border flex justify-around items-center pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] px-1 z-[45]"><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-blue w-1/3 text-center transition-colors" data-target="home"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Início</span></a><a href="#" class="nav-item-mobile flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/3 text-center relative" data-target="production"><i class="fa-solid fa-hammer text-xl mb-1"></i><span class="text-[10px] font-bold">Produção</span><span id="badge-nav-picking-mobile" class="absolute top-1 right-3 w-2.5 h-2.5 bg-ios-orange rounded-full hidden"></span></a><button type="button" id="btn-show-alerts-mobile" class="flex flex-col items-center py-2 px-3 text-ios-textMuted w-1/3 text-center relative"><i class="fa-solid fa-bell text-xl mb-1"></i><span class="text-[10px] font-bold">Alertas</span><span id="badge-nav-alerts-mobile" class="absolute top-1 right-2 bg-ios-red text-white text-[9px] px-1.5 py-0.5 rounded-full hidden font-bold border border-black">0</span></button></nav>
     </div>
 
     <!-- Modais Flutuantes -->
@@ -1113,12 +1000,9 @@ function applyRoleRestrictions() {
         let shouldShow = false;
         
         // Espelhando o controle de quem vê cada tela no menu lateral/inferior
-        if(item.dataset.target === 'consulta') shouldShow = true;
         if(item.dataset.target === 'inventory' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'dashboard' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'projection' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
-        if(item.dataset.target === 'purchasing' && ['admin','gerente','compras'].includes(currentUserRole)) shouldShow = true;
-        if(item.dataset.target === 'barcodes' && ['admin','gerente','operador'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'locations' && ['admin','gerente','operador'].includes(currentUserRole)) shouldShow = true;
         if(item.dataset.target === 'traceability' && ['admin','gerente'].includes(currentUserRole)) shouldShow = true;
         
@@ -1164,7 +1048,7 @@ let currentBatchTarget = null;
 document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>hide(id(b.dataset.target))));
 
 // NAVIGATION
-const screens=['home','consulta','entry','inventory','recipes','production','requisitions','adjustments','locations','barcodes','purchasing','settings','traceability','users','dashboard','projection','pvps','prepesagem'];
+const screens=['home','entry','inventory','recipes','production','requisitions','adjustments','locations','settings','traceability','users','dashboard','projection','pvps'];
 window.navTo=t=>{
     screens.forEach(s=>id('screen-'+s)?.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('bg-ios-card','text-white');n.classList.add('text-ios-textMuted');});
@@ -1180,14 +1064,11 @@ window.navTo=t=>{
         renderAccuracyReport();
     }
     if(t==='requisitions'){const r=id('requisition-items-container');if(r){r.innerHTML='';addIngRowReq(r);}}
-    if(t==='purchasing') renderPurchasing(); 
-    if(t==='barcodes'){renderBarcodesList();createSearchableSelect(id('barcode-searchable-container'),localInventory,'Produto...');}
     if(t==='locations'){renderAllLocations();id('location-search-input').value='';hide(id('location-details-panel'));hide(id('location-create-panel'));show(id('location-empty-state'));}
     if(t==='traceability') renderTraceability();
     if(t==='production') renderPO();
     if(t==='dashboard') renderDashboard();
     if(t==='projection') initProjection();
-    if(t==='consulta'){id('consulta-input').value='';id('consulta-results').innerHTML=`<div class="card flex flex-col items-center justify-center py-20 text-center border-dashed"><i class="fa-solid fa-magnifying-glass text-6xl text-ios-cardHover mb-4"></i><p class="text-ios-textMuted">Aguardando leitura...</p></div>`;setTimeout(()=>id('consulta-input').focus(),100);}
     if(t==='entry'){createSearchableSelect(id('entry-searchable-container'),localInventory,'Pesquisar...',p=>{document.querySelector('#entry-form input[name="quantity"]').focus();});renderBulkEntry();}
 };
 document.querySelectorAll('.nav-item, .nav-item-mobile, .nav-btn').forEach(l=>l.addEventListener('click',e=>{
