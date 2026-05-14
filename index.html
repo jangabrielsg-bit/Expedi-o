@@ -244,6 +244,18 @@
                 <input type="text" id="search-os" oninput="renderSectorList()" placeholder="Buscar por descrição ou número..." class="w-full pl-10 pr-4 py-3 bg-white rounded-xl shadow-sm border-none focus:ring-2 focus:ring-brand text-sm outline-none">
             </div>
 
+            <div id="sector-machines-wrapper" class="hidden mb-6">
+                <h3 class="text-xs font-bold text-gray-400 uppercase mb-2"><i class="fas fa-cogs mr-1"></i> Equipamentos do Setor</h3>
+                <div id="sector-machines-container" class="flex overflow-x-auto gap-3 pb-2 snap-x hide-scrollbar">
+                    <!-- Gerado via JS -->
+                </div>
+            </div>
+
+            <style>
+                .hide-scrollbar::-webkit-scrollbar { display: none; }
+                .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            </style>
+
             <div id="concluidas-filters" class="hidden mb-6 bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
                 <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-2">Filtros e Organização</h3>
                 <div class="grid grid-cols-2 gap-2">
@@ -630,7 +642,10 @@
                         <h3 class="font-bold uppercase" id="mach-detail-name">Máquina</h3>
                         <p class="text-[10px] text-white/70" id="mach-detail-patrimony">Patrimônio</p>
                     </div>
-                    <button type="button" onclick="closeMachineDetails()" class="text-white hover:text-brand w-8 h-8 flex items-center justify-center"><i class="fas fa-times text-xl"></i></button>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-delete-machine" type="button" onclick="deleteMachine()" class="text-red-500 hover:text-red-400 w-8 h-8 flex items-center justify-center hidden"><i class="fas fa-trash text-lg"></i></button>
+                        <button type="button" onclick="closeMachineDetails()" class="text-white hover:text-brand w-8 h-8 flex items-center justify-center"><i class="fas fa-times text-xl"></i></button>
+                    </div>
                 </div>
                 <div class="p-5 overflow-y-auto flex-1 bg-grayBg">
                     <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-4">
@@ -1244,6 +1259,16 @@
             if(viewId === 'analytics') {
                 renderAnalytics();
             }
+            if(viewId === 'machines') {
+                renderMachinesList();
+                if (appState.currentUser && (appState.currentUser.role === 'admin' || appState.currentUser.role === 'operacional_leader')) {
+                    document.getElementById('btn-add-machine').classList.remove('hidden');
+                    document.getElementById('btn-add-machine').classList.add('flex');
+                } else {
+                    document.getElementById('btn-add-machine').classList.add('hidden');
+                    document.getElementById('btn-add-machine').classList.remove('flex');
+                }
+            }
 
             currentViewId = viewId;
 
@@ -1524,6 +1549,49 @@
                 else if (isLivres) document.getElementById('list-sector-title').innerText = "Atividades Livres";
                 else if (isTech) document.getElementById('list-sector-title').innerText = "Atividades: " + targetTech;
                 else document.getElementById('list-sector-title').innerText = isMyHistory ? "Histórico Geral" : appState.currentListSector;
+            }
+
+            // EXIBIÇÃO DOS EQUIPAMENTOS DO SETOR (CARROSSEL HORIZONTAL)
+            const machWrapper = document.getElementById('sector-machines-wrapper');
+            const machContainer = document.getElementById('sector-machines-container');
+            if (machWrapper && machContainer) {
+                const isSpecificSector = !isConcluidas && !isUrgentes && !isPendentes && !isAndamento && !isMinhas && !isLivres && !isTech && !isMyHistory;
+                
+                if (isSpecificSector) {
+                    const sectorMachines = appState.machines.filter(m => m.sector === appState.currentListSector);
+                    if (sectorMachines.length > 0) {
+                        machWrapper.classList.remove('hidden');
+                        machContainer.innerHTML = '';
+                        const now = new Date();
+                        sectorMachines.forEach(m => {
+                            let statusColor = 'bg-green-100 text-green-700 border-green-200';
+                            let isOverdue = false;
+                            if (!m.lastPmDate) {
+                                statusColor = 'bg-red-100 text-red-700 border-red-200';
+                                isOverdue = true;
+                            } else {
+                                const lastPm = new Date(m.lastPmDate + 'T00:00:00');
+                                const diffTime = Math.abs(now - lastPm);
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                const remaining = (m.pmInterval || 30) - diffDays;
+                                if (remaining < 0) { statusColor = 'bg-red-100 text-red-700 border-red-200'; isOverdue = true; }
+                                else if (remaining <= 5) statusColor = 'bg-orange-100 text-orange-700 border-orange-200';
+                            }
+
+                            machContainer.innerHTML += `
+                                <div onclick="openMachineDetails('${m.dbId}')" class="shrink-0 w-48 bg-white p-3 rounded-xl border ${isOverdue ? 'border-red-300' : 'border-gray-200'} shadow-sm cursor-pointer hover:shadow-md transition">
+                                    <h4 class="font-bold text-dark text-xs truncate uppercase">${m.name}</h4>
+                                    <p class="text-[9px] text-gray-500 truncate mb-2">Pat: ${m.patrimony || 'N/A'}</p>
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusColor}">${isOverdue ? 'Atrasada' : 'No Prazo'}</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        machWrapper.classList.add('hidden');
+                    }
+                } else {
+                    machWrapper.classList.add('hidden');
+                }
             }
 
             let filtered = [...appState.orders];
@@ -2911,6 +2979,15 @@
 
             document.getElementById('modal-machine-details').classList.remove('hidden');
             document.getElementById('modal-machine-details').classList.add('flex');
+            
+            const btnDel = document.getElementById('btn-delete-machine');
+            if(btnDel) {
+                if (appState.currentUser && (appState.currentUser.role === 'admin' || appState.currentUser.role === 'operacional_leader')) {
+                    btnDel.classList.remove('hidden');
+                } else {
+                    btnDel.classList.add('hidden');
+                }
+            }
         }
         window.openMachineDetails = openMachineDetails;
 
@@ -2938,6 +3015,21 @@
             }
         }
         window.registerPM = registerPM;
+        
+        async function deleteMachine() {
+            if (!currentMachineId) return;
+            if(!confirm("ATENÇÃO: Deseja excluir este equipamento? Todo o histórico continuará nas OSs, mas o equipamento não aparecerá mais.")) return;
+
+            try {
+                await deleteDoc(doc(db, "machines", currentMachineId));
+                showToast("Equipamento excluído!");
+                closeMachineDetails();
+            } catch (err) {
+                console.error("Erro ao excluir máquina:", err);
+                showToast("Erro ao excluir.");
+            }
+        }
+        window.deleteMachine = deleteMachine;
         
         function populateEquipmentSelect() {
             const select = document.getElementById('manage-equipment');
