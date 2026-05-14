@@ -50,6 +50,7 @@
             body.print-almo #print-area-almo, body.print-almo #print-area-almo * { visibility: visible; }
             body.print-almo #print-area-almo { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white;}
         }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="text-gray-800 font-sans h-screen flex flex-col overflow-hidden">
@@ -934,6 +935,14 @@
             }, (err) => {
                 console.warn("Erro ao ler users (Pode ser esperado se for solicitante anônimo)", err.message);
             });
+
+            // Listener de Máquinas
+            onSnapshot(collection(db, "machines"), (snapshot) => {
+                appState.machines = snapshot.docs.map(d => ({ dbId: d.id, ...d.data() }));
+                if(typeof updatePMAlerts === 'function') updatePMAlerts();
+                if(currentViewId === 'machines' && typeof renderMachinesList === 'function') renderMachinesList();
+                if(currentViewId === 'os-details' && typeof populateEquipmentSelect === 'function') populateEquipmentSelect();
+            }, (err) => console.warn("Erro ao ler máquinas", err.message));
         }
 
         // Inicia a aplicação chamando a função
@@ -2726,6 +2735,221 @@
         window.toggleEditMode = toggleEditMode;
         window.openPhotoModal = openPhotoModal;
         window.closePhotoModal = closePhotoModal;
+
+        // --- GESTÃO DE EQUIPAMENTOS E PM ---
+        function updatePMAlerts() {
+            let alerts = 0;
+            const now = new Date();
+            appState.machines.forEach(m => {
+                if (!m.lastPmDate) {
+                    alerts++;
+                    return;
+                }
+                const lastPm = new Date(m.lastPmDate + 'T00:00:00');
+                const diffTime = Math.abs(now - lastPm);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays >= (m.pmInterval || 30)) {
+                    alerts++;
+                }
+            });
+            const badge = document.getElementById('badge-pm-alerts');
+            if (badge) {
+                badge.innerText = alerts;
+                if (alerts > 0 && appState.currentUser && ['maintenance', 'admin', 'operacional_leader'].includes(appState.currentUser.role)) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderMachinesList() {
+            const container = document.getElementById('machines-list-container');
+            const term = document.getElementById('search-machine').value.toLowerCase();
+            
+            let filtered = [...appState.machines];
+            if(term) {
+                filtered = filtered.filter(m => 
+                    (m.name && m.name.toLowerCase().includes(term)) || 
+                    (m.patrimony && m.patrimony.toLowerCase().includes(term))
+                );
+            }
+
+            container.innerHTML = '';
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="text-center p-8 text-gray-400 text-sm border-2 border-dashed rounded-xl border-gray-200">Nenhum equipamento cadastrado.</div>`;
+                return;
+            }
+
+            const now = new Date();
+            filtered.forEach(m => {
+                let statusHtml = '';
+                let isOverdue = false;
+                if (!m.lastPmDate) {
+                    statusHtml = `<span class="text-[10px] bg-red-100 text-danger border border-red-200 px-2 py-0.5 rounded font-bold uppercase"><i class="fas fa-exclamation-triangle"></i> Sem Prev.</span>`;
+                    isOverdue = true;
+                } else {
+                    const lastPm = new Date(m.lastPmDate + 'T00:00:00');
+                    const diffTime = Math.abs(now - lastPm);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const remaining = (m.pmInterval || 30) - diffDays;
+                    
+                    if (remaining < 0) {
+                        statusHtml = `<span class="text-[10px] bg-red-100 text-danger border border-red-200 px-2 py-0.5 rounded font-bold uppercase"><i class="fas fa-exclamation-triangle"></i> Atrasada ${Math.abs(remaining)}d</span>`;
+                        isOverdue = true;
+                    } else if (remaining <= 5) {
+                        statusHtml = `<span class="text-[10px] bg-orange-100 text-warning border border-orange-200 px-2 py-0.5 rounded font-bold uppercase"><i class="fas fa-exclamation-circle"></i> Vence em ${remaining}d</span>`;
+                    } else {
+                        statusHtml = `<span class="text-[10px] bg-green-100 text-success border border-green-200 px-2 py-0.5 rounded font-bold uppercase"><i class="fas fa-check-circle"></i> OK</span>`;
+                    }
+                }
+
+                container.innerHTML += `
+                    <div onclick="openMachineDetails('${m.dbId}')" class="bg-white p-4 rounded-xl border ${isOverdue ? 'border-red-300' : 'border-gray-200'} shadow-sm active:scale-95 transition cursor-pointer hover:shadow-md">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-black text-dark text-sm uppercase">${m.name}</h3>
+                                <p class="text-[10px] text-gray-500 font-bold mt-1">Pat: ${m.patrimony || 'N/A'} | Setor: ${m.sector}</p>
+                            </div>
+                            ${statusHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        window.renderMachinesList = renderMachinesList;
+
+        function openAddMachineModal() {
+            const select = document.getElementById('new-mach-sector');
+            select.innerHTML = '';
+            appState.sectors.forEach(s => {
+                select.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+            });
+            document.getElementById('form-new-machine').reset();
+            document.getElementById('modal-add-machine').classList.remove('hidden');
+            document.getElementById('modal-add-machine').classList.add('flex');
+        }
+        window.openAddMachineModal = openAddMachineModal;
+
+        function closeAddMachineModal() {
+            document.getElementById('modal-add-machine').classList.add('hidden');
+            document.getElementById('modal-add-machine').classList.remove('flex');
+        }
+        window.closeAddMachineModal = closeAddMachineModal;
+
+        async function saveMachine(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            const name = document.getElementById('new-mach-name').value.trim();
+            const patrimony = document.getElementById('new-mach-patrimony').value.trim();
+            const sector = document.getElementById('new-mach-sector').value;
+            const pmInterval = parseInt(document.getElementById('new-mach-interval').value);
+            const lastPmDate = document.getElementById('new-mach-lastpm').value;
+
+            try {
+                await addDoc(collection(db, "machines"), {
+                    name, patrimony, sector, pmInterval, lastPmDate,
+                    createdAt: new Date().toISOString()
+                });
+                showToast("Equipamento cadastrado!");
+                closeAddMachineModal();
+            } catch (err) {
+                console.error("Erro ao salvar máquina:", err);
+                showToast("Erro ao cadastrar equipamento.");
+            } finally {
+                btn.innerHTML = 'Salvar Equipamento';
+                btn.disabled = false;
+            }
+        }
+        window.saveMachine = saveMachine;
+
+        let currentMachineId = null;
+        function openMachineDetails(machId) {
+            currentMachineId = machId;
+            const mach = appState.machines.find(m => m.dbId === machId);
+            if (!mach) return;
+
+            document.getElementById('mach-detail-name').innerText = mach.name;
+            document.getElementById('mach-detail-patrimony').innerText = mach.patrimony ? 'PAT: ' + mach.patrimony : 'SEM PATRIMÔNIO';
+            document.getElementById('mach-detail-interval').innerText = mach.pmInterval || 30;
+
+            let nextPmText = '--/--/----';
+            if (mach.lastPmDate) {
+                const nextPm = new Date(mach.lastPmDate + 'T00:00:00');
+                nextPm.setDate(nextPm.getDate() + (mach.pmInterval || 30));
+                nextPmText = nextPm.toLocaleDateString('pt-BR');
+            }
+            document.getElementById('mach-detail-nextpm').innerText = nextPmText;
+
+            // Histórico de OS
+            const historyContainer = document.getElementById('mach-history-container');
+            const linkedOSs = appState.orders.filter(o => o.linkedMachineId === machId).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            historyContainer.innerHTML = '';
+            if(linkedOSs.length === 0) {
+                historyContainer.innerHTML = `<div class="text-[10px] text-gray-500 italic p-4 text-center border rounded">Nenhum histórico de ocorrência para esta máquina.</div>`;
+            } else {
+                linkedOSs.forEach(o => {
+                    // A função getStatusStyles precisa existir no seu código base. Se não, fallback básico.
+                    const statusClass = typeof getStatusStyles === 'function' ? getStatusStyles(o.status) : 'bg-gray-100 text-gray-600';
+                    historyContainer.innerHTML += `
+                        <div class="bg-white p-3 rounded border border-gray-200 shadow-sm text-sm cursor-pointer hover:shadow-md transition" onclick="closeMachineDetails(); navigate('home'); setTimeout(()=>openOSDetails('${o.dbId}'), 300)">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-dark">${o.id}</span>
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusClass}">${o.status}</span>
+                            </div>
+                            <p class="text-xs text-gray-600 line-clamp-1 mb-1">${o.description}</p>
+                            ${o.cause ? `<p class="text-[10px] text-gray-500 bg-gray-50 p-1.5 rounded"><strong class="text-dark"><i class="fas fa-stethoscope text-brand"></i> Causa:</strong> ${o.cause}</p>` : ''}
+                            <span class="text-[9px] text-gray-400 font-medium block mt-1">${new Date(o.createdAt).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('modal-machine-details').classList.remove('hidden');
+            document.getElementById('modal-machine-details').classList.add('flex');
+        }
+        window.openMachineDetails = openMachineDetails;
+
+        function closeMachineDetails() {
+            document.getElementById('modal-machine-details').classList.add('hidden');
+            document.getElementById('modal-machine-details').classList.remove('flex');
+            currentMachineId = null;
+        }
+        window.closeMachineDetails = closeMachineDetails;
+
+        async function registerPM() {
+            if (!currentMachineId) return;
+            if(!confirm("Confirmar realização de Manutenção Preventiva para hoje? O contador será zerado.")) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            try {
+                await updateDoc(doc(db, "machines", currentMachineId), {
+                    lastPmDate: today
+                });
+                showToast("Manutenção Preventiva registrada!");
+                openMachineDetails(currentMachineId);
+            } catch (err) {
+                console.error("Erro ao registrar PM:", err);
+                showToast("Erro ao registrar.");
+            }
+        }
+        window.registerPM = registerPM;
+        
+        function populateEquipmentSelect() {
+            const select = document.getElementById('manage-equipment');
+            if(!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">Nenhum</option>';
+            appState.machines.forEach(m => {
+                select.innerHTML += `<option value="${m.dbId}">${m.name} ${m.patrimony ? '('+m.patrimony+')' : ''}</option>`;
+            });
+            if(currentVal) select.value = currentVal;
+        }
+        window.populateEquipmentSelect = populateEquipmentSelect;
 
         window.chartInstances = {};
 
